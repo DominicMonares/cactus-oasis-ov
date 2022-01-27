@@ -1,4 +1,4 @@
-// get /products/productId
+// get /products
 const productListData = [
   {
     "id": 59558,
@@ -55,8 +55,9 @@ const productListData = [
     "created_at": "2021-10-18T22:50:41.839Z",
     "updated_at": "2021-10-18T22:50:41.839Z"
   }
-]
+];
 
+// get /products/productId
 const productData = {
   "id": 59559,
   "campus": "hr-rpp",
@@ -81,7 +82,7 @@ const productData = {
       "value": "Double Stitch"
     }
   ]
-}
+};
 
 // get to /products/productId/styles
 const styleData = {
@@ -201,7 +202,20 @@ const styleData = {
       }
     }
   ]
-}
+};
+
+// get /products/:product_id/related
+const relatedProductsData = [
+  59553,
+  59554,
+  59555,
+  59556,
+  59557,
+  59558,
+  59559,
+  59560,
+  59561
+];
 
 // get /cart
 const cartData = [
@@ -217,11 +231,12 @@ const cartData = [
     "sku_id": 5,
     "count": 33
   }
-]
+];
 
 module.exports = {
   'productListData': productListData,
   'productData': productData,
   'styleData': styleData,
+  'relatedProductsData': relatedProductsData,
   'cartData': cartData
 }
