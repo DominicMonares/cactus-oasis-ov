@@ -1,5 +1,5 @@
 const _ = require('underscore');
-const {productListData, productData, styleData, relatedProductsData, cartData} = require('./samples.js');
+const {productData, styleData, reviewData, cartData} = require('./samples.js');
 
 describe('Overview API', () => {
 
