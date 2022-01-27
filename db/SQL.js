@@ -20,14 +20,20 @@ CART DATA
 
 ========== RESEARCH ==========
 
-Postgres:
+Postgres: - WINNER
 - highly extensible (create own datatypes, custom functions, etc.)
--
+- streaming API for large objects
+- partitioning by range, list, and hash
+- no multi-source replication
+- accepts array data type
 
 MySQL:
-
+- server side scripts
+- horizontal partitioning, sharding
+- only uses SQL standard type data types
 
 MariaDB:
-
+- server side scripts
+- horizontal partitioning and sharding
 
 */
