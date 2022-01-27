@@ -1,4 +1,62 @@
 // get /products/productId
+const productListData = [
+  {
+    "id": 59558,
+    "campus": "hr-rpp",
+    "name": "Pumped Up Kicks",
+    "slogan": "Faster than a just about anything",
+    "description": "The Pumped Up serves up crisp court style with a modern look. These shoes show off tennis-whites shades and are constructed with a supple leather upper and a classic rubber cupsole.",
+    "category": "Kicks",
+    "default_price": "89.00",
+    "created_at": "2021-10-18T22:50:41.839Z",
+    "updated_at": "2021-10-18T22:50:41.839Z"
+  },
+  {
+    "id": 59559,
+    "campus": "hr-rpp",
+    "name": "Blues Suede Shoes",
+    "slogan": "2019 Stanley Cup Limited Edition",
+    "description": "Touch down in the land of the Delta Blues in the middle of the pouring rain",
+    "category": "Dress Shoes",
+    "default_price": "120.00",
+    "created_at": "2021-10-18T22:50:41.839Z",
+    "updated_at": "2021-10-18T22:50:41.839Z"
+  },
+  {
+    "id": 59560,
+    "campus": "hr-rpp",
+    "name": "YEasy 350",
+    "slogan": "Just jumped over jumpman",
+    "description": "These stretchy knit shoes show off asymmetrical lacing and a big sculpted rubber midsole. In a nod to adidas soccer heritage.",
+    "category": "Kicks",
+    "default_price": "450.00",
+    "created_at": "2021-10-18T22:50:41.839Z",
+    "updated_at": "2021-10-18T22:50:41.839Z"
+  },
+  {
+    "id": 59561,
+    "campus": "hr-rpp",
+    "name": "Summer Shoes",
+    "slogan": "A risky call in the spring or fall",
+    "description": "Low-top panelled buffed leather and mesh sneakers. Sizing embroidered in black at round toe. Tonal lace-up closure. Pull-loop and rubberized style name at padded tongue. Padded collar. Pull-loop at heel collar. Logo embroidered in black at outer side. Tonal treaded rubber sole. Tonal stitching.",
+    "category": "Kicks",
+    "default_price": "59.00",
+    "created_at": "2021-10-18T22:50:41.839Z",
+    "updated_at": "2021-10-18T22:50:41.839Z"
+  },
+  {
+    "id": 59562,
+    "campus": "hr-rpp",
+    "name": "Infinity Stone",
+    "slogan": "Reality is often disappointing. That is, it was. Now, reality can be whatever I want.",
+    "description": "The Infinity Stones are six immensely powerful stone-like objects tied to different aspects of the universe, created by the Cosmic Entities. Each of the stones possesses unique capabilities that have been enhanced and altered by various alien civilizations for millennia.",
+    "category": "Accessories",
+    "default_price": "50000000.00",
+    "created_at": "2021-10-18T22:50:41.839Z",
+    "updated_at": "2021-10-18T22:50:41.839Z"
+  }
+]
+
 const productData = {
   "id": 59559,
   "campus": "hr-rpp",
@@ -145,84 +203,6 @@ const styleData = {
   ]
 }
 
-// get /reviews/productId
-const reviewData = {
-  "product": "59559",
-  "page": 0,
-  "count": 5,
-  "results": [
-    {
-      "review_id": 1095059,
-      "rating": 4,
-      "summary": "Really great",
-      "recommend": true,
-      "response": null,
-      "body": "I love how this product fits and smells and tastes. Yummy!",
-      "date": "2021-11-18T00:00:00.000Z",
-      "reviewer_name": "Nosenose",
-      "helpfulness": 3,
-      "photos": []
-    },
-    {
-      "review_id": 1095060,
-      "rating": 2,
-      "summary": "They were fine",
-      "recommend": false,
-      "response": null,
-      "body": "The product was ok but a little narrow and small. Would buy a size smaller.",
-      "date": "2021-11-18T00:00:00.000Z",
-      "reviewer_name": "footi",
-      "helpfulness": 1,
-      "photos": []
-    },
-    {
-      "review_id": 1095133,
-      "rating": 4,
-      "summary": "Best product ever",
-      "recommend": true,
-      "response": null,
-      "body": "I love how cute these are. Would recommend to all.!!",
-      "date": "2021-11-30T00:00:00.000Z",
-      "reviewer_name": "pupppps",
-      "helpfulness": 1,
-      "photos": []
-    },
-    {
-      "review_id": 1095136,
-      "rating": 5,
-      "summary": "Super cool",
-      "recommend": true,
-      "response": null,
-      "body": "This is the best. I really loved everything about it.",
-      "date": "2021-12-01T00:00:00.000Z",
-      "reviewer_name": "puppipower",
-      "helpfulness": 0,
-      "photos": [
-        {
-          "id": 2100577,
-          "url": "https://ucarecdn.com/73aad5f2-f6ef-4f5b-ba02-49ad2cd45105/"
-        },
-        {
-          "id": 2100578,
-          "url": "https://ucarecdn.com/d2c7381e-0922-4d0e-9a09-141be1e9053f/"
-        }
-      ]
-    },
-    {
-      "review_id": 1095134,
-      "rating": 5,
-      "summary": "It fell apart",
-      "recommend": false,
-      "response": null,
-      "body": "Why would you buy this? It was no bueno. Please refund.",
-      "date": "2021-11-30T00:00:00.000Z",
-      "reviewer_name": "saddy",
-      "helpfulness": 0,
-      "photos": []
-    }
-  ]
-}
-
 // get /cart
 const cartData = [
   {
@@ -240,8 +220,8 @@ const cartData = [
 ]
 
 module.exports = {
+  'productListData': productListData,
   'productData': productData,
   'styleData': styleData,
-  'reviewData': reviewData,
   'cartData': cartData
 }
