@@ -5,7 +5,7 @@ decide between Postgres, MySQL, or MariaDB
 ========== OUR NEEDS ==========
 
 PRODUCT DATA
-- product id is one to many (note id is a number here)
+- product is one to one
 - category is one to many
 
 STYLE DATA
@@ -13,6 +13,7 @@ STYLE DATA
 
 REVIEW DATA
 - product id is one to many
+- reviews are unique
 
 CART DATA
 - appears to be based on user instance, would need to be cleared before or after page refresh/load
@@ -27,6 +28,8 @@ Postgres: - WINNER
 - no multi-source replication
 - accepts array data type
 
+Choosing a SQL db because there
+
 MySQL:
 - server side scripts
 - horizontal partitioning, sharding
@@ -37,3 +40,5 @@ MariaDB:
 - horizontal partitioning and sharding
 
 */
+
+
