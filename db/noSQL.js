@@ -1,22 +1,3 @@
-/*
-
-decide between Cassandra or Mongo
-
-Cassandra:
-- stored in non-relational partitions
-- good for highly scalable cloud apps, multiple machines
-- table data structure
-- has its own query language'
-
-Mongo: - WINNER
-- stored in json doc
-- ideal for single view data app
-- limited scalability
-- object data structure
-- uses queries structured into JSON fragments
-
-*/
-
 const mongoose = require('mongoose');
 // mongoose.connect('')
 
@@ -34,13 +15,34 @@ let productSchema = new mongoose.Schema({
 });
 
 let styleSchema = new mongoose.Schema({
-  styles: {type: Array}
-})
+  product_id: {type: String, required: true},
+  style_id: {type: Number, required: true},
+  name: {type: String, required: true},
+  original_price: {type: String, required: true},
+  sale_price: {type: String, default: null},
+  'default?': {type: Boolean, default: false}
+});
 
 let reviewSchema = new mongoose.Schema({
-  reviews: {type: Array}
+  product_id: {type: String, required: true},
+  review_id: {type: Number, required: true},
+  rating: {type: Number, required: true},
+  summary: {type: String, required: true},
+  recommend: {type: Boolean, default: true},
+  response: {type: String, default: null},
+  body: {type: String, required: true},
+  date: {type: String, required: true},
+  reviewer_name: {type: String, required: true},
+  email: {type: String, required: true},
+  helpfulness: {type: Number, required: true}
+});
+
+let reviewPhotoSchema = new mongoose.Schema({
+  review_id: {type: Number, required: true},
+  id: {type: Number, required: true},
+  url: {type: String, required: true}
 })
 
 let cartSchema = new mongoose.Schema({
   cartData: {type: Array}
-})
+});
