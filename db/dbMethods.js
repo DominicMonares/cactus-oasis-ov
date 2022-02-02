@@ -20,8 +20,14 @@ let createProduct = async (product) => {
   await newProduct.save();
 }
 
-let fetchProduct = (product_id) => {
-
+let fetchProduct = async (product_id) => {
+  await Product.find({id: product_id})
+    .then(res => {
+      console.log('RES ', res);
+    })
+    .catch(err => {
+      console.log('ERR ', err);
+    })
 }
 
 /* ========== */
