@@ -1,4 +1,4 @@
-const {Product, Feature, Style, SKU, Review, ReviewPhoto, Cart} = require('./index.js');
+const {Product, Feature, Style, SKU, Review, Cart} = require('./index.js');
 
 let createProduct = async (product, callback) => {
   // not used client side
@@ -58,16 +58,6 @@ let fetchReview = async (review_id, callback) => {
 
 /* ========== */
 
-let createReviewPhoto = async (review_photo, callback) => {
-  // not used client side
-}
-
-let fetchReviewPhoto = async (review_photo, callback) => {
-  // not used client side
-}
-
-/* ========== */
-
 let addToCart = async (product, callback) => {
 
 }
@@ -83,8 +73,6 @@ module.exports = {
   'fetchStyle': fetchStyle,
   'createReview': createReview,
   'fetchReview': fetchReview,
-  'createReviewPhoto': createReviewPhoto,
-  'fetchReviewPhoto': fetchReviewPhoto,
   'addToCart': addToCart,
   'clearCart': clearCart
 }

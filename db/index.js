@@ -50,12 +50,6 @@ const reviewSchema = new mongoose.Schema({
   helpfulness: {type: Number, required: true}
 });
 
-const reviewPhotoSchema = new mongoose.Schema({
-  review_id: {type: Number, required: true},
-  id: {type: Number, required: true},
-  url: {type: String, required: true}
-})
-
 const cartSchema = new mongoose.Schema({
   user_session: {type: Number, required: true},
   product_id: {type: Number, required: true},
@@ -67,7 +61,6 @@ const Feature = mongoose.model('Feature', featureSchema);
 const Style = mongoose.model('Style', styleSchema);
 const SKU = mongoose.model('SKU', skuSchema);
 const Review = mongoose.model('Review', reviewSchema);
-const ReviewPhoto = mongoose.model('ReviewPhoto', reviewPhotoSchema);
 const Cart = mongoose.model('Cart', cartSchema);
 
 module.exports = {
@@ -76,6 +69,5 @@ module.exports = {
   'Style': Style,
   'SKU': SKU,
   'Review': Review,
-  'ReviewPhoto': ReviewPhoto,
   'Cart': Cart
 };

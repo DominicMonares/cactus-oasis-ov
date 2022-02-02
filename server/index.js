@@ -3,7 +3,6 @@ const {
   createProduct, fetchProduct,
   createStyle, fetchStyle,
   createReview, fetchReview,
-  createReviewPhoto, fetchReviewPhoto,
   addToCart, clearCart
 } = require('../db/dbMethods.js');
 
