@@ -15,6 +15,12 @@ const productSchema = new mongoose.Schema({
   features: {type: Array, required: true}
 });
 
+const featureSchema = new mongoose.Schema({
+  product_id: {type: Number, required: true},
+  feature: {type: String, required: true},
+  value: {type: String, required: true}
+});
+
 const styleSchema = new mongoose.Schema({
   product_id: {type: String, required: true},
   style_id: {type: Number, required: true},
@@ -22,6 +28,12 @@ const styleSchema = new mongoose.Schema({
   original_price: {type: String, required: true},
   sale_price: {type: String, default: null},
   'default?': {type: Boolean, default: false}
+});
+
+const skuSchema = new mongoose.Schema({
+  style_id: {type: String, required: true},
+  size: {type: String, required: true},
+  quantity: {type: Number, required: true}
 });
 
 const reviewSchema = new mongoose.Schema({
@@ -45,18 +57,24 @@ const reviewPhotoSchema = new mongoose.Schema({
 })
 
 const cartSchema = new mongoose.Schema({
-  cartData: {type: Array}
+  user_session: {type: Number, required: true},
+  product_id: {type: Number, required: true},
+  active: {type: Number, default: 1}
 });
 
 const Product = mongoose.model('Product', productSchema);
+const Feature = mongoose.model('Feature', featureSchema);
 const Style = mongoose.model('Style', styleSchema);
+const SKU = mongoose.model('SKU', skuSchema);
 const Review = mongoose.model('Review', reviewSchema);
 const ReviewPhoto = mongoose.model('ReviewPhoto', reviewPhotoSchema);
 const Cart = mongoose.model('Cart', cartSchema);
 
 module.exports = {
   'Product': Product,
+  'Feature': Feature,
   'Style': Style,
+  'SKU': SKU,
   'Review': Review,
   'ReviewPhoto': ReviewPhoto,
   'Cart': Cart

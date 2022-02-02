@@ -1,4 +1,4 @@
-const {Product, Style, Review, ReviewPhoto, Cart} = require('./index.js');
+const {Product, Feature, Style, SKU, Review, ReviewPhoto, Cart} = require('./index.js');
 
 let createProduct = async (product, callback) => {
   // not used client side
