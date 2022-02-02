@@ -1,7 +1,7 @@
 const {Product, Style, Review, ReviewPhoto, Cart} = require('./index.js');
 
 let createProduct = (product) => {
-
+  // not used client side
 }
 
 let fetchProduct = (product_id) => {
@@ -11,7 +11,7 @@ let fetchProduct = (product_id) => {
 /* ========== */
 
 let createStlye = (style) => {
-
+  // not used client side
 }
 
 let fetchStyle = (style_id) => {
@@ -21,7 +21,7 @@ let fetchStyle = (style_id) => {
 /* ========== */
 
 let createReview = (review) => {
-
+  // not used client side
 }
 
 let fetchReview = (review_id) => {
@@ -31,11 +31,11 @@ let fetchReview = (review_id) => {
 /* ========== */
 
 let createReviewPhoto = (review_photo) => {
-
+  // not used client side
 }
 
 let fetchReviewPhoto = (review_photo) => {
-
+  // not used client side
 }
 
 /* ========== */
