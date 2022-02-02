@@ -32,7 +32,7 @@ let fetchProduct = async (product_id) => {
 
 /* ========== */
 
-let createStlye = (style) => {
+let createStyle = (style) => {
   // not used client side
 }
 
@@ -70,8 +70,15 @@ let clearCart = (product) => {
 
 }
 
-// fetch product data
-// fetch product style data
-// fetch product review data
-// fetch cart data
-// add product to cart
+module.exports = {
+  'createProduct': createProduct,
+  'fetchProduct': fetchProduct,
+  'createStyle': createStyle,
+  'fetchStyle': fetchStyle,
+  'createReview': createReview,
+  'fetchReview': fetchReview,
+  'createReviewPhoto': createReviewPhoto,
+  'fetchReviewPhoto': fetchReviewPhoto,
+  'addToCart': addToCart,
+  'clearCart': clearCart
+}
