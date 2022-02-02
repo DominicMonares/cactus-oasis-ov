@@ -21,7 +21,7 @@ app.post('/products', (req, res) => {
 })
 
 app.get('/products/:product_id', (req, res) => {
-  fetchProduct(1, (response, err) => {
+  fetchProduct(req.params.product_id, (response, err) => {
     if (err) {
       res.sendStatus(500);
     } else {

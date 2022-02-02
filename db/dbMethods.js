@@ -1,72 +1,78 @@
 const {Product, Style, Review, ReviewPhoto, Cart} = require('./index.js');
 
-let createProduct = async (product) => {
+let createProduct = async (product, callback) => {
   // not used client side
   let newProduct = new Product({
-    id: 1,
+    id: 2,
     campus: 'hr-rpp',
-    name: '2001 Honda Civic',
-    slogan: 'Yoda\'s whip.',
-    description: 'Yoda has committed horrible crimes using this vehicle.',
-    category: 'Sweet Automobiles',
-    default_price: '1200.00',
-    updated_at: '2021-10-18T22:50:41.839Z',
-    created_at: '2021-10-18T22:50:41.839Z',
+    name: 'Sweet Battle Axe',
+    slogan: 'It do be shiny tho.',
+    description: 'Don\'t do anything I wouldn\'t do with that battle axe now, ya hear?',
+    category: 'Melee Combat Weapons',
+    default_price: '600.00',
+    updated_at: '2021-11-18T22:50:41.839Z',
+    created_at: '2021-11-18T22:50:41.839Z',
     features: [
-      {feature: 'Interior', value: 'Rad as hell'}
+      {feature: 'Stat Boosts', value: '+5 Stamina, +5 Strength, +5 JS Skill'}
     ]
   });
 
-  await newProduct.save();
-}
-
-let fetchProduct = async (product_id) => {
-  await Product.find({id: product_id})
+  await newProduct.save()
     .then(res => {
-      console.log('RES ', res);
+      callback(res, null);
     })
     .catch(err => {
-      console.log('ERR ', err);
+      callback(null, err);
+    });
+}
+
+let fetchProduct = async (product_id, callback) => {
+  await Product.find({id: product_id})
+    .then(res => {
+      callback(res);
     })
+    .catch(err => {
+      callback(err);
+    });
 }
 
 /* ========== */
 
-let createStyle = (style) => {
+let createStyle = async (style, callback) => {
   // not used client side
 }
 
-let fetchStyle = (style_id) => {
-
-}
-
-/* ========== */
-
-let createReview = (review) => {
-  // not used client side
-}
-
-let fetchReview = (review_id) => {
+let fetchStyle = async (style_id, callback) => {
 
 }
 
 /* ========== */
 
-let createReviewPhoto = (review_photo) => {
+let createReview = async (review, callback) => {
   // not used client side
 }
 
-let fetchReviewPhoto = (review_photo) => {
+let fetchReview = async (review_id, callback) => {
+
+}
+
+/* ========== */
+
+let createReviewPhoto = async (review_photo, callback) => {
+  // not used client side
+}
+
+let fetchReviewPhoto = async (review_photo, callback) => {
   // not used client side
 }
 
 /* ========== */
 
-let addToCart = (product) => {
+let addToCart = async (product, callback) => {
 
 }
 
-let clearCart = (product) => {
+let clearCart = async (product, callback) => {
 
 }
 
