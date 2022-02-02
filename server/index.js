@@ -1,13 +1,33 @@
 const express = require('express');
+const {
+  createProduct, fetchProduct,
+  createStyle, fetchStyle,
+  createReview, fetchReview,
+  createReviewPhoto, fetchReviewPhoto,
+  addToCart, clearCart
+} = require('../db/dbMethods.js');
+
 const app = express();
 const port = 8080;
 
-app.get('/test', (req, res) => {
-  // call a db method,
+app.post('/products', (req, res) => {
+  createProduct(null, (response, err) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.sendStatus(201);
+    }
+  })
 })
 
 app.get('/products/:product_id', (req, res) => {
-  // fetch product data
+  fetchProduct(1, (response, err) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.send(response);
+    }
+  })
 });
 
 app.get('/products/:product_id/styles', (req, res) => {
