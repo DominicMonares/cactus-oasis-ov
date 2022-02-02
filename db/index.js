@@ -30,6 +30,12 @@ const styleSchema = new mongoose.Schema({
   'default?': {type: Boolean, default: false}
 });
 
+const photoSchema = new mongoose.Schema({
+  style_id: {type: String, required: true},
+  thumbnail_url: {type: String, required: true},
+  url: {type: String, required: true}
+});
+
 const skuSchema = new mongoose.Schema({
   style_id: {type: String, required: true},
   size: {type: String, required: true},
@@ -59,6 +65,7 @@ const cartSchema = new mongoose.Schema({
 const Product = mongoose.model('Product', productSchema);
 const Feature = mongoose.model('Feature', featureSchema);
 const Style = mongoose.model('Style', styleSchema);
+const Photo = mongoose.model('Photo', photoSchema);
 const SKU = mongoose.model('SKU', skuSchema);
 const Review = mongoose.model('Review', reviewSchema);
 const Cart = mongoose.model('Cart', cartSchema);
@@ -67,6 +74,7 @@ module.exports = {
   'Product': Product,
   'Feature': Feature,
   'Style': Style,
+  'Photo': Photo,
   'SKU': SKU,
   'Review': Review,
   'Cart': Cart
