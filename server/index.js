@@ -5,9 +5,15 @@ const {
   createReview, fetchReview,
   addToCart, clearCart
 } = require('../db/dbMethods.js');
+const {extractCart} = require('../etl/extract.js');
 
 const app = express();
 const port = 8080;
+
+app.get('/etl', (req, res) => {
+  extractCart();
+  res.end();
+})
 
 app.post('/products', (req, res) => {
   createProduct(null, (response, err) => {
