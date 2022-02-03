@@ -23,7 +23,7 @@ const productData = {
       "value": "Double Stitch"
     }
   ]
-}
+};
 
 // get to /products/productId/styles
 const styleData = {
@@ -143,7 +143,7 @@ const styleData = {
       }
     }
   ]
-}
+};
 
 // get /reviews/productId
 const reviewData = {
@@ -221,7 +221,7 @@ const reviewData = {
       "photos": []
     }
   ]
-}
+};
 
 // get /cart
 const cartData = [
@@ -237,7 +237,7 @@ const cartData = [
     "sku_id": 5,
     "count": 33
   }
-]
+];
 
 module.exports = {
   'productData': productData,

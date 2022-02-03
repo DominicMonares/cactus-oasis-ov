@@ -19,6 +19,7 @@
   "homepage": "https://github.com/rpp32-sdc-arid/cactus-oasis-ov#readme",
   "dependencies": {
     "express": "^4.17.2",
+    "mongoose": "^6.1.8",
     "underscore": "^1.13.2"
   },
   "devDependencies": {
