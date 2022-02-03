@@ -1,6 +1,6 @@
 const express = require('express');
 const {
-  createProduct, fetchProduct,
+  createProduct, fetchProduct, deleteProduct,
   createStyle, fetchStyle,
   createReview, fetchReview,
   addToCart, clearCart
@@ -13,7 +13,12 @@ const port = 8080;
 app.get('/etl', (req, res) => {
   extractCart();
   res.end();
-})
+});
+
+app.get('delete', (req, res) => {
+  deleteProduct();
+  res.end();
+});
 
 app.post('/products', (req, res) => {
   createProduct(null, (response, err) => {

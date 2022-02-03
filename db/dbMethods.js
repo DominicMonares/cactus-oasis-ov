@@ -1,6 +1,16 @@
 const {Product, Feature, Style, Photo, SKU, Review, Cart} = require('./index.js');
 
-let createProduct = async (product, callback) => {
+let deleteProduct = () => {
+  Product.deleteOne({id: 2})
+    .then(res => {
+      callback(res);
+    })
+    .catch(err => {
+      callback(err);
+    });
+}
+
+let createProduct = (product, callback) => {
   // not used client side
   let newProduct = new Product({
     id: 2,
@@ -17,7 +27,7 @@ let createProduct = async (product, callback) => {
     ]
   });
 
-  await newProduct.save()
+  newProduct.save()
     .then(res => {
       callback(res, null);
     })
@@ -26,8 +36,8 @@ let createProduct = async (product, callback) => {
     });
 }
 
-let fetchProduct = async (product_id, callback) => {
-  await Product.find({id: product_id})
+let fetchProduct = (product_id, callback) => {
+  Product.find({id: product_id})
     .then(res => {
       callback(res);
     })
@@ -38,37 +48,38 @@ let fetchProduct = async (product_id, callback) => {
 
 /* ========== */
 
-let createStyle = async (style, callback) => {
+let createStyle = (style, callback) => {
   // not used client side
 }
 
-let fetchStyle = async (style_id, callback) => {
+let fetchStyle = (style_id, callback) => {
 
 }
 
 /* ========== */
 
-let createReview = async (review, callback) => {
+let createReview = (review, callback) => {
   // not used client side
 }
 
-let fetchReview = async (review_id, callback) => {
+let fetchReview = (review_id, callback) => {
 
 }
 
 /* ========== */
 
-let addToCart = async (product, callback) => {
+let addToCart = (product, callback) => {
 
 }
 
-let clearCart = async (product, callback) => {
+let clearCart = (product, callback) => {
 
 }
 
 module.exports = {
   'createProduct': createProduct,
   'fetchProduct': fetchProduct,
+  'deleteProduct': deleteProduct,
   'createStyle': createStyle,
   'fetchStyle': fetchStyle,
   'createReview': createReview,
