@@ -16,28 +16,33 @@ app.get('/etl', (req, res) => {
 });
 
 app.get('delete', (req, res) => {
-  deleteProduct();
-  res.end();
+  deleteProduct()
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.sendStatus(500);
+    });
 });
 
 app.post('/products', (req, res) => {
-  createProduct(null, (response, err) => {
-    if (err) {
+  createProduct(null)
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
       res.sendStatus(500);
-    } else {
-      res.sendStatus(201);
-    }
-  })
+    });
 })
 
 app.get('/products/:product_id', (req, res) => {
-  fetchProduct(req.params.product_id, (response, err) => {
-    if (err) {
+  fetchProduct(req.params.product_id)
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
       res.sendStatus(500);
-    } else {
-      res.send(response);
-    }
-  })
+    });
 });
 
 app.get('/products/:product_id/styles', (req, res) => {

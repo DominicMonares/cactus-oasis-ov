@@ -3,14 +3,14 @@ const {Product, Feature, Style, Photo, SKU, Review, Cart} = require('./index.js'
 let deleteProduct = () => {
   Product.deleteOne({id: 2})
     .then(res => {
-      callback(res);
+      return res;
     })
     .catch(err => {
-      callback(err);
+      throw err;
     });
 }
 
-let createProduct = (product, callback) => {
+let createProduct = (product) => {
   // not used client side
   let newProduct = new Product({
     id: 2,
@@ -29,50 +29,50 @@ let createProduct = (product, callback) => {
 
   newProduct.save()
     .then(res => {
-      callback(res, null);
+      return res;
     })
     .catch(err => {
-      callback(null, err);
+      throw err;
     });
 }
 
-let fetchProduct = (product_id, callback) => {
+let fetchProduct = (product_id) => {
   Product.find({id: product_id})
     .then(res => {
-      callback(res);
+      return res;
     })
     .catch(err => {
-      callback(err);
+      throw err;
     });
 }
 
 /* ========== */
 
-let createStyle = (style, callback) => {
+let createStyle = (style) => {
   // not used client side
 }
 
-let fetchStyle = (style_id, callback) => {
+let fetchStyle = (style_id) => {
 
 }
 
 /* ========== */
 
-let createReview = (review, callback) => {
+let createReview = (review) => {
   // not used client side
 }
 
-let fetchReview = (review_id, callback) => {
+let fetchReview = (review_id) => {
 
 }
 
 /* ========== */
 
-let addToCart = (product, callback) => {
+let addToCart = (product) => {
 
 }
 
-let clearCart = (product, callback) => {
+let clearCart = (product) => {
 
 }
 
