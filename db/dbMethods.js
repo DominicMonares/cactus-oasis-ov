@@ -22,6 +22,7 @@ let deleteProduct = (callback) => {
 
 let createFeature = (feature, callback) => {
   let newFeature = new Feature(feature);
+  console.log(`PRE-LOAD ${feature.id}`);
   newFeature.save(callback);
 }
 

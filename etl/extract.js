@@ -31,12 +31,12 @@ let extractFeatures = () => {
     .catch(err => {
       throw 'FEATURE EXTRACTION ERROR ', err;
     })
-    // .then(extracted => {
-    //   transformFeature(extracted);
-    // })
-    // .catch(err => {
-    //   throw 'FEATURE TRANSFORMATION ERROR ', err;
-    // })
+    .then(extracted => {
+      transformFeature(extracted);
+    })
+    .catch(err => {
+      throw 'FEATURE TRANSFORMATION ERROR ', err;
+    })
 }
 
 let extractStyles = () => {

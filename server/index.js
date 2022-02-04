@@ -27,8 +27,8 @@ app.get('/etl/product', (req, res) => {
     });
 });
 
-app.get('/etl/feature', (req, res) => {
-  extractFeature()
+app.get('/etl/features', (req, res) => {
+  extractFeatures()
     .then(data => {
       res.sendStatus(201);
     })
