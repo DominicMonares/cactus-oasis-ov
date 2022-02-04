@@ -52,7 +52,8 @@ const reviewSchema = new mongoose.Schema({
   date: {type: String, required: true},
   reviewer_name: {type: String, required: true},
   email: {type: String, required: true},
-  helpfulness: {type: Number, required: true}
+  helpfulness: {type: Number, required: true},
+  reported: {type: Boolean, default: false}
 });
 
 const cartSchema = new mongoose.Schema({
