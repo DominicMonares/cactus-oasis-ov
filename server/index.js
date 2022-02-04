@@ -5,15 +5,25 @@ const {
   createReview, fetchReview,
   addToCart, clearCart
 } = require('../db/dbMethods.js');
-const {extractCart} = require('../etl/extract.js');
 
 const app = express();
 const port = 8080;
 
-app.get('/etl', (req, res) => {
-  extractCart();
-  res.end();
+/* ========== ETL ROUTES ========== */
+const {extractCart} = require('../etl/extract.js');
+
+app.get('/etl/cart', (req, res) => {
+  extractCart()
+    .then(data => {
+      res.sendStatus(201);
+    })
+    .catch(err => {
+      res.sendStatus(500);
+    });
 });
+
+
+/* ========== MAIN ROUTES ========== */
 
 app.get('/products/delete', (req, res) => {
   deleteProduct((err, data) => {
