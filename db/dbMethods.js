@@ -1,5 +1,7 @@
 const {Product, Feature, Style, Photo, SKU, Review, Cart} = require('./index.js');
 
+/* ========== PRODUCTS ========== */
+
 let deleteProduct = (callback) => {
   // clears all products, only to be used for testing
   Product.deleteMany(callback);
@@ -8,6 +10,7 @@ let deleteProduct = (callback) => {
 let createProduct = (product, callback) => {
   // not used client side
   let newProduct = new Product(product);
+  console.log(`PRE-LOAD ${product.id}`)
   newProduct.save(callback);
 }
 
@@ -15,27 +18,65 @@ let fetchProduct = (product_id, callback) => {
   Product.find({id: product_id}, callback);
 }
 
-/* ========== */
+/* ========== FEATURES ========== */
+
+let createFeature = (feature, callback) => {
+  let newFeature = new Feature(feature);
+  newFeature.save(callback);
+}
+
+let fetchFeatures = (product, callback) => {
+  Feature.find({product_id: product, callback})
+}
+
+/* ========== STYLES ========== */
 
 let createStyle = (style, callback) => {
+  let newStyle = new Style(style);
+  newStyle.save(callback);
+}
+
+let fetchStyle = (product, callback) => {
+  Style.find({product_id: product}, callback);
+}
+
+/* ========== PHOTOS ========== */
+
+let createPhoto = (photo, callback) => {
   // not used client side
+  let newPhoto = new Photo(photo);
+  newPhoto.save(callback);
 }
 
-let fetchStyle = (style_id, callback) => {
-
+let fetchPhotos = (style, callback) => {
+  Photo.find({style_id: style}, callback);
 }
 
-/* ========== */
+/* ========== SKUS ========== */
+
+let createSKU = (sku, callback) => {
+  // not used client side
+  let newSKU = new SKU(sku);
+  newSKU.save(callback);
+}
+
+let fetchSKUs = (style, callback) => {
+  SKU.find({style_id: style}, callback);
+}
+
+/* ========== REVIEWS ========== */
 
 let createReview = (review, callback) => {
   // not used client side
+  let newReview = new Review(review);
+  newReview.save(callback);
 }
 
-let fetchReview = (review_id, callback) => {
-
+let fetchReviews = (product, callback) => {
+  Review.find({product_id: product}, callback);
 }
 
-/* ========== */
+/* ========== CART ========== */
 
 let addToCart = (cartItem, callback) => {
   let newCart = new Cart(cartItem);
