@@ -64,7 +64,14 @@ app.get('/reviews/:product_id/:sort/:page/:count', (req, res) => {
 });
 
 app.get('/cart', (req, res) => {
-  // fetch cart data
+  // 3232 will be used for new cart sessions
+  fetchCart(1111, (err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.send(data);
+    }
+  })
 });
 
 app.post('/cart', (req, res) => {

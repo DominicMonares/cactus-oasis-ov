@@ -6,13 +6,17 @@ let extractCart = () => {
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
-      console.log('DATAAAA ', data.slice(0, 20));
-      // transform
       return data;
     })
     .catch(err => {
-      throw err;
-    });
+      throw 'CART EXTRACTION ERROR ', err;
+    })
+    .then(extracted => {
+      transformCart(extracted);
+    })
+    .catch(err => {
+      throw 'CART TRANSFORMATION ERROR ', err;
+    })
 }
 
 module.exports = {
