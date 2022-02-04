@@ -42,9 +42,8 @@ const skuSchema = new mongoose.Schema({
 });
 
 const reviewSchema = new mongoose.Schema({
-  id: {type: Number, required: true, unique: true},
+  review_id: {type: Number, required: true, unique: true},
   product_id: {type: Number, required: true},
-  review_id: {type: Number, required: true},
   rating: {type: Number, required: true},
   summary: {type: String, required: true},
   recommend: {type: Boolean, default: true},
