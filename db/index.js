@@ -4,15 +4,11 @@ mongoose.connect('mongodb://localhost:27017/SDC');
 
 const productSchema = new mongoose.Schema({
   id: {type: Number, required: true, unique: true},
-  campus: {type: String, default: 'hr-rpp'},
   name: {type: String, required: true},
   slogan: {type: String, required: true},
   description: {type: String, required: true},
   category: {type: String, required: true},
-  default_price: {type: String, required: true},
-  created_at: {type: String, required: true},
-  updated_at: {type: String, required: true},
-  features: {type: Array, required: true}
+  default_price: {type: String, required: true}
 });
 
 const featureSchema = new mongoose.Schema({
@@ -57,6 +53,7 @@ const reviewSchema = new mongoose.Schema({
 });
 
 const cartSchema = new mongoose.Schema({
+  id: {type: Number, required: true},
   user_session: {type: Number, required: true},
   product_id: {type: Number, required: true},
   active: {type: Number, default: 1}

@@ -9,17 +9,11 @@ let createProduct = (product, callback) => {
   // not used client side
   let newProduct = new Product({
     id: 4,
-    campus: 'hr-rpp',
     name: 'Sweet Battle Axe',
     slogan: 'It do be shiny tho.',
     description: 'Don\'t do anything I wouldn\'t do with that battle axe now, ya hear?',
     category: 'Melee Combat Weapons',
-    default_price: '600.00',
-    updated_at: '2021-11-18T22:50:41.839Z',
-    created_at: '2021-11-18T22:50:41.839Z',
-    features: [
-      {feature: 'Stat Boosts', value: '+5 Stamina, +5 Strength, +5 JS Skill'}
-    ]
+    default_price: '600.00'
   });
 
   newProduct.save(callback);
