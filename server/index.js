@@ -15,34 +15,34 @@ app.get('/etl', (req, res) => {
   res.end();
 });
 
-app.get('delete', (req, res) => {
-  deleteProduct()
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
+app.get('/products/delete', (req, res) => {
+  deleteProduct((err, data) => {
+    if (err) {
       res.sendStatus(500);
-    });
+    } else {
+      res.send(data);
+    }
+  })
 });
 
 app.post('/products', (req, res) => {
-  createProduct(null)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
+  createProduct(null, (err, data) => {
+    if (err) {
       res.sendStatus(500);
-    });
+    } else {
+      res.send(data);
+    }
+  });
 })
 
 app.get('/products/:product_id', (req, res) => {
-  fetchProduct(req.params.product_id)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
+  fetchProduct(req.params.product_id, (err, data) => {
+    if (err) {
       res.sendStatus(500);
-    });
+    } else {
+      res.send(data);
+    }
+  });
 });
 
 app.get('/products/:product_id/styles', (req, res) => {

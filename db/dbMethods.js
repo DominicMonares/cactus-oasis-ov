@@ -1,19 +1,14 @@
 const {Product, Feature, Style, Photo, SKU, Review, Cart} = require('./index.js');
 
-let deleteProduct = () => {
-  Product.deleteOne({id: 2})
-    .then(res => {
-      return res;
-    })
-    .catch(err => {
-      throw err;
-    });
+let deleteProduct = (callback) => {
+  // clears all products, only to be used for testing
+  Product.deleteMany(callback);
 }
 
-let createProduct = (product) => {
+let createProduct = (product, callback) => {
   // not used client side
   let newProduct = new Product({
-    id: 2,
+    id: 4,
     campus: 'hr-rpp',
     name: 'Sweet Battle Axe',
     slogan: 'It do be shiny tho.',
@@ -27,52 +22,40 @@ let createProduct = (product) => {
     ]
   });
 
-  newProduct.save()
-    .then(res => {
-      return res;
-    })
-    .catch(err => {
-      throw err;
-    });
+  newProduct.save(callback);
 }
 
-let fetchProduct = (product_id) => {
-  Product.find({id: product_id})
-    .then(res => {
-      return res;
-    })
-    .catch(err => {
-      throw err;
-    });
+let fetchProduct = (product_id, callback) => {
+  Product.find({id: product_id}, callback);
 }
 
 /* ========== */
 
-let createStyle = (style) => {
+let createStyle = (style, callback) => {
   // not used client side
 }
 
-let fetchStyle = (style_id) => {
+let fetchStyle = (style_id, callback) => {
 
 }
 
 /* ========== */
 
-let createReview = (review) => {
+let createReview = (review, callback) => {
   // not used client side
 }
 
-let fetchReview = (review_id) => {
+let fetchReview = (review_id, callback) => {
 
 }
 
 /* ========== */
 
-let addToCart = (product) => {
+let addToCart = (product, callback) => {
 
 }
 
-let clearCart = (product) => {
+let clearCart = (product, callback) => {
 
 }
 
