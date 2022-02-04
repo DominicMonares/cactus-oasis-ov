@@ -1,7 +1,10 @@
 const express = require('express');
 const {
   createProduct, fetchProduct, deleteProduct,
+  createFeature, fetchFeatures,
   createStyle, fetchStyle,
+  createPhoto, fetchPhotos,
+  createSKU, fetchSKUs,
   createReview, fetchReview,
   addToCart, fetchCart, removeFromCart
 } = require('../db/dbMethods.js');
@@ -74,7 +77,9 @@ app.get('/products/:product_id', (req, res) => {
   });
 });
 
-app.get()'
+app.get('/features/:product_id', (req, res) => {
+
+});
 
 app.get('/products/:product_id/styles', (req, res) => {
   // fetch product style data

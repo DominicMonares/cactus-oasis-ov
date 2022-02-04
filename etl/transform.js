@@ -1,6 +1,9 @@
 const {
   createProduct, fetchProduct, deleteProduct,
+  createFeature, fetchFeatures,
   createStyle, fetchStyle,
+  createPhoto, fetchPhotos,
+  createSKU, fetchSKUs,
   createReview, fetchReview,
   addToCart, fetchCart, removeFromCart
 } = require('../db/dbMethods.js');
@@ -24,6 +27,14 @@ let transformProduct = (originalProduct) => {
         console.log(`Product ${newProduct.id} has been successfully saved!`);
       }
     });
+  })
+}
+
+let transformFeature = (originalFeature) => {
+  originalFeature.forEach(feature => {
+    let newFeature = {
+
+    }
   })
 }
 
