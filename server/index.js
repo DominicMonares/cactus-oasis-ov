@@ -10,10 +10,20 @@ const app = express();
 const port = 8080;
 
 /* ========== ETL ROUTES ========== */
-const {extractCart, extractProduct} = require('../etl/extract.js');
+const {extractCart, extractProduct, extractFeature} = require('../etl/extract.js');
 
 app.get('/etl/product', (req, res) => {
   extractProduct()
+    .then(data => {
+      res.sendStatus(201);
+    })
+    .catch(err => {
+      res.sendStatus(500);
+    });
+});
+
+app.get('/etl/feature', (req, res) => {
+  extractFeature()
     .then(data => {
       res.sendStatus(201);
     })
@@ -63,6 +73,8 @@ app.get('/products/:product_id', (req, res) => {
     }
   });
 });
+
+app.get()'
 
 app.get('/products/:product_id/styles', (req, res) => {
   // fetch product style data
