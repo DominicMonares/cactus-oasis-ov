@@ -20,7 +20,7 @@ const featureSchema = new mongoose.Schema({
 
 const styleSchema = new mongoose.Schema({
   style_id: {type: Number, required: true, unique: true},
-  product_id: {type: String, required: true},
+  product_id: {type: Number, required: true},
   name: {type: String, required: true},
   sale_price: {type: String, default: null},
   original_price: {type: String, required: true},
