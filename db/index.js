@@ -19,12 +19,11 @@ const featureSchema = new mongoose.Schema({
 });
 
 const styleSchema = new mongoose.Schema({
-  id: {type: Number, required: true, unique: true},
+  style_id: {type: Number, required: true, unique: true},
   product_id: {type: String, required: true},
-  style_id: {type: Number, required: true},
   name: {type: String, required: true},
-  original_price: {type: String, required: true},
   sale_price: {type: String, default: null},
+  original_price: {type: String, required: true},
   'default?': {type: Boolean, default: false}
 });
 
