@@ -2,11 +2,6 @@ const {Product, Feature, Style, Photo, SKU, Review, Cart} = require('./index.js'
 
 /* ========== PRODUCTS ========== */
 
-let deleteProduct = (callback) => {
-  // clears all products, only to be used for testing
-  Product.deleteMany(callback);
-}
-
 let createProduct = (product, callback) => {
   // not used client side
   let newProduct = new Product(product);
@@ -16,6 +11,11 @@ let createProduct = (product, callback) => {
 
 let fetchProduct = (product_id, callback) => {
   Product.find({id: product_id}, callback);
+}
+
+let deleteProduct = (callback) => {
+  // clears all products, only to be used for testing
+  Product.deleteMany(callback);
 }
 
 /* ========== FEATURES ========== */
@@ -101,10 +101,16 @@ module.exports = {
   'createProduct': createProduct,
   'fetchProduct': fetchProduct,
   'deleteProduct': deleteProduct,
+  'createFeature': createFeature,
+  'fetchFeatures': fetchFeatures,
   'createStyle': createStyle,
   'fetchStyle': fetchStyle,
+  'createPhoto': createPhoto,
+  'fetchPhotos': fetchPhotos,
+  'createSKU': createSKU,
+  'fetchSKUs': fetchSKUs,
   'createReview': createReview,
-  'fetchReview': fetchReview,
+  'fetchReview': fetchReviews,
   'addToCart': addToCart,
   'fetchCart': fetchCart,
   'removeFromCart': removeFromCart
