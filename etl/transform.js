@@ -2,7 +2,7 @@ const {
   createProduct, fetchProduct, deleteProduct,
   createStyle, fetchStyle,
   createReview, fetchReview,
-  addToCart, clearCart
+  addToCart, fetchCart, removeFromCart
 } = require('../db/dbMethods.js');
 
 // send each obj to db as they're transformed

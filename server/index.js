@@ -3,7 +3,7 @@ const {
   createProduct, fetchProduct, deleteProduct,
   createStyle, fetchStyle,
   createReview, fetchReview,
-  addToCart, clearCart
+  addToCart, fetchCart, removeFromCart
 } = require('../db/dbMethods.js');
 
 const app = express();

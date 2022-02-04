@@ -51,12 +51,23 @@ let fetchReview = (review_id, callback) => {
 
 /* ========== */
 
-let addToCart = (product, callback) => {
-
+let addToCart = (cartItem, callback) => {
+  let newCart = new Cart(cartItem);
+  newCart.save(callback);
 }
 
-let clearCart = (product, callback) => {
+let fetchCart = (session, callback) => {
+  Cart.find({user_session: session}, callback);
+}
 
+let removeFromCart = (session, product, callback) => {
+  Cart.updateOne({
+    user_session: session,
+    product_id: product,
+    active: 1
+  }, {
+    active: 0
+  }, callback);
 }
 
 module.exports = {
@@ -68,5 +79,6 @@ module.exports = {
   'createReview': createReview,
   'fetchReview': fetchReview,
   'addToCart': addToCart,
-  'clearCart': clearCart
+  'fetchCart': fetchCart,
+  'removeFromCart': removeFromCart
 }
