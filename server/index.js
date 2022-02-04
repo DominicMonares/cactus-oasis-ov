@@ -10,7 +10,17 @@ const app = express();
 const port = 8080;
 
 /* ========== ETL ROUTES ========== */
-const {extractCart} = require('../etl/extract.js');
+const {extractCart, extractProduct} = require('../etl/extract.js');
+
+app.get('/etl/product', (req, res) => {
+  extractProduct()
+    .then(data => {
+      res.sendStatus(201);
+    })
+    .catch(err => {
+      res.sendStatus(500);
+    });
+});
 
 app.get('/etl/cart', (req, res) => {
   extractCart()
@@ -21,7 +31,6 @@ app.get('/etl/cart', (req, res) => {
       res.sendStatus(500);
     });
 });
-
 
 /* ========== MAIN ROUTES ========== */
 

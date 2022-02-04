@@ -7,15 +7,7 @@ let deleteProduct = (callback) => {
 
 let createProduct = (product, callback) => {
   // not used client side
-  let newProduct = new Product({
-    id: 4,
-    name: 'Sweet Battle Axe',
-    slogan: 'It do be shiny tho.',
-    description: 'Don\'t do anything I wouldn\'t do with that battle axe now, ya hear?',
-    category: 'Melee Combat Weapons',
-    default_price: '600.00'
-  });
-
+  let newProduct = new Product(product);
   newProduct.save(callback);
 }
 
