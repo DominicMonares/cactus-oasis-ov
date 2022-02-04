@@ -69,12 +69,12 @@ let extractPhotos = () => {
     .catch(err => {
       throw 'PHOTO EXTRACTION ERROR ', err;
     })
-    // .then(extracted => {
-    //   transformPhoto(extracted);
-    // })
-    // .catch(err => {
-    //   throw 'PHOTO TRANSFORMATION ERROR ', err;
-    // })
+    .then(extracted => {
+      transformPhoto(extracted);
+    })
+    .catch(err => {
+      throw 'PHOTO TRANSFORMATION ERROR ', err;
+    })
 }
 
 let extractSKUs = () => {
