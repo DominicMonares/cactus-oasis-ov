@@ -1,15 +1,8 @@
 const {
-  createProduct, fetchProduct, deleteProduct,
-  createFeature, fetchFeatures,
-  createStyle, fetchStyle,
-  createPhoto, fetchPhotos,
-  createSKU, fetchSKUs,
-  createReview, fetchReview,
-  addToCart, fetchCart, removeFromCart
+  createProduct, createFeature, createStyle, createPhoto, createSKU, createReview, addToCart
 } = require('../db/dbMethods.js');
 
 let transformProduct = (originalProduct) => {
-  // console.log('PRODUCT DATA ', originalProduct.slice(0, 20));
   originalProduct.forEach(product => {
     let newProduct = {
       id: Number(product.id),
@@ -163,6 +156,11 @@ let transformCart = (cart) => {
 }
 
 module.exports = {
-  'transformCart': transformCart,
-  'transformProduct': transformProduct
+  'transformProduct': transformProduct,
+  'transformFeature': transformFeature,
+  'transformStyle': transformStyle,
+  'transformPhoto': transformPhoto,
+  'transformSKU': transformSKU,
+  'transformReview': transformReview,
+  'transformCart': transformCart
 }
