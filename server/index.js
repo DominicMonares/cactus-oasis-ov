@@ -13,7 +13,9 @@ const app = express();
 const port = 8080;
 
 /* ========== ETL ROUTES ========== */
-const {extractCart, extractProduct, extractFeature} = require('../etl/extract.js');
+const {
+  extractProduct, extractFeatures, extractStyles, extractPhotos, extractSKUs, extractReviews, extractCart
+} = require('../etl/extract.js');
 
 app.get('/etl/product', (req, res) => {
   extractProduct()
@@ -34,6 +36,46 @@ app.get('/etl/feature', (req, res) => {
       res.sendStatus(500);
     });
 });
+
+app.get('/etl/styles', (req, res) => {
+  extractStyles()
+    .then(data => {
+      res.sendStatus(201);
+    })
+    .catch(err => {
+      res.sendStatus(500);
+    });
+})
+
+app.get('/etl/photos', (req, res) => {
+  extractPhotos()
+    .then(data => {
+      res.sendStatus(201);
+    })
+    .catch(err => {
+      res.sendStatus(500);
+    });
+})
+
+app.get('/etl/skus', (req, res) => {
+  extractSKUs()
+    .then(data => {
+      res.sendStatus(201);
+    })
+    .catch(err => {
+      res.sendStatus(500);
+    });
+})
+
+app.get('/etl/reviews', (req, res) => {
+  extractReviews()
+    .then(data => {
+      res.sendStatus(201);
+    })
+    .catch(err => {
+      res.sendStatus(500);
+    });
+})
 
 app.get('/etl/cart', (req, res) => {
   extractCart()
@@ -82,7 +124,7 @@ app.get('/features/:product_id', (req, res) => {
 });
 
 app.get('/products/:product_id/styles', (req, res) => {
-  // fetch product style data
+
 });
 
 app.get('/reviews/:product_id/:sort/:page/:count', (req, res) => {
