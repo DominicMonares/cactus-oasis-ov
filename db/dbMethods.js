@@ -60,10 +60,10 @@ let fetchCart = (session, callback) => {
   Cart.find({user_session: session}, callback);
 }
 
-let removeFromCart = (session, product, callback) => {
+let removeFromCart = (session, sku_id, callback) => {
   Cart.updateOne({
     user_session: session,
-    product_id: product,
+    product_id: sku_id,
     active: 1
   }, {
     active: 0
