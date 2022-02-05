@@ -41,7 +41,7 @@ let extractFeatures = () => {
 }
 
 let extractStyles = () => {
-  const csvFilePath = `${__dirname}/origin/styles.csv`;
+  const csvFilePath = `${__dirname}/origin/split/styles/styles3.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
@@ -79,7 +79,7 @@ let extractPhotos = () => {
 }
 
 let extractSKUs = () => {
-  const csvFilePath = `${__dirname}/origin/skus.csv`;
+  const csvFilePath = `${__dirname}/origin/split/skus/skus5.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
@@ -98,7 +98,7 @@ let extractSKUs = () => {
 }
 
 let extractReviews = () => {
-  const csvFilePath = `${__dirname}/origin/split/reviews/reviews8.csv`;
+  const csvFilePath = `${__dirname}/origin/split/reviews/reviews9.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
