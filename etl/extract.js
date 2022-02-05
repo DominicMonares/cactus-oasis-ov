@@ -1,3 +1,4 @@
+const moment = require('moment');
 const csv = require('csvtojson');
 const {
   transformProduct, transformFeature, transformStyle, transformPhoto, transformSKU, transformReview, transformCart
@@ -101,18 +102,17 @@ let extractReviews = () => {
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
-      console.log('DATA ', data[0]);
-      return data[0];
+      return data;
     })
     .catch(err => {
       throw 'REVIEW EXTRACTION ERROR ', err;
     })
-    // .then(extracted => {
-    //   transformReview(extracted);
-    // })
-    // .catch(err => {
-    //   throw 'REVIEW TRANSFORMATION ERROR ', err;
-    // })
+    .then(extracted => {
+      transformReview(extracted);
+    })
+    .catch(err => {
+      throw 'REVIEW TRANSFORMATION ERROR ', err;
+    })
 }
 
 let extractCart = () => {
