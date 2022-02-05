@@ -61,15 +61,11 @@ router.get('/products/:product_id/styles', (req, res) => {
 
 /* ========== REVIEWS ========== */
 
-/* ========== CART ========== */
-
-
-
-
-
 router.get('/reviews/:product_id/:sort/:page/:count', (req, res) => {
   // fetch review data
 });
+
+/* ========== CART ========== */
 
 router.get('/cart', (req, res) => {
   // 3232 will be used for new cart sessions
@@ -86,3 +82,4 @@ router.post('/cart', (req, res) => {
   // add product to cart
 });
 
+module.exports = router;
