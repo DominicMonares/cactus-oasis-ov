@@ -59,7 +59,7 @@ let extractStyles = () => {
 }
 
 let extractPhotos = () => {
-  const csvFilePath = `${__dirname}/origin/split/photos/photos8.csv`;
+  const csvFilePath = `${__dirname}/origin/split/photos/photos9.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
@@ -97,7 +97,7 @@ let extractSKUs = () => {
 }
 
 let extractReviews = () => {
-  const csvFilePath = `${__dirname}/origin/reviews.csv`;
+  const csvFilePath = `${__dirname}/origin/split/reviews/reviews1.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
@@ -105,7 +105,7 @@ let extractReviews = () => {
       return data[0];
     })
     .catch(err => {
-      throw 'CART EXTRACTION ERROR ', err;
+      throw 'REVIEW EXTRACTION ERROR ', err;
     })
     // .then(extracted => {
     //   transformReview(extracted);
