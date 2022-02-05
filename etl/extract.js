@@ -98,7 +98,7 @@ let extractSKUs = () => {
 }
 
 let extractReviews = () => {
-  const csvFilePath = `${__dirname}/origin/split/reviews/reviews1.csv`;
+  const csvFilePath = `${__dirname}/origin/split/reviews/reviews2.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
