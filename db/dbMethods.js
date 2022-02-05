@@ -15,7 +15,7 @@ let fetchProduct = (product_id, callback) => {
 
 let deleteProduct = (callback) => {
   // clears all products, only to be used for testing
-  Product.deleteMany(callback);
+  Photo.deleteMany(callback);
 }
 
 /* ========== FEATURES ========== */
@@ -46,6 +46,7 @@ let fetchStyle = (product, callback) => {
 let createPhoto = (photo, callback) => {
   // not used client side
   let newPhoto = new Photo(photo);
+  console.log(`PRE-LOAD ${photo.id}`);
   newPhoto.save(callback);
 }
 

@@ -22,7 +22,7 @@ let extractProduct = () => {
 }
 
 let extractFeatures = () => {
-  const csvFilePath = `${__dirname}/origin/features.csv`;
+  const csvFilePath = `${__dirname}/origin/split/features/features4.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
@@ -59,7 +59,7 @@ let extractStyles = () => {
 }
 
 let extractPhotos = () => {
-  const csvFilePath = `${__dirname}/origin/photos.csv`;
+  const csvFilePath = `${__dirname}/origin/split/photos/photos8.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
