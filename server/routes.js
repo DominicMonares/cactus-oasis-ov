@@ -67,9 +67,12 @@ router.get('/reviews/:product_id/:sort/:page/:count', (req, res) => {
 
 /* ========== CART ========== */
 
+// how will we create a new user session and utilize only that session, per session?
+// will that be necessary?
+
 router.get('/cart', (req, res) => {
   // 3232 will be used for new cart sessions
-  fetchCart(1111, (err, data) => {
+  fetchCart(3232, (err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
@@ -78,8 +81,27 @@ router.get('/cart', (req, res) => {
   })
 });
 
-router.post('/cart', (req, res) => {
+router.post('/cart/:sku_id', (req, res) => {
   // add product to cart
+  let cartItem = {
+    id: '',
+    user_session: 3232,
+    product_id: req.params.sku_id,
+    active: 1
+  }
+
+  addToCart(cartItem, (err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.send(data);
+    }
+  })
+});
+
+router.put('/cart/remove', (req, res) => {
+  // on load? after connection termination? even necessary?
+  // remove product from cart
 });
 
 module.exports = router;
