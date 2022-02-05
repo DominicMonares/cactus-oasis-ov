@@ -12,7 +12,68 @@ const {
 const app = express();
 const port = 8080;
 
+/* ========== MAIN ROUTES ========== */
+
+app.get('/products/delete', (req, res) => {
+  deleteProduct((err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.send(data);
+    }
+  })
+});
+
+app.post('/products', (req, res) => {
+  createProduct(null, (err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.send(data);
+    }
+  });
+})
+
+app.get('/products/:product_id', (req, res) => {
+  fetchProduct(req.params.product_id, (err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.send(data);
+    }
+  });
+});
+
+app.get('/features/:product_id', (req, res) => {
+
+});
+
+app.get('/products/:product_id/styles', (req, res) => {
+
+});
+
+app.get('/reviews/:product_id/:sort/:page/:count', (req, res) => {
+  // fetch review data
+});
+
+app.get('/cart', (req, res) => {
+  // 3232 will be used for new cart sessions
+  fetchCart(1111, (err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.send(data);
+    }
+  })
+});
+
+app.post('/cart', (req, res) => {
+  // add product to cart
+});
+
+
 /* ========== ETL ROUTES ========== */
+
 const {
   extractProduct, extractFeatures, extractStyles, extractPhotos, extractSKUs, extractReviews, extractCart
 } = require('../etl/extract.js');
@@ -85,65 +146,6 @@ app.get('/etl/cart', (req, res) => {
     .catch(err => {
       res.sendStatus(500);
     });
-});
-
-/* ========== MAIN ROUTES ========== */
-
-app.get('/products/delete', (req, res) => {
-  deleteProduct((err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.send(data);
-    }
-  })
-});
-
-app.post('/products', (req, res) => {
-  createProduct(null, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.send(data);
-    }
-  });
-})
-
-app.get('/products/:product_id', (req, res) => {
-  fetchProduct(req.params.product_id, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.send(data);
-    }
-  });
-});
-
-app.get('/features/:product_id', (req, res) => {
-
-});
-
-app.get('/products/:product_id/styles', (req, res) => {
-
-});
-
-app.get('/reviews/:product_id/:sort/:page/:count', (req, res) => {
-  // fetch review data
-});
-
-app.get('/cart', (req, res) => {
-  // 3232 will be used for new cart sessions
-  fetchCart(1111, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.send(data);
-    }
-  })
-});
-
-app.post('/cart', (req, res) => {
-  // add product to cart
 });
 
 app.listen(port, () => {

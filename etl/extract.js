@@ -51,12 +51,12 @@ let extractStyles = () => {
     .catch(err => {
       throw 'STYLE EXTRACTION ERROR ', err;
     })
-    // .then(extracted => {
-    //   transformStyle(extracted);
-    // })
-    // .catch(err => {
-    //   throw 'STYLE TRANSFORMATION ERROR ', err;
-    // })
+    .then(extracted => {
+      transformStyle(extracted);
+    })
+    .catch(err => {
+      throw 'STYLE TRANSFORMATION ERROR ', err;
+    })
 }
 
 let extractPhotos = () => {
@@ -89,16 +89,16 @@ let extractSKUs = () => {
     .catch(err => {
       throw 'SKU EXTRACTION ERROR ', err;
     })
-    // .then(extracted => {
-    //   transformSKU(extracted);
-    // })
-    // .catch(err => {
-    //   throw 'SKU TRANSFORMATION ERROR ', err;
-    // })
+    .then(extracted => {
+      transformSKU(extracted);
+    })
+    .catch(err => {
+      throw 'SKU TRANSFORMATION ERROR ', err;
+    })
 }
 
 let extractReviews = () => {
-  const csvFilePath = `${__dirname}/origin/split/reviews/reviews2.csv`;
+  const csvFilePath = `${__dirname}/origin/split/reviews/reviews3.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {

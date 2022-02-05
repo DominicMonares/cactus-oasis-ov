@@ -34,6 +34,7 @@ let fetchFeatures = (product, callback) => {
 
 let createStyle = (style, callback) => {
   let newStyle = new Style(style);
+  console.log(`PRE-LOAD ${style.style_id}`)
   newStyle.save(callback);
 }
 
@@ -59,6 +60,7 @@ let fetchPhotos = (style, callback) => {
 let createSKU = (sku, callback) => {
   // not used client side
   let newSKU = new SKU(sku);
+  console.log(`PRE-LOAD ${sku.id}`)
   newSKU.save(callback);
 }
 
