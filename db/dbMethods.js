@@ -1,5 +1,10 @@
 const {Product, Feature, Style, Photo, SKU, Review, Cart} = require('./index.js');
 
+let clearModel = (callback) => {
+  // clears all data from hardcoded model, only to be used for testing
+  Review.deleteMany(callback);
+}
+
 /* ========== PRODUCTS ========== */
 
 let createProduct = (product, callback) => {
@@ -13,10 +18,6 @@ let fetchProduct = (product_id, callback) => {
   Product.find({id: product_id}, callback);
 }
 
-let deleteProduct = (callback) => {
-  // clears all products, only to be used for testing
-  Review.deleteMany(callback);
-}
 
 /* ========== FEATURES ========== */
 
@@ -103,9 +104,9 @@ let removeFromCart = (session, sku_id, callback) => {
 }
 
 module.exports = {
+  'clearModel': clearModel,
   'createProduct': createProduct,
   'fetchProduct': fetchProduct,
-  'deleteProduct': deleteProduct,
   'createFeature': createFeature,
   'fetchFeatures': fetchFeatures,
   'createStyle': createStyle,

@@ -1,6 +1,7 @@
 const express = require('express');
 const {
-  createProduct, fetchProduct, deleteProduct,
+  clearModel,
+  createProduct, fetchProduct,
   createFeature, fetchFeatures,
   createStyle, fetchStyle,
   createPhoto, fetchPhotos,
@@ -14,8 +15,8 @@ const port = 8080;
 
 /* ========== MAIN ROUTES ========== */
 
-app.get('/products/delete', (req, res) => {
-  deleteProduct((err, data) => {
+app.get('/delete', (req, res) => {
+  clearModel((err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
