@@ -2,7 +2,7 @@ const {Product, Feature, Style, Photo, SKU, Review, Cart} = require('./index.js'
 
 let clearModel = (callback) => {
   // clears all data from hardcoded model, only to be used for testing
-  Review.deleteMany(callback);
+  Product.deleteMany(callback);
 }
 
 /* ========== PRODUCTS ========== */

@@ -79,7 +79,7 @@ const {
   extractProduct, extractFeatures, extractStyles, extractPhotos, extractSKUs, extractReviews, extractCart
 } = require('../etl/extract.js');
 
-app.get('/etl/product', (req, res) => {
+app.get('/etl/products', (req, res) => {
   extractProduct()
     .then(data => {
       res.sendStatus(201);
