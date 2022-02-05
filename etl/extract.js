@@ -79,7 +79,7 @@ let extractPhotos = () => {
 }
 
 let extractSKUs = () => {
-  const csvFilePath = `${__dirname}/origin/split/skus/skus5.csv`;
+  const csvFilePath = `${__dirname}/origin/split/skus/skus17.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
