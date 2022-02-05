@@ -1,6 +1,7 @@
 const {
   createProduct, createFeature, createStyle, createPhoto, createSKU, createReview, addToCart
 } = require('../db/dbMethods.js');
+const {convertBool, convertDate} = require('./transformHelpers.js')
 
 let transformProduct = (originalProduct) => {
   originalProduct.forEach(product => {
@@ -115,14 +116,14 @@ let transformReview = (originalReview) => {
       product_id: Number(review.product_id),
       rating: Number(review.rating),
       summary: review.summary,
-      recommend: review.recommend,
+      recommend: convertBool(review.recommend),
       response: review.response,
       body: review.body,
       date: convertDate(Number(review.date)),
       reviewer_name: review.reviewer_name,
       email: review.reviewer_email,
       helpfulness: Number(review.helpfulness),
-      reported: review.reported
+      reported: convertBool(review.reported)
     }
 
     createReview(newReview, err => {
