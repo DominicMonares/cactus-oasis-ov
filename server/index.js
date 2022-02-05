@@ -1,32 +1,48 @@
 const express = require('express');
 const {
-  createProduct, fetchProduct,
+  createProduct, fetchProduct, deleteProduct,
   createStyle, fetchStyle,
   createReview, fetchReview,
   addToCart, clearCart
 } = require('../db/dbMethods.js');
+const {extractCart} = require('../etl/extract.js');
 
 const app = express();
 const port = 8080;
 
-app.post('/products', (req, res) => {
-  createProduct(null, (response, err) => {
+app.get('/etl', (req, res) => {
+  extractCart();
+  res.end();
+});
+
+app.get('/products/delete', (req, res) => {
+  deleteProduct((err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
-      res.sendStatus(201);
+      res.send(data);
     }
   })
+});
+
+app.post('/products', (req, res) => {
+  createProduct(null, (err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.send(data);
+    }
+  });
 })
 
 app.get('/products/:product_id', (req, res) => {
-  fetchProduct(req.params.product_id, (response, err) => {
+  fetchProduct(req.params.product_id, (err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
-      res.send(response);
+      res.send(data);
     }
-  })
+  });
 });
 
 app.get('/products/:product_id/styles', (req, res) => {
