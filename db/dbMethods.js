@@ -18,7 +18,7 @@ let fetchProduct = (product_id, callback) => {
 }
 
 let createProduct = (product, callback) => {
-  // not used client side
+  // NOT USED CLIENT SIDE
   let newProduct = new Product(product);
   console.log(`PRE-LOAD ${product.id}`)
   newProduct.save(callback);
@@ -51,7 +51,7 @@ let fetchStyle = (product, callback) => {
 /* ========== PHOTOS ========== */
 
 let createPhoto = (photo, callback) => {
-  // not used client side
+  // NOT USED CLIENT SIDE
   let newPhoto = new Photo(photo);
   console.log(`PRE-LOAD ${photo.id}`);
   newPhoto.save(callback);
@@ -64,7 +64,7 @@ let fetchPhotos = (style, callback) => {
 /* ========== SKUS ========== */
 
 let createSKU = (sku, callback) => {
-  // not used client side
+  // NOT USED CLIENT SIDE
   let newSKU = new SKU(sku);
   console.log(`PRE-LOAD ${sku.id}`)
   newSKU.save(callback);
@@ -77,7 +77,7 @@ let fetchSKUs = (style, callback) => {
 /* ========== REVIEWS ========== */
 
 let createReview = (review, callback) => {
-  // not used client side
+  // NOT USED CLIENT SIDE IN OVERVIEW WIDGET
   let newReview = new Review(review);
   console.log(`PRE-LOAD ${review.review_id}`);
   newReview.save(callback);

@@ -25,7 +25,7 @@ router.get('/delete', (req, res) => {
 
 /* ========== PRODUCTS ========== */
 
-router.get('/products/:page?/:count?', (req, res) => {
+router.get('/products', (req, res) => {
   let page, count;
   if (!req.query.page) {
     page = 1;
@@ -48,12 +48,23 @@ router.get('/products/:page?/:count?', (req, res) => {
   })
 })
 
-router.get('/products/:product_id', (req, res) => {
+router.get('/products/:product_id/', (req, res) => {
   fetchProduct(req.params.product_id, (err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
-      res.send(data);
+      // res.send(data);
+      data[0]['features'] = fetchFeatures(req.params.product_id, (err, fData) => {
+        if (err) {
+          res.sendStatus(500);
+        } else {
+          console.log('D2 ', fData);
+          return fData;
+        }
+      });
+
+      console.log('DATA ', data[0]['features']);
+      res.send(data[0]);
     }
   });
 });
