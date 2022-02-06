@@ -7,14 +7,14 @@ let clearModel = (callback) => {
 
 /* ========== PRODUCTS ========== */
 
-let fetchProduct = (product_id, callback) => {
-  Product.find({id: product_id}, callback);
-}
-
 let fetchAllProducts = (page, count, callback) => {
   let start = (page - 1) * count;
   let end = (page * count) + 1;
   Product.find({id: {'$gt': start, '$lt': end}}, callback);
+}
+
+let fetchProduct = (product_id, callback) => {
+  Product.find({id: product_id}, callback);
 }
 
 let createProduct = (product, callback) => {

@@ -3,7 +3,7 @@ const router = require('express').Router();
 
 const {
   clearModel,
-  fetchProduct, fetchAllProducts, createProduct,
+  fetchAllProducts, fetchProduct, createProduct,
   createFeature, fetchFeatures,
   createStyle, fetchStyle,
   createPhoto, fetchPhotos,
