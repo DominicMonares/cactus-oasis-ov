@@ -7,17 +7,22 @@ let clearModel = (callback) => {
 
 /* ========== PRODUCTS ========== */
 
+let fetchProduct = (product_id, callback) => {
+  Product.find({id: product_id}, callback);
+}
+
+let fetchAllProducts = (page, count, callback) => {
+  let start = (page - 1) * count;
+  let end = (page * count) + 1;
+  Product.find({id: {'$gt': start, '$lt': end}}, callback);
+}
+
 let createProduct = (product, callback) => {
   // not used client side
   let newProduct = new Product(product);
   console.log(`PRE-LOAD ${product.id}`)
   newProduct.save(callback);
 }
-
-let fetchProduct = (product_id, callback) => {
-  Product.find({id: product_id}, callback);
-}
-
 
 /* ========== FEATURES ========== */
 
@@ -105,8 +110,9 @@ let removeFromCart = (session, sku_id, callback) => {
 
 module.exports = {
   'clearModel': clearModel,
-  'createProduct': createProduct,
+  'fetchAllProducts': fetchAllProducts,
   'fetchProduct': fetchProduct,
+  'createProduct': createProduct,
   'createFeature': createFeature,
   'fetchFeatures': fetchFeatures,
   'createStyle': createStyle,

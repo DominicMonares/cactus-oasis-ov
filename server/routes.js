@@ -2,7 +2,8 @@ const express = require('express');
 const router = require('express').Router();
 
 const {
-  createProduct, fetchProduct, deleteProduct,
+  clearModel,
+  fetchProduct, fetchAllProducts, createProduct,
   createFeature, fetchFeatures,
   createStyle, fetchStyle,
   createPhoto, fetchPhotos,
@@ -12,6 +13,7 @@ const {
 } = require('../db/dbMethods.js');
 
 router.get('/delete', (req, res) => {
+  // COMMENT THIS ROUTE OUT BEFORE DEPLOYMENT
   clearModel((err, data) => {
     if (err) {
       res.sendStatus(500);
@@ -23,24 +25,27 @@ router.get('/delete', (req, res) => {
 
 /* ========== PRODUCTS ========== */
 
-router.get('/products/delete', (req, res) => {
-  deleteProduct((err, data) => {
+router.get('/products/:page?/:count?', (req, res) => {
+  let page, count;
+  if (!req.query.page) {
+    page = 1;
+  } else {
+    page = req.query.page;
+  }
+
+  if (!req.query.count) {
+    count = 5;
+  } else {
+    count = req.query.count;
+  }
+
+  fetchAllProducts(page, count, (err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
       res.send(data);
     }
   })
-});
-
-router.post('/products', (req, res) => {
-  createProduct(null, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.send(data);
-    }
-  });
 })
 
 router.get('/products/:product_id', (req, res) => {
@@ -52,6 +57,17 @@ router.get('/products/:product_id', (req, res) => {
     }
   });
 });
+
+router.post('/products', (req, res) => {
+  // COMMENT THIS ROUTE OUT BEFORE DEPLOYMENT
+  createProduct(null, (err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.send(data);
+    }
+  });
+})
 
 /* ========== FEATURES ========== */
 
