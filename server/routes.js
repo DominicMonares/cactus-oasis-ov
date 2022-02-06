@@ -11,6 +11,16 @@ const {
   addToCart, fetchCart, removeFromCart
 } = require('../db/dbMethods.js');
 
+router.get('/delete', (req, res) => {
+  clearModel((err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.send(data);
+    }
+  })
+});
+
 /* ========== PRODUCTS ========== */
 
 router.get('/products/delete', (req, res) => {

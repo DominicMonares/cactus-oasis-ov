@@ -5,7 +5,7 @@ const {
 } = require('./transform.js');
 
 let extractProduct = () => {
-  const csvFilePath = `${__dirname}/origin/product.csv`;
+  const csvFilePath = `${__dirname}/origin/split/products/product2.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
