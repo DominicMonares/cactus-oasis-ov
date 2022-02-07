@@ -111,6 +111,16 @@ router.get('/products/:product_id/styles', async (req, res) => {
 
 /* ========== PHOTOS ========== */
 
+router.get('/photos/:style_id', (req, res) => {
+  fetchPhotos(req.params.style_id, (err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      data.forEach(val => {delete val._id})
+      res.send(data);
+    }
+  })
+});
 
 /* ========== SKUS ========== */
 
