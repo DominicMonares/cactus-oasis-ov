@@ -68,15 +68,20 @@ router.get('/products/:product_id/', (req, res) => {
             }
           }
 
-          fullProduct.features = fData;
+          let features = [];
+          for (var fi = 0; fi < fData.length; fi ++) {
+            features.push({
+              feature: fData[fi]['feature'],
+              value: fData[fi]['value']
+            })
+          }
+
+          fullProduct['features'] = features;
           res.send(fullProduct);
         }
       })
     }
   })
-
-
-
 });
 
 router.post('/products', (req, res) => {
