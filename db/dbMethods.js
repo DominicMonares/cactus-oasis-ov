@@ -13,8 +13,9 @@ let fetchAllProducts = (page, count, callback) => {
   Product.find({id: {'$gt': start, '$lt': end}}, callback);
 }
 
-let fetchProduct = (product_id, callback) => {
-  Product.find({id: product_id}, callback);
+let fetchProduct = (product, callback) => {
+  Product.find({id: product}, callback);
+  Feature.find({product_id: product}, callback);
 }
 
 let createProduct = (product, callback) => {
@@ -44,7 +45,7 @@ let createStyle = (style, callback) => {
   newStyle.save(callback);
 }
 
-let fetchStyle = (product, callback) => {
+let fetchStyles = (product, callback) => {
   Style.find({product_id: product}, callback);
 }
 
@@ -116,7 +117,7 @@ module.exports = {
   'createFeature': createFeature,
   'fetchFeatures': fetchFeatures,
   'createStyle': createStyle,
-  'fetchStyle': fetchStyle,
+  'fetchStyles': fetchStyles,
   'createPhoto': createPhoto,
   'fetchPhotos': fetchPhotos,
   'createSKU': createSKU,

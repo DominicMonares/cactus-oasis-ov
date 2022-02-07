@@ -5,7 +5,7 @@ const {
   clearModel,
   fetchAllProducts, fetchProduct, createProduct,
   createFeature, fetchFeatures,
-  createStyle, fetchStyle,
+  createStyle, fetchStyles,
   createPhoto, fetchPhotos,
   createSKU, fetchSKUs,
   createReview, fetchReview,
@@ -50,36 +50,33 @@ router.get('/products', (req, res) => {
 
 router.get('/products/:product_id/', (req, res) => {
   let product_id = req.params.product_id;
+  let fullProduct;
   fetchProduct(product_id, (err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
-      fetchFeatures(product_id, (fErr, fData) => {
-        if (fErr) {
-          res.sendStatus(500);
-        } else {
-          let fullProduct = {};
-          for (var i in data[0]) {
-            if (i === 'id' || i === 'name' ||
-              i === 'slogan' || i === 'description' ||
-              i === 'category' || i === 'default_price'
-            ) {
-              fullProduct[i] = data[0][i];
-            }
+      if (!fullProduct) {
+        fullProduct = {};
+        for (var key in data[0]) {
+          if (key === 'id' || key === 'name' ||
+            key === 'slogan' || key === 'description' ||
+            key === 'category' || key === 'default_price'
+          ) {
+            fullProduct[key] = data[0][key];
           }
-
-          let features = [];
-          for (var fi = 0; fi < fData.length; fi ++) {
-            features.push({
-              feature: fData[fi]['feature'],
-              value: fData[fi]['value']
-            })
-          }
-
-          fullProduct['features'] = features;
-          res.send(fullProduct);
         }
-      })
+      } else {
+        let features = [];
+        for (var feat = 0; feat < data.length; feat++) {
+          features.push({
+            feature: data[feat]['feature'],
+            value: data[feat]['value']
+          })
+        }
+
+        fullProduct['features'] = features;
+        res.send(fullProduct);
+      }
     }
   })
 });
@@ -110,7 +107,35 @@ router.get('/features/:product_id', (req, res) => {
 /* ========== STYLES ========== */
 
 router.get('/products/:product_id/styles', (req, res) => {
+  let product_id = req.params.product_id;
+  fetchStyles(product_id, (err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
 
+      let styles = [];
+      let fullStyles = {
+       'product_id': product_id
+      }
+
+      data.forEach(val => {
+        let filteredStyle = {};
+        for (var i in val) {
+          if (i === 'style_id' || i === 'name' ||
+            i === 'original_price' || i === 'sale_price' ||
+            i === 'default?'
+          ) {
+            filteredStyle[i] = val[i];
+          }
+        }
+
+        styles.push(filteredStyle);
+      })
+
+      fullStyles.results = styles;
+      res.send(fullStyles);
+    }
+  })
 });
 
 /* ========== PHOTOS ========== */
