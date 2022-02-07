@@ -10,12 +10,36 @@ let clearModel = (callback) => {
 let fetchAllProducts = (page, count, callback) => {
   let start = (page - 1) * count;
   let end = (page * count) + 1;
-  Product.find({id: {'$gt': start, '$lt': end}}, callback);
+  Product.find({id: {'$gt': start, '$lt': end}}, callback)
+    .select({
+      id: -1,
+      name: -1,
+      slogan: -1,
+      description: -1,
+      category: -1,
+      default_price: -1
+    })
+    .lean();
 }
 
 let fetchProduct = (product, callback) => {
-  Product.find({id: product}, callback);
-  Feature.find({product_id: product}, callback);
+  Product.find({id: product}, callback)
+    .select({
+      id: -1,
+      name: -1,
+      slogan: -1,
+      description: -1,
+      category: -1,
+      default_price: -1
+    })
+    .lean();
+
+  Feature.find({ product_id: product }, callback)
+    .select({
+      feature: -1,
+      value: -1
+    })
+    .lean();
 }
 
 let createProduct = (product, callback) => {
@@ -39,7 +63,7 @@ let fetchFeatures = (product, callback) => {
       feature: -1,
       value: -1
     })
-    .lean()
+    .lean();
 }
 
 /* ========== STYLES ========== */

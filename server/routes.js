@@ -27,22 +27,14 @@ router.get('/delete', (req, res) => {
 
 router.get('/products', (req, res) => {
   let page, count;
-  if (!req.query.page) {
-    page = 1;
-  } else {
-    page = req.query.page;
-  }
-
-  if (!req.query.count) {
-    count = 5;
-  } else {
-    count = req.query.count;
-  }
+  !req.query.page ? page = 1 : page = req.query.page;
+  !req.query.count ? count = 5 : count = req.query.count;
 
   fetchAllProducts(page, count, (err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
+      data.forEach(val => {delete val._id});
       res.send(data);
     }
   })
@@ -56,25 +48,12 @@ router.get('/products/:product_id/', (req, res) => {
       res.sendStatus(500);
     } else {
       if (!fullProduct) {
-        fullProduct = {};
-        for (var key in data[0]) {
-          if (key === 'id' || key === 'name' ||
-            key === 'slogan' || key === 'description' ||
-            key === 'category' || key === 'default_price'
-          ) {
-            fullProduct[key] = data[0][key];
-          }
-        }
+        let product = data[0];
+        delete product._id;
+        fullProduct = product;
       } else {
-        let features = [];
-        for (var feat = 0; feat < data.length; feat++) {
-          features.push({
-            feature: data[feat]['feature'],
-            value: data[feat]['value']
-          })
-        }
-
-        fullProduct['features'] = features;
+        data.forEach(val => {delete val._id});
+        fullProduct.features = data;
         res.send(fullProduct);
       }
     }
@@ -99,6 +78,7 @@ router.get('/features/:product_id', (req, res) => {
     if (err) {
       res.sendStatus(500);
     } else {
+      data.forEach(val => {delete val._id})
       res.send(data);
     }
   })
