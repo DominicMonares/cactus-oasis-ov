@@ -49,24 +49,34 @@ router.get('/products', (req, res) => {
 })
 
 router.get('/products/:product_id/', (req, res) => {
-  fetchProduct(req.params.product_id, (err, data) => {
+  let product_id = req.params.product_id;
+  fetchProduct(product_id, (err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
-      // res.send(data);
-      data[0]['features'] = fetchFeatures(req.params.product_id, (err, fData) => {
-        if (err) {
+      fetchFeatures(product_id, (fErr, fData) => {
+        if (fErr) {
           res.sendStatus(500);
         } else {
-          console.log('D2 ', fData);
-          return fData;
-        }
-      });
+          let fullProduct = {};
+          for (var i in data[0]) {
+            if (i === 'id' || i === 'name' ||
+              i === 'slogan' || i === 'description' ||
+              i === 'category' || i === 'default_price'
+            ) {
+              fullProduct[i] = data[0][i];
+            }
+          }
 
-      console.log('DATA ', data[0]['features']);
-      res.send(data[0]);
+          fullProduct.features = fData;
+          res.send(fullProduct);
+        }
+      })
     }
-  });
+  })
+
+
+
 });
 
 router.post('/products', (req, res) => {
@@ -83,7 +93,13 @@ router.post('/products', (req, res) => {
 /* ========== FEATURES ========== */
 
 router.get('/features/:product_id', (req, res) => {
-
+  fetchFeatures(req.params.product_id, (err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.send(data);
+    }
+  })
 });
 
 /* ========== STYLES ========== */

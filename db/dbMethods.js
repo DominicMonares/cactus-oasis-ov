@@ -33,7 +33,7 @@ let createFeature = (feature, callback) => {
 }
 
 let fetchFeatures = (product, callback) => {
-  Feature.find({product_id: product, callback})
+  Feature.find({product_id: product}, callback);
 }
 
 /* ========== STYLES ========== */
