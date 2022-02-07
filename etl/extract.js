@@ -60,7 +60,7 @@ let extractStyles = () => {
 }
 
 let extractPhotos = () => {
-  const csvFilePath = `${__dirname}/origin/split/photos/photos1.csv`;
+  const csvFilePath = `${__dirname}/origin/split/photos/photos4.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {

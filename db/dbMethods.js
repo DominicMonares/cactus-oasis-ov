@@ -67,7 +67,7 @@ let createPhoto = (photo, callback) => {
 
 let fetchPhotos = (style, callback) => {
   Photo.find({style_id: style}, callback)
-    .select('thumbnail_url url')
+    .select('style_id thumbnail_url url')
     .lean();
 }
 
