@@ -5,7 +5,7 @@ const {
 } = require('./transform.js');
 
 let extractProduct = () => {
-  const csvFilePath = `${__dirname}/origin/split/products/product2.csv`;
+  const csvFilePath = `${__dirname}/origin/split/products/product1.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
@@ -23,7 +23,7 @@ let extractProduct = () => {
 }
 
 let extractFeatures = () => {
-  const csvFilePath = `${__dirname}/origin/split/features/features4.csv`;
+  const csvFilePath = `${__dirname}/origin/split/features/features1.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
@@ -41,7 +41,7 @@ let extractFeatures = () => {
 }
 
 let extractStyles = () => {
-  const csvFilePath = `${__dirname}/origin/split/styles/styles3.csv`;
+  const csvFilePath = `${__dirname}/origin/split/styles/styles1.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
@@ -60,7 +60,7 @@ let extractStyles = () => {
 }
 
 let extractPhotos = () => {
-  const csvFilePath = `${__dirname}/origin/split/photos/photos9.csv`;
+  const csvFilePath = `${__dirname}/origin/split/photos/photos1.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
@@ -79,7 +79,7 @@ let extractPhotos = () => {
 }
 
 let extractSKUs = () => {
-  const csvFilePath = `${__dirname}/origin/split/skus/skus17.csv`;
+  const csvFilePath = `${__dirname}/origin/split/skus/skus1.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
@@ -98,7 +98,7 @@ let extractSKUs = () => {
 }
 
 let extractReviews = () => {
-  const csvFilePath = `${__dirname}/origin/split/reviews/reviews9.csv`;
+  const csvFilePath = `${__dirname}/origin/split/reviews/reviews1.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
