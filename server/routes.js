@@ -104,6 +104,14 @@ router.get('/products/:product_id/styles', async (req, res) => {
     }
   });
 
+  await fetchPhotos(style_id, (err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      data.forEach(val => {delete val._id});
+    }
+  })
+
 
 
   res.send(fullStyle);
