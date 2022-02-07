@@ -40,22 +40,25 @@ router.get('/products', (req, res) => {
   })
 })
 
-router.get('/products/:product_id/', (req, res) => {
+router.get('/products/:product_id/', async (req, res) => {
   let product_id = req.params.product_id;
   let fullProduct;
-  fetchProduct(product_id, (err, data) => {
+  await fetchProduct(product_id, (err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
-      if (!fullProduct) {
-        let product = data[0];
-        delete product._id;
-        fullProduct = product;
-      } else {
-        data.forEach(val => {delete val._id});
-        fullProduct.features = data;
-        res.send(fullProduct);
-      }
+      delete data[0]['_id']
+      fullProduct = data[0];
+    }
+  })
+
+  await fetchFeatures(product_id, (err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      data.forEach(val => { delete val._id });
+      fullProduct.features = data;
+      res.send(fullProduct);
     }
   })
 });

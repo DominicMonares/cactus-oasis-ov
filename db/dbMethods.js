@@ -33,13 +33,6 @@ let fetchProduct = (product, callback) => {
       default_price: -1
     })
     .lean();
-
-  Feature.find({ product_id: product }, callback)
-    .select({
-      feature: -1,
-      value: -1
-    })
-    .lean();
 }
 
 let createProduct = (product, callback) => {
