@@ -50,7 +50,7 @@ router.get('/products/:product_id/', async (req, res) => {
       delete data[0]['_id']
       fullProduct = data[0];
     }
-  })
+  });
 
   await fetchFeatures(product_id, (err, data) => {
     if (err) {
@@ -60,7 +60,7 @@ router.get('/products/:product_id/', async (req, res) => {
       fullProduct.features = data;
       res.send(fullProduct);
     }
-  })
+  });
 });
 
 router.post('/products', (req, res) => {
@@ -89,39 +89,28 @@ router.get('/features/:product_id', (req, res) => {
 
 /* ========== STYLES ========== */
 
-router.get('/products/:product_id/styles', (req, res) => {
+router.get('/products/:product_id/styles', async (req, res) => {
   let product_id = req.params.product_id;
-  fetchStyles(product_id, (err, data) => {
+  let fullStyle = {
+    'product_id': product_id
+  };
+
+  await fetchStyles(product_id, (err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
-
-      let styles = [];
-      let fullStyles = {
-       'product_id': product_id
-      }
-
-      data.forEach(val => {
-        let filteredStyle = {};
-        for (var i in val) {
-          if (i === 'style_id' || i === 'name' ||
-            i === 'original_price' || i === 'sale_price' ||
-            i === 'default?'
-          ) {
-            filteredStyle[i] = val[i];
-          }
-        }
-
-        styles.push(filteredStyle);
-      })
-
-      fullStyles.results = styles;
-      res.send(fullStyles);
+      data.forEach(val => {delete val._id});
+      fullStyle.results = data;
     }
-  })
+  });
+
+
+
+  res.send(fullStyle);
 });
 
 /* ========== PHOTOS ========== */
+
 
 /* ========== SKUS ========== */
 

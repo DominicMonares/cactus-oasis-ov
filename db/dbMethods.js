@@ -11,27 +11,13 @@ let fetchAllProducts = (page, count, callback) => {
   let start = (page - 1) * count;
   let end = (page * count) + 1;
   Product.find({id: {'$gt': start, '$lt': end}}, callback)
-    .select({
-      id: -1,
-      name: -1,
-      slogan: -1,
-      description: -1,
-      category: -1,
-      default_price: -1
-    })
+    .select('id name slogan description category default_price')
     .lean();
 }
 
 let fetchProduct = (product, callback) => {
   Product.find({id: product}, callback)
-    .select({
-      id: -1,
-      name: -1,
-      slogan: -1,
-      description: -1,
-      category: -1,
-      default_price: -1
-    })
+    .select('id name slogan description category default_price')
     .lean();
 }
 
@@ -52,10 +38,7 @@ let createFeature = (feature, callback) => {
 
 let fetchFeatures = (product, callback) => {
   Feature.find({product_id: product}, callback)
-    .select({
-      feature: -1,
-      value: -1
-    })
+    .select('feature value')
     .lean();
 }
 
@@ -68,7 +51,9 @@ let createStyle = (style, callback) => {
 }
 
 let fetchStyles = (product, callback) => {
-  Style.find({product_id: product}, callback);
+  Style.find({product_id: product}, callback)
+    .select('style_id name original_price sale_price default?')
+    .lean();
 }
 
 /* ========== PHOTOS ========== */
@@ -81,7 +66,9 @@ let createPhoto = (photo, callback) => {
 }
 
 let fetchPhotos = (style, callback) => {
-  Photo.find({style_id: style}, callback);
+  Photo.find({style_id: style}, callback)
+    .select('thumbnail_url url')
+    .lean();
 }
 
 /* ========== SKUS ========== */
