@@ -116,7 +116,7 @@ let extractReviews = () => {
 }
 
 let extractReviewPhotos = () => {
-  const csvFilePath = `${__dirname}/origin/split/review_photos/reviews_photos1.csv`;
+  const csvFilePath = `${__dirname}/origin/split/review_photos/reviews_photos2.csv`;
   return csv()
     .fromFile(csvFilePath)
     .then(data => {
