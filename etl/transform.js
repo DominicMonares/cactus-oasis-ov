@@ -1,5 +1,5 @@
 const {
-  createProduct, createFeature, createStyle, createPhoto, createSKU, createReview, addToCart
+  createProduct, createFeature, createStyle, createPhoto, createSKU, createReview, createReviewPhoto, addToCart
 } = require('../db/dbMethods.js');
 const {convertBool, convertDate} = require('./transformHelpers.js')
 
@@ -136,6 +136,24 @@ let transformReview = (originalReview) => {
   })
 }
 
+let transformReviewPhoto = (originalPhoto) => {
+  originalPhoto.forEach(photo => {
+    let newPhoto = {
+      id: Number(photo.id),
+      review_id: Number(photo.review_id),
+      url: photo.url
+    }
+
+    createReviewPhoto(newPhoto, err => {
+      if (err) {
+        throw err;
+      } else {
+        console.log(`Review Photo ${newPhoto.id} has been successfully saved!`);
+      }
+    })
+  })
+}
+
 let transformCart = (cart) => {
   console.log('CART DATA ', cart.slice(0, 20));
   cart.forEach(cartItem => {
@@ -163,5 +181,6 @@ module.exports = {
   'transformPhoto': transformPhoto,
   'transformSKU': transformSKU,
   'transformReview': transformReview,
+  'transformReviewPhoto': transformReviewPhoto,
   'transformCart': transformCart
 }

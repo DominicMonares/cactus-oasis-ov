@@ -1,4 +1,4 @@
-const {Product, Feature, Style, Photo, SKU, Review, Cart} = require('./index.js');
+const {Product, Feature, Style, Photo, SKU, Review, ReviewPhoto, Cart} = require('./index.js');
 
 let clearModel = (callback) => {
   // clears all data from hardcoded model, only to be used for testing
@@ -7,17 +7,26 @@ let clearModel = (callback) => {
 
 /* ========== PRODUCTS ========== */
 
+let fetchAllProducts = (page, count, callback) => {
+  let start = (page - 1) * count;
+  let end = (page * count) + 1;
+  Product.find({id: {'$gt': start, '$lt': end}}, callback)
+    .select('id name slogan description category default_price')
+    .lean();
+}
+
+let fetchProduct = (product, callback) => {
+  Product.find({id: product}, callback)
+    .select('id name slogan description category default_price')
+    .lean();
+}
+
 let createProduct = (product, callback) => {
-  // not used client side
+  // NOT USED CLIENT SIDE
   let newProduct = new Product(product);
   console.log(`PRE-LOAD ${product.id}`)
   newProduct.save(callback);
 }
-
-let fetchProduct = (product_id, callback) => {
-  Product.find({id: product_id}, callback);
-}
-
 
 /* ========== FEATURES ========== */
 
@@ -28,7 +37,9 @@ let createFeature = (feature, callback) => {
 }
 
 let fetchFeatures = (product, callback) => {
-  Feature.find({product_id: product, callback})
+  Feature.find({product_id: product}, callback)
+    .select('feature value')
+    .lean();
 }
 
 /* ========== STYLES ========== */
@@ -39,47 +50,68 @@ let createStyle = (style, callback) => {
   newStyle.save(callback);
 }
 
-let fetchStyle = (product, callback) => {
-  Style.find({product_id: product}, callback);
+let fetchStyles = (product, callback) => {
+  Style.find({product_id: product}, callback)
+    .select('style_id name original_price sale_price default?')
+    .lean();
 }
 
 /* ========== PHOTOS ========== */
 
 let createPhoto = (photo, callback) => {
-  // not used client side
+  // NOT USED CLIENT SIDE
   let newPhoto = new Photo(photo);
   console.log(`PRE-LOAD ${photo.id}`);
   newPhoto.save(callback);
 }
 
 let fetchPhotos = (style, callback) => {
-  Photo.find({style_id: style}, callback);
+  Photo.find({style_id: style}, callback)
+    .select('thumbnail_url url')
+    .lean();
 }
 
 /* ========== SKUS ========== */
 
 let createSKU = (sku, callback) => {
-  // not used client side
+  // NOT USED CLIENT SIDE
   let newSKU = new SKU(sku);
   console.log(`PRE-LOAD ${sku.id}`)
   newSKU.save(callback);
 }
 
 let fetchSKUs = (style, callback) => {
-  SKU.find({style_id: style}, callback);
+  SKU.find({style_id: style}, callback)
+    .select('id quantity size')
+    .lean();
 }
 
 /* ========== REVIEWS ========== */
 
 let createReview = (review, callback) => {
-  // not used client side
+  // NOT USED CLIENT SIDE IN OVERVIEW WIDGET
   let newReview = new Review(review);
   console.log(`PRE-LOAD ${review.review_id}`);
   newReview.save(callback);
 }
 
 let fetchReviews = (product, callback) => {
-  Review.find({product_id: product}, callback);
+  Review.find({product_id: product}, callback)
+    .select('')
+}
+
+/* ========== REVIEW PHOTOS ========== */
+
+let createReviewPhoto = (reviewPhoto, callback) => {
+  // NOT USED CLIENT SIDE IN OVERVIEW WIDGET
+  let newReviewPhoto = new ReviewPhoto(reviewPhoto);
+  console.log(`PRE-LOAD ${reviewPhoto.id}`);
+  newReviewPhoto.save(callback);
+}
+
+let fetchReviewPhotos = (review, callback) => {
+  ReviewPhoto.find({review_id: review}, callback)
+    .select('')
 }
 
 /* ========== CART ========== */
@@ -105,18 +137,21 @@ let removeFromCart = (session, sku_id, callback) => {
 
 module.exports = {
   'clearModel': clearModel,
-  'createProduct': createProduct,
+  'fetchAllProducts': fetchAllProducts,
   'fetchProduct': fetchProduct,
+  'createProduct': createProduct,
   'createFeature': createFeature,
   'fetchFeatures': fetchFeatures,
   'createStyle': createStyle,
-  'fetchStyle': fetchStyle,
+  'fetchStyles': fetchStyles,
   'createPhoto': createPhoto,
   'fetchPhotos': fetchPhotos,
   'createSKU': createSKU,
   'fetchSKUs': fetchSKUs,
   'createReview': createReview,
   'fetchReview': fetchReviews,
+  'createReviewPhoto': createReviewPhoto,
+  'fetchReviewPhotos': fetchReviewPhotos,
   'addToCart': addToCart,
   'fetchCart': fetchCart,
   'removeFromCart': removeFromCart

@@ -3,7 +3,7 @@ const {
   clearModel,
   createProduct, fetchProduct,
   createFeature, fetchFeatures,
-  createStyle, fetchStyle,
+  createStyle, fetchStyles,
   createPhoto, fetchPhotos,
   createSKU, fetchSKUs,
   createReview, fetchReview,
@@ -76,7 +76,7 @@ app.post('/cart', (req, res) => {
 /* ========== ETL ROUTES ========== */
 
 const {
-  extractProduct, extractFeatures, extractStyles, extractPhotos, extractSKUs, extractReviews, extractCart
+  extractProduct, extractFeatures, extractStyles, extractPhotos, extractSKUs, extractReviews, extractReviewPhotos, extractCart
 } = require('../etl/extract.js');
 
 app.get('/etl/products', (req, res) => {
@@ -131,6 +131,16 @@ app.get('/etl/skus', (req, res) => {
 
 app.get('/etl/reviews', (req, res) => {
   extractReviews()
+    .then(data => {
+      res.sendStatus(201);
+    })
+    .catch(err => {
+      res.sendStatus(500);
+    });
+})
+
+app.get('/etl/review/photos', (req, res) => {
+  extractReviewPhotos()
     .then(data => {
       res.sendStatus(201);
     })
