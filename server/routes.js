@@ -8,7 +8,7 @@ const {
   createStyle, fetchStyles,
   createPhoto, fetchPhotos,
   createSKU, fetchSKUs,
-  createReview, fetchReview,
+  createReview, fetchReviews,
   addToCart, fetchCart, removeFromCart
 } = require('../db/dbMethods.js');
 
@@ -158,29 +158,19 @@ router.get('/skus/:style_id', (req, res) => {
 
 /* ========== REVIEWS ========== */
 
-router.get('/products', (req, res) => {
-  let page, count;
+router.get('/reviews/', (req, res) => {
+  let page, count, sort, product_id;
   !req.query.page ? page = 1 : page = req.query.page;
   !req.query.count ? count = 5 : count = req.query.count;
+  !req.query.sort ? sort = null : sort = req.query.sort;
+  !req.query.product_id ? product_id = null : product_id = req.query.product_id;
 
-  fetchAllProducts(page, count, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      data.forEach(val => {delete val._id});
-      res.send(data);
-    }
-  })
-})
-
-router.get('/reviews/', (req, res) => {
-  let product = req.query.product_id;
-  fetchReviews(product, (err, data) => {
+  fetchReviews(page, count, sort, product_id, (err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
       data.forEach(val => delete val._id);
-
+      res.send(data);
     }
   })
 });

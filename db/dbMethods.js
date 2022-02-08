@@ -95,9 +95,19 @@ let createReview = (review, callback) => {
   newReview.save(callback);
 }
 
-let fetchReviews = (product, callback) => {
-  Review.find({product_id: product}, callback)
-    .select('')
+let fetchReviews = (page, count, sort, product, callback) => {
+  let sortParams = 'review_id rating summary recommend response body date reviewer_name helpfulness';
+  let start = (page - 1) * count;
+  let end = (page * count) + 1;
+  if (!product) {
+    Review.find({ review_id: { '$gt': start, '$lt': end } }, callback)
+      .select(sortParams)
+      .lean();
+  } else {
+    Review.find({ product_id: product }, callback)
+      .select(sortParams)
+      .lean();
+  }
 }
 
 /* ========== REVIEW PHOTOS ========== */
@@ -149,7 +159,7 @@ module.exports = {
   'createSKU': createSKU,
   'fetchSKUs': fetchSKUs,
   'createReview': createReview,
-  'fetchReview': fetchReviews,
+  'fetchReviews': fetchReviews,
   'createReviewPhoto': createReviewPhoto,
   'fetchReviewPhotos': fetchReviewPhotos,
   'addToCart': addToCart,
