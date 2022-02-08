@@ -1,7 +1,7 @@
 const moment = require('moment');
 const csv = require('csvtojson');
 const {
-  transformProduct, transformFeature, transformStyle, transformPhoto, transformSKU, transformReview, transformCart
+  transformProduct, transformFeature, transformStyle, transformPhoto, transformSKU, transformReview, transformReviewPhoto, transformCart
 } = require('./transform.js');
 
 let extractProduct = () => {
@@ -115,6 +115,24 @@ let extractReviews = () => {
     })
 }
 
+let extractReviewPhotos = () => {
+  const csvFilePath = `${__dirname}/origin/split/review_photos/reviews_photos2.csv`;
+  return csv()
+    .fromFile(csvFilePath)
+    .then(data => {
+      return data;
+    })
+    .catch(err => {
+      throw 'REVIEW PHOTO EXTRACTION ERROR ', err;
+    })
+    .then(extracted => {
+      transformReviewPhoto(extracted);
+    })
+    .catch(err => {
+      throw 'REVIEW PHOTO TRANSFORMATION ERROR ', err;
+    })
+}
+
 let extractCart = () => {
   const csvFilePath = `${__dirname}/origin/cart.csv`;
   return csv()
@@ -140,5 +158,6 @@ module.exports = {
   'extractPhotos': extractPhotos,
   'extractSKUs': extractSKUs,
   'extractReviews': extractReviews,
+  'extractReviewPhotos': extractReviewPhotos,
   'extractCart': extractCart
 }

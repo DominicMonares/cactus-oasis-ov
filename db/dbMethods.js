@@ -1,8 +1,8 @@
-const {Product, Feature, Style, Photo, SKU, Review, Cart} = require('./index.js');
+const {Product, Feature, Style, Photo, SKU, Review, ReviewPhoto, Cart} = require('./index.js');
 
 let clearModel = (callback) => {
   // clears all data from hardcoded model, only to be used for testing
-  Product.deleteMany(callback);
+  ReviewPhoto.deleteMany(callback);
 }
 
 /* ========== PRODUCTS ========== */
@@ -96,7 +96,22 @@ let createReview = (review, callback) => {
 }
 
 let fetchReviews = (product, callback) => {
-  Review.find({product_id: product}, callback);
+  Review.find({product_id: product}, callback)
+    .select('')
+}
+
+/* ========== REVIEW PHOTOS ========== */
+
+let createReviewPhoto = (reviewPhoto, callback) => {
+  // NOT USED CLIENT SIDE IN OVERVIEW WIDGET
+  let newReviewPhoto = new ReviewPhoto(reviewPhoto);
+  console.log(`PRE-LOAD ${reviewPhoto.id}`);
+  newReviewPhoto.save(callback);
+}
+
+let fetchReviewPhotos = (review, callback) => {
+  ReviewPhoto.find({review_id: review}, callback)
+    .select('')
 }
 
 /* ========== CART ========== */
@@ -135,6 +150,8 @@ module.exports = {
   'fetchSKUs': fetchSKUs,
   'createReview': createReview,
   'fetchReview': fetchReviews,
+  'createReviewPhoto': createReviewPhoto,
+  'fetchReviewPhotos': fetchReviewPhotos,
   'addToCart': addToCart,
   'fetchCart': fetchCart,
   'removeFromCart': removeFromCart

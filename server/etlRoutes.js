@@ -2,7 +2,7 @@ const express = require('express');
 const etlRouter = require('express').Router();
 
 const {
-  extractProduct, extractFeatures, extractStyles, extractPhotos, extractSKUs, extractReviews, extractCart
+  extractProduct, extractFeatures, extractStyles, extractPhotos, extractSKUs, extractReviews, extractReviewPhotos, extractCart
 } = require('../etl/extract.js');
 
 etlRouter.get('/etl/product', (req, res) => {
@@ -57,6 +57,16 @@ etlRouter.get('/etl/skus', (req, res) => {
 
 etlRouter.get('/etl/reviews', (req, res) => {
   extractReviews()
+    .then(data => {
+      res.sendStatus(201);
+    })
+    .catch(err => {
+      res.sendStatus(500);
+    });
+})
+
+etlRouter.get('/etl/review/photos', (req, res) => {
+  extractReviewPhotos()
     .then(data => {
       res.sendStatus(201);
     })
