@@ -72,7 +72,7 @@ router.post('/products', (req, res) => {
       res.send(data);
     }
   });
-})
+});
 
 /* ========== FEATURES ========== */
 
@@ -99,22 +99,33 @@ router.get('/products/:product_id/styles', async (req, res) => {
     if (err) {
       res.sendStatus(500);
     } else {
-      data.forEach(val => {delete val._id});
-      fullStyle.results = data;
+      data.forEach(async (val, index) => {
+        delete val._id;
+        await fetchPhotos(val.style_id, (pErr, pData) => {
+          if (pErr) {
+            res.sendStatus(500);
+          } else {
+            pData.forEach(pVal => {delete pVal._id});
+            val.photos = pData;
+            if (index === data.length - 1) {
+              fullStyle.results = data;
+              // res.send(fullStyle);
+            }
+          }
+        })
+
+        await fetchSKUs(val.style_id, (sErr, sData) => {
+          if (sErr) {
+            res.sendStatus(500);
+          } else {
+            sData.forEach(sVal => {delete sVal._id});
+
+            res.send();
+          }
+        })
+      });
     }
   });
-
-  await fetchPhotos(style_id, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      data.forEach(val => {delete val._id});
-    }
-  })
-
-
-
-  res.send(fullStyle);
 });
 
 /* ========== PHOTOS ========== */
@@ -131,6 +142,17 @@ router.get('/photos/:style_id', (req, res) => {
 });
 
 /* ========== SKUS ========== */
+
+router.get('/skus/:style_id', (req, res) => {
+  fetchSKUs(req.params.style_id, (err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      data.forEach(val => {delete val._id})
+      res.send(data);
+    }
+  })
+});
 
 /* ========== REVIEWS ========== */
 
