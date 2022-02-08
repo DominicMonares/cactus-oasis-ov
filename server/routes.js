@@ -9,6 +9,7 @@ const {
   createPhoto, fetchPhotos,
   createSKU, fetchSKUs,
   createReview, fetchReviews,
+  createReviewPhoto, fetchReviewPhotos,
   addToCart, fetchCart, removeFromCart
 } = require('../db/dbMethods.js');
 
@@ -158,21 +159,42 @@ router.get('/skus/:style_id', (req, res) => {
 
 /* ========== REVIEWS ========== */
 
-router.get('/reviews/', (req, res) => {
+router.get('/reviews/', async (req, res) => {
   let page, count, sort, product_id;
   !req.query.page ? page = 1 : page = req.query.page;
   !req.query.count ? count = 5 : count = req.query.count;
   !req.query.sort ? sort = null : sort = req.query.sort;
   !req.query.product_id ? product_id = null : product_id = req.query.product_id;
 
-  fetchReviews(page, count, sort, product_id, (err, data) => {
+  let fullReview = {
+    'product': product_id.toString(),
+    'page': page,
+    'count': count
+  };
+
+  await fetchReviews(page, count, sort, product_id, (err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
-      data.forEach(val => delete val._id);
-      res.send(data);
+      data.forEach(async (val, index) => {
+        delete val._id;
+        await fetchReviewPhotos(val.review_id, (pErr, pData) => {
+          if (pErr) {
+            res.sendStatus(500);
+          } else {
+            pData.forEach((pVal, pIndex) => {
+              delete pVal._id
+              if (pIndex === pData.length - 1) {
+                val.photos = pData;
+                fullReview.results = data;
+                res.send(fullReview);
+              }
+            });
+          }
+        });
+      });
     }
-  })
+  });
 });
 
 /* ========== CART ========== */
