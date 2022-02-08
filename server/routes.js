@@ -158,8 +158,31 @@ router.get('/skus/:style_id', (req, res) => {
 
 /* ========== REVIEWS ========== */
 
-router.get('/reviews/:product_id/:sort/:page/:count', (req, res) => {
-  // fetch review data
+router.get('/products', (req, res) => {
+  let page, count;
+  !req.query.page ? page = 1 : page = req.query.page;
+  !req.query.count ? count = 5 : count = req.query.count;
+
+  fetchAllProducts(page, count, (err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      data.forEach(val => {delete val._id});
+      res.send(data);
+    }
+  })
+})
+
+router.get('/reviews/', (req, res) => {
+  let product = req.query.product_id;
+  fetchReviews(product, (err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      data.forEach(val => delete val._id);
+
+    }
+  })
 });
 
 /* ========== CART ========== */
