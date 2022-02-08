@@ -81,7 +81,9 @@ let createSKU = (sku, callback) => {
 }
 
 let fetchSKUs = (style, callback) => {
-  SKU.find({style_id: style}, callback);
+  SKU.find({style_id: style}, callback)
+    .select('id quantity size')
+    .lean();
 }
 
 /* ========== REVIEWS ========== */
