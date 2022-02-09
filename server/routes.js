@@ -176,7 +176,7 @@ router.get('/skus/:style_id', (req, res) => {
 
 router.get('/reviews/', (req, res) => {
   let page, count, product_id;
-  !req.query.page ? page = 1 : page = req.query.page;
+  !req.query.page ? page = 1 : page = Number(req.query.page);
   !req.query.count ? count = 5 : count = req.query.count;
   !req.query.product_id ? product_id = null : product_id = req.query.product_id.toString();
 

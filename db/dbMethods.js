@@ -107,6 +107,8 @@ let fetchReviews = (page, count, product, callback) => {
   } else {
     Review.find({ product_id: product }, callback)
       .select(sortParams)
+      .skip(start)
+      .limit(count)
       .lean();
   }
 }
