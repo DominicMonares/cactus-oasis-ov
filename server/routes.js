@@ -35,6 +35,10 @@ router.get('/products', (req, res) => {
     if (err) {
       res.sendStatus(500);
     } else {
+      if (data.length === 0) {
+        res.send('No Product Data Found');
+      }
+
       data.forEach(val => {delete val._id});
       res.send(data);
     }
@@ -49,11 +53,19 @@ router.get('/products/:product_id/', async (req, res) => {
     if (err) {
       res.sendStatus(500);
     } else {
+      if (data.length === 0) {
+        res.send('No Product Data Found');
+      }
+
       delete data[0]['_id'];
       getFeatures(product_id, (fErr, fData) => {
         if (fErr) {
           res.sendStatus(500);
         } else {
+          if (fData.length === 0) {
+            res.send('No Feature Data Found');
+          }
+
           data[0]['features'] = fData.map(feature => {
             delete feature._id;
             return feature;
@@ -104,6 +116,10 @@ router.get('/products/:product_id/styles', async (req, res) => {
     if (err) {
       res.sendStatus(500);
     } else {
+      if (data.length === 0) {
+        res.sendStatus('No Style Data Found');
+      }
+
       data.forEach((val, i) => {
         delete val._id;
         let style = val.style_id
@@ -120,6 +136,10 @@ router.get('/products/:product_id/styles', async (req, res) => {
           if (sErr) {
             res.sendStatus(500);
           } else {
+            if (sData.length === 0) {
+              res.send('No SKU Data Found');
+            }
+
             let fullSKUs = {};
             sData.forEach(sVal => {
               delete sVal._id;
@@ -190,6 +210,10 @@ router.get('/reviews/', (req, res) => {
     if (err) {
       res.sendStatus(500);
     } else {
+      if (data.length === 0) {
+        res.send('No Review Data Found');
+      }
+
       data.forEach((val, i) => {
         delete val._id;
         reviewHelper(val.review_id, (pErr, pData) => {
@@ -218,11 +242,8 @@ let reviewHelper = (review, callback) => {
 
 /* ========== CART ========== */
 
-// how will we create a new user session and utilize only that session, per session?
-// will that be necessary?
-
 router.get('/cart', (req, res) => {
-  // 3232 will be used for new cart sessions
+  // 3232 is the user session for this project
   fetchCart(3232, (err, data) => {
     if (err) {
       res.sendStatus(500);
@@ -233,7 +254,6 @@ router.get('/cart', (req, res) => {
 });
 
 router.post('/cart/:sku_id', (req, res) => {
-  // add product to cart
   let cartItem = {
     id: '',
     user_session: 3232,
@@ -248,11 +268,6 @@ router.post('/cart/:sku_id', (req, res) => {
       res.send(data);
     }
   })
-});
-
-router.put('/cart/remove', (req, res) => {
-  // on load? after connection termination? even necessary?
-  // remove product from cart
 });
 
 module.exports = router;

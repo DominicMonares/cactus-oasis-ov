@@ -128,7 +128,6 @@ let fetchReviewPhotos = (review, callback) => {
     .lean();
 }
 
-
 /* ========== CART ========== */
 
 let addToCart = (cartItem, callback) => {
