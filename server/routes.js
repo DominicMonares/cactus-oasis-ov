@@ -159,7 +159,7 @@ router.get('/skus/:style_id', (req, res) => {
 
 /* ========== REVIEWS ========== */
 
-router.get('/reviews/', async (req, res) => {
+router.get('/reviews/', (req, res) => {
   let page, count, sort, product_id;
   !req.query.page ? page = 1 : page = req.query.page;
   !req.query.count ? count = 5 : count = req.query.count;
@@ -172,30 +172,35 @@ router.get('/reviews/', async (req, res) => {
     'count': count
   };
 
-  await fetchReviews(page, count, sort, product_id, (err, data) => {
+  fetchReviews(page, count, sort, product_id, (err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
-      data.forEach(async (val, index) => {
+      data.forEach((val, i) => {
         delete val._id;
-        await fetchReviewPhotos(val.review_id, (pErr, pData) => {
+        reviewHelper(val.review_id, (pErr, pData) => {
           if (pErr) {
             res.sendStatus(500);
           } else {
-            pData.forEach((pVal, pIndex) => {
-              delete pVal._id
-              if (pIndex === pData.length - 1) {
-                val.photos = pData;
-                fullReview.results = data;
-                res.send(fullReview);
-              }
+            val.photos = pData.map(photo => {
+              delete photo._id;
+              return photo;
             });
+          }
+
+          if (i === data.length - 1) {
+            fullReview.results = data;
+            res.send(fullReview);
           }
         });
       });
     }
   });
 });
+
+let reviewHelper = (review, callback) => {
+  fetchReviewPhotos(review, callback);
+}
 
 /* ========== CART ========== */
 

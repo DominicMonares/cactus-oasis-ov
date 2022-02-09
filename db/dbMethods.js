@@ -99,6 +99,7 @@ let fetchReviews = (page, count, sort, product, callback) => {
   let sortParams = 'review_id rating summary recommend response body date reviewer_name helpfulness';
   let start = (page - 1) * count;
   let end = (page * count) + 1;
+
   if (!product) {
     Review.find({ review_id: { '$gt': start, '$lt': end } }, callback)
       .select(sortParams)
@@ -121,8 +122,10 @@ let createReviewPhoto = (reviewPhoto, callback) => {
 
 let fetchReviewPhotos = (review, callback) => {
   ReviewPhoto.find({review_id: review}, callback)
-    .select('')
+    .select('id url')
+    .lean();
 }
+
 
 /* ========== CART ========== */
 
