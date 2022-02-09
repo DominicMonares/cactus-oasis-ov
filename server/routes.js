@@ -44,25 +44,31 @@ router.get('/products', (req, res) => {
 router.get('/products/:product_id/', async (req, res) => {
   let product_id = req.params.product_id;
   let fullProduct;
-  await fetchProduct(product_id, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      delete data[0]['_id']
-      fullProduct = data[0];
-    }
-  });
 
-  await fetchFeatures(product_id, (err, data) => {
+  fetchProduct(product_id, (err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
-      data.forEach(val => { delete val._id });
-      fullProduct.features = data;
-      res.send(fullProduct);
+      delete data[0]['_id'];
+      getFeatures(product_id, (fErr, fData) => {
+        if (fErr) {
+          res.sendStatus(500);
+        } else {
+          data[0]['features'] = fData.map(feature => {
+            delete feature._id;
+            return feature;
+          });
+          fullProduct = data[0];
+          res.send(fullProduct);
+        }
+      });
     }
   });
 });
+
+let getFeatures = (product, callback) => {
+  fetchFeatures(product, callback);
+}
 
 router.post('/products', (req, res) => {
   // COMMENT THIS ROUTE OUT BEFORE DEPLOYMENT
@@ -94,13 +100,14 @@ router.get('/products/:product_id/styles', async (req, res) => {
   let product_id = req.params.product_id;
   let fullStyle = {'product_id': product_id};
 
-  await fetchStyles(product_id, (err, data) => {
+  fetchStyles(product_id, (err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
-      data.forEach(async (val, index) => {
+      data.forEach((val, i) => {
         delete val._id;
-        await fetchPhotos(val.style_id, (pErr, pData) => {
+        let style = val.style_id
+        photoHelper(style, (pErr, pData) => {
           if (pErr) {
             res.sendStatus(500);
           } else {
@@ -109,7 +116,7 @@ router.get('/products/:product_id/styles', async (req, res) => {
           }
         })
 
-        await fetchSKUs(val.style_id, (sErr, sData) => {
+        skuHelper(style, (sErr, sData) => {
           if (sErr) {
             res.sendStatus(500);
           } else {
@@ -120,16 +127,24 @@ router.get('/products/:product_id/styles', async (req, res) => {
             });
 
             val.skus = fullSKUs;
-            if (index === data.length - 1) {
+            if (i === data.length - 1) {
               fullStyle.results = data;
               res.send(fullStyle);
             }
           }
-        });
+        })
       });
     }
   });
 });
+
+let photoHelper = (style, callback) => {
+  fetchPhotos(style, callback);
+}
+
+let skuHelper = (style, callback) => {
+  fetchSKUs(style, callback);
+}
 
 /* ========== PHOTOS ========== */
 
