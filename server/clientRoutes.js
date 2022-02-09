@@ -1,17 +1,8 @@
 const express = require('express');
 const clientRouter = require('express').Router();
-
 const {
-  fetchAllProducts, fetchProduct, createProduct,
-  createFeature, fetchFeatures,
-  createStyle, fetchStyles,
-  createPhoto, fetchPhotos,
-  createSKU, fetchSKUs,
-  createReview, fetchReviews,
-  createReviewPhoto, fetchReviewPhotos,
-  addToCart, fetchCart, removeFromCart
+  fetchAllProducts, fetchProduct, fetchFeatures, fetchStyles, fetchPhotos, fetchSKUs, fetchReviews, fetchReviewPhotos, addToCart, fetchCart
 } = require('../db/dbMethods.js');
-
 
 /* ========== PRODUCTS ========== */
 
@@ -131,32 +122,6 @@ let skuHelper = (style, callback) => {
   fetchSKUs(style, callback);
 }
 
-/* ========== PHOTOS ========== */
-
-clientRouter.get('/photos/:style_id', (req, res) => {
-  fetchPhotos(req.params.style_id, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      data.forEach(val => {delete val._id})
-      res.send(data);
-    }
-  })
-});
-
-/* ========== SKUS ========== */
-
-clientRouter.get('/skus/:style_id', (req, res) => {
-  fetchSKUs(req.params.style_id, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      data.forEach(val => {delete val._id})
-      res.send(data);
-    }
-  })
-});
-
 /* ========== REVIEWS ========== */
 
 clientRouter.get('/reviews/', (req, res) => {
@@ -210,28 +175,20 @@ let reviewHelper = (review, callback) => {
 clientRouter.get('/cart', (req, res) => {
   // 3232 is the user session for this project
   fetchCart(3232, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.send(data);
-    }
+    err ? res.sendStatus(500) : res.send(data);
   })
 });
 
-clientRouter.post('/cart/:sku_id', (req, res) => {
+clientRouter.post('/cart', (req, res) => {
   let cartItem = {
     id: '',
     user_session: 3232,
-    product_id: req.params.sku_id,
+    product_id: req.query.sku_id,
     active: 1
   }
 
   addToCart(cartItem, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.send(data);
-    }
+    err ? res.sendStatus(500) : res.send(data);
   })
 });
 

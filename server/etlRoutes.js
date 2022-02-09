@@ -1,6 +1,5 @@
 const express = require('express');
 const etlRouter = require('express').Router();
-
 const {
   extractProduct, extractFeatures, extractStyles, extractPhotos, extractSKUs, extractReviews, extractReviewPhotos, extractCart
 } = require('../etl/extract.js');
@@ -10,11 +9,7 @@ etlRouter.get('etl/delete', (req, res) => {
   // COMMENT THIS ROUTE OUT BEFORE DEPLOYMENT
   // MODEL TO DELETE IS HARDCODED IN CLEAR MODEL
   clearModel((err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.send(data);
-    }
+    err ? res.sendStatus(500) : res.send(data);
   })
 });
 

@@ -31,6 +31,7 @@ let createProduct = (product, callback) => {
 /* ========== FEATURES ========== */
 
 let createFeature = (feature, callback) => {
+  // NOT USED CLIENT SIDE
   let newFeature = new Feature(feature);
   console.log(`PRE-LOAD ${feature.id}`);
   newFeature.save(callback);
@@ -45,6 +46,7 @@ let fetchFeatures = (product, callback) => {
 /* ========== STYLES ========== */
 
 let createStyle = (style, callback) => {
+  // NOT USED CLIENT SIDE
   let newStyle = new Style(style);
   console.log(`PRE-LOAD ${style.style_id}`)
   newStyle.save(callback);
@@ -140,6 +142,7 @@ let fetchCart = (session, callback) => {
 }
 
 let removeFromCart = (session, sku_id, callback) => {
+  // NOT USED CLIENT SIDE
   Cart.updateOne({
     user_session: session,
     product_id: sku_id,
