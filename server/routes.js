@@ -175,19 +175,18 @@ router.get('/skus/:style_id', (req, res) => {
 /* ========== REVIEWS ========== */
 
 router.get('/reviews/', (req, res) => {
-  let page, count, sort, product_id;
+  let page, count, product_id;
   !req.query.page ? page = 1 : page = req.query.page;
   !req.query.count ? count = 5 : count = req.query.count;
-  !req.query.sort ? sort = null : sort = req.query.sort;
-  !req.query.product_id ? product_id = null : product_id = req.query.product_id;
+  !req.query.product_id ? product_id = null : product_id = req.query.product_id.toString();
 
   let fullReview = {
-    'product': product_id.toString(),
+    'product': product_id || null,
     'page': page,
     'count': count
   };
 
-  fetchReviews(page, count, sort, product_id, (err, data) => {
+  fetchReviews(page, count, product_id, (err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {

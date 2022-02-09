@@ -95,7 +95,7 @@ let createReview = (review, callback) => {
   newReview.save(callback);
 }
 
-let fetchReviews = (page, count, sort, product, callback) => {
+let fetchReviews = (page, count, product, callback) => {
   let sortParams = 'review_id rating summary recommend response body date reviewer_name helpfulness';
   let start = (page - 1) * count;
   let end = (page * count) + 1;
