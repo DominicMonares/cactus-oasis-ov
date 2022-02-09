@@ -1,8 +1,7 @@
 const express = require('express');
-const router = require('express').Router();
+const clientRouter = require('express').Router();
 
 const {
-  clearModel,
   fetchAllProducts, fetchProduct, createProduct,
   createFeature, fetchFeatures,
   createStyle, fetchStyles,
@@ -13,20 +12,10 @@ const {
   addToCart, fetchCart, removeFromCart
 } = require('../db/dbMethods.js');
 
-router.get('/delete', (req, res) => {
-  // COMMENT THIS ROUTE OUT BEFORE DEPLOYMENT
-  clearModel((err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.send(data);
-    }
-  })
-});
 
 /* ========== PRODUCTS ========== */
 
-router.get('/products', (req, res) => {
+clientRouter.get('/products', (req, res) => {
   let page, count;
   !req.query.page ? page = 1 : page = req.query.page;
   !req.query.count ? count = 5 : count = req.query.count;
@@ -45,7 +34,7 @@ router.get('/products', (req, res) => {
   })
 })
 
-router.get('/products/:product_id/', async (req, res) => {
+clientRouter.get('/products/:product_id', async (req, res) => {
   let product_id = req.params.product_id;
   let fullProduct;
 
@@ -82,33 +71,9 @@ let getFeatures = (product, callback) => {
   fetchFeatures(product, callback);
 }
 
-router.post('/products', (req, res) => {
-  // COMMENT THIS ROUTE OUT BEFORE DEPLOYMENT
-  createProduct(null, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.send(data);
-    }
-  });
-});
-
-/* ========== FEATURES ========== */
-
-router.get('/features/:product_id', (req, res) => {
-  fetchFeatures(req.params.product_id, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      data.forEach(val => {delete val._id})
-      res.send(data);
-    }
-  })
-});
-
 /* ========== STYLES ========== */
 
-router.get('/products/:product_id/styles', async (req, res) => {
+clientRouter.get('/products/:product_id/styles', async (req, res) => {
   let product_id = req.params.product_id;
   let fullStyle = {'product_id': product_id};
 
@@ -168,7 +133,7 @@ let skuHelper = (style, callback) => {
 
 /* ========== PHOTOS ========== */
 
-router.get('/photos/:style_id', (req, res) => {
+clientRouter.get('/photos/:style_id', (req, res) => {
   fetchPhotos(req.params.style_id, (err, data) => {
     if (err) {
       res.sendStatus(500);
@@ -181,7 +146,7 @@ router.get('/photos/:style_id', (req, res) => {
 
 /* ========== SKUS ========== */
 
-router.get('/skus/:style_id', (req, res) => {
+clientRouter.get('/skus/:style_id', (req, res) => {
   fetchSKUs(req.params.style_id, (err, data) => {
     if (err) {
       res.sendStatus(500);
@@ -194,7 +159,7 @@ router.get('/skus/:style_id', (req, res) => {
 
 /* ========== REVIEWS ========== */
 
-router.get('/reviews/', (req, res) => {
+clientRouter.get('/reviews/', (req, res) => {
   let page, count, product_id;
   !req.query.page ? page = 1 : page = Number(req.query.page);
   !req.query.count ? count = 5 : count = req.query.count;
@@ -242,7 +207,7 @@ let reviewHelper = (review, callback) => {
 
 /* ========== CART ========== */
 
-router.get('/cart', (req, res) => {
+clientRouter.get('/cart', (req, res) => {
   // 3232 is the user session for this project
   fetchCart(3232, (err, data) => {
     if (err) {
@@ -253,7 +218,7 @@ router.get('/cart', (req, res) => {
   })
 });
 
-router.post('/cart/:sku_id', (req, res) => {
+clientRouter.post('/cart/:sku_id', (req, res) => {
   let cartItem = {
     id: '',
     user_session: 3232,
@@ -270,4 +235,4 @@ router.post('/cart/:sku_id', (req, res) => {
   })
 });
 
-module.exports = router;
+module.exports = clientRouter;
