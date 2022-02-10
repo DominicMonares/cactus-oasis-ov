@@ -1,72 +1,175 @@
-const {Product, Feature, Style, Photo, SKU, Review, Cart} = require('./index.js');
+const {Product, Feature, Style, Photo, SKU, Review, ReviewPhoto, Cart} = require('./index.js');
 
-let deleteProduct = (callback) => {
-  // clears all products, only to be used for testing
-  Product.deleteMany(callback);
+let clearModel = (callback) => {
+  // clears all data from hardcoded model, only to be used for testing
+  ReviewPhoto.deleteMany(callback);
+}
+
+/* ========== PRODUCTS ========== */
+
+let fetchAllProducts = (page, count, callback) => {
+  let start = (page - 1) * count;
+  let end = (page * count) + 1;
+  Product.find({id: {'$gt': start, '$lt': end}}, callback)
+    .select('id name slogan description category default_price')
+    .lean();
+}
+
+let fetchProduct = (product, callback) => {
+  Product.find({id: product}, callback)
+    .select('id name slogan description category default_price')
+    .lean();
 }
 
 let createProduct = (product, callback) => {
-  // not used client side
-  let newProduct = new Product({
-    id: 4,
-    campus: 'hr-rpp',
-    name: 'Sweet Battle Axe',
-    slogan: 'It do be shiny tho.',
-    description: 'Don\'t do anything I wouldn\'t do with that battle axe now, ya hear?',
-    category: 'Melee Combat Weapons',
-    default_price: '600.00',
-    updated_at: '2021-11-18T22:50:41.839Z',
-    created_at: '2021-11-18T22:50:41.839Z',
-    features: [
-      {feature: 'Stat Boosts', value: '+5 Stamina, +5 Strength, +5 JS Skill'}
-    ]
-  });
-
+  // NOT USED CLIENT SIDE
+  let newProduct = new Product(product);
+  console.log(`PRE-LOAD ${product.id}`)
   newProduct.save(callback);
 }
 
-let fetchProduct = (product_id, callback) => {
-  Product.find({id: product_id}, callback);
+/* ========== FEATURES ========== */
+
+let createFeature = (feature, callback) => {
+  // NOT USED CLIENT SIDE
+  let newFeature = new Feature(feature);
+  console.log(`PRE-LOAD ${feature.id}`);
+  newFeature.save(callback);
 }
 
-/* ========== */
+let fetchFeatures = (product, callback) => {
+  Feature.find({product_id: product}, callback)
+    .select('feature value')
+    .lean();
+}
+
+/* ========== STYLES ========== */
 
 let createStyle = (style, callback) => {
-  // not used client side
+  // NOT USED CLIENT SIDE
+  let newStyle = new Style(style);
+  console.log(`PRE-LOAD ${style.style_id}`)
+  newStyle.save(callback);
 }
 
-let fetchStyle = (style_id, callback) => {
-
+let fetchStyles = (product, callback) => {
+  Style.find({product_id: product}, callback)
+    .select('style_id name original_price sale_price default?')
+    .lean();
 }
 
-/* ========== */
+/* ========== PHOTOS ========== */
+
+let createPhoto = (photo, callback) => {
+  // NOT USED CLIENT SIDE
+  let newPhoto = new Photo(photo);
+  console.log(`PRE-LOAD ${photo.id}`);
+  newPhoto.save(callback);
+}
+
+let fetchPhotos = (style, callback) => {
+  Photo.find({style_id: style}, callback)
+    .select('thumbnail_url url')
+    .lean();
+}
+
+/* ========== SKUS ========== */
+
+let createSKU = (sku, callback) => {
+  // NOT USED CLIENT SIDE
+  let newSKU = new SKU(sku);
+  console.log(`PRE-LOAD ${sku.id}`)
+  newSKU.save(callback);
+}
+
+let fetchSKUs = (style, callback) => {
+  SKU.find({style_id: style}, callback)
+    .select('id quantity size')
+    .lean();
+}
+
+/* ========== REVIEWS ========== */
 
 let createReview = (review, callback) => {
-  // not used client side
+  // NOT USED CLIENT SIDE IN OVERVIEW WIDGET
+  let newReview = new Review(review);
+  console.log(`PRE-LOAD ${review.review_id}`);
+  newReview.save(callback);
 }
 
-let fetchReview = (review_id, callback) => {
+let fetchReviews = (page, count, product, callback) => {
+  let sortParams = 'review_id rating summary recommend response body date reviewer_name helpfulness';
+  let start = (page - 1) * count;
+  let end = (page * count) + 1;
 
+  if (!product) {
+    Review.find({ review_id: { '$gt': start, '$lt': end } }, callback)
+      .select(sortParams)
+      .lean();
+  } else {
+    Review.find({ product_id: product }, callback)
+      .select(sortParams)
+      .skip(start)
+      .limit(count)
+      .lean();
+  }
 }
 
-/* ========== */
+/* ========== REVIEW PHOTOS ========== */
 
-let addToCart = (product, callback) => {
-
+let createReviewPhoto = (reviewPhoto, callback) => {
+  // NOT USED CLIENT SIDE IN OVERVIEW WIDGET
+  let newReviewPhoto = new ReviewPhoto(reviewPhoto);
+  console.log(`PRE-LOAD ${reviewPhoto.id}`);
+  newReviewPhoto.save(callback);
 }
 
-let clearCart = (product, callback) => {
+let fetchReviewPhotos = (review, callback) => {
+  ReviewPhoto.find({review_id: review}, callback)
+    .select('id url')
+    .lean();
+}
 
+/* ========== CART ========== */
+
+let addToCart = (cartItem, callback) => {
+  let newCart = new Cart(cartItem);
+  newCart.save(callback);
+}
+
+let fetchCart = (session, callback) => {
+  Cart.find({user_session: session}, callback);
+}
+
+let removeFromCart = (session, sku_id, callback) => {
+  // NOT USED CLIENT SIDE
+  Cart.updateOne({
+    user_session: session,
+    product_id: sku_id,
+    active: 1
+  }, {
+    active: 0
+  }, callback);
 }
 
 module.exports = {
-  'createProduct': createProduct,
+  'clearModel': clearModel,
+  'fetchAllProducts': fetchAllProducts,
   'fetchProduct': fetchProduct,
-  'deleteProduct': deleteProduct,
+  'createProduct': createProduct,
+  'createFeature': createFeature,
+  'fetchFeatures': fetchFeatures,
   'createStyle': createStyle,
-  'fetchStyle': fetchStyle,
+  'fetchStyles': fetchStyles,
+  'createPhoto': createPhoto,
+  'fetchPhotos': fetchPhotos,
+  'createSKU': createSKU,
+  'fetchSKUs': fetchSKUs,
   'createReview': createReview,
-  'fetchReview': fetchReview,
+  'fetchReviews': fetchReviews,
+  'createReviewPhoto': createReviewPhoto,
+  'fetchReviewPhotos': fetchReviewPhotos,
   'addToCart': addToCart,
-  'clearCart': clearCart
+  'fetchCart': fetchCart,
+  'removeFromCart': removeFromCart
 }

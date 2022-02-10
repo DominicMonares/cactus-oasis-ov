@@ -1,65 +1,13 @@
 const express = require('express');
-const {
-  createProduct, fetchProduct, deleteProduct,
-  createStyle, fetchStyle,
-  createReview, fetchReview,
-  addToCart, clearCart
-} = require('../db/dbMethods.js');
-const {extractCart} = require('../etl/extract.js');
-
 const app = express();
 const port = 8080;
+const clientRouter = require('./clientRoutes.js');
+const etlRouter = require('./etlRoutes.js');
+const additionalRouter = require('./additionalRoutes.js');
 
-app.get('/etl', (req, res) => {
-  extractCart();
-  res.end();
-});
-
-app.get('/products/delete', (req, res) => {
-  deleteProduct((err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.send(data);
-    }
-  })
-});
-
-app.post('/products', (req, res) => {
-  createProduct(null, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.send(data);
-    }
-  });
-})
-
-app.get('/products/:product_id', (req, res) => {
-  fetchProduct(req.params.product_id, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.send(data);
-    }
-  });
-});
-
-app.get('/products/:product_id/styles', (req, res) => {
-  // fetch product style data
-});
-
-app.get('/reviews/:product_id/:sort/:page/:count', (req, res) => {
-  // fetch review data
-});
-
-app.get('/cart', (req, res) => {
-  // fetch cart data
-});
-
-app.post('/cart', (req, res) => {
-  // add product to cart
-});
+app.use('/', clientRouter);
+app.use('/', etlRouter);
+app.use('/', additionalRouter)
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
