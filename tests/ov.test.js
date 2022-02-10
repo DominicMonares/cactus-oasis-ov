@@ -1,28 +1,33 @@
+const app = require('../server/index');
+const mongoose = require('mongoose');
+const supertest = require('supertest');
 const _ = require('underscore');
-const {productData, styleData, reviewData, cartData} = require('./samples.js');
+
 const {clientRoutes} = require('../server/clientRoutes.js');
+const {Product, Feature, Style, Photo, SKU, Review, ReviewPhoto, Cart} = require('../db/index.js');
+
+// SAMPLES MAY NOT BE NEEDED, REVISIT
+// const {productData, styleData, reviewData, cartData} = require('./samples.js');
 
 describe('Overview API', () => {
 
-  // test('test test', () => {
-  //   let testResult = _.map([1, 2, 3], val => {
-  //     return val;
-  //   })
-  //   expect(testResult).toStrictEqual(testResult);
-  // })
+  beforeEach(done => {
+    mongoose.connect('mongodb://localhost:27017/SDCTest', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    }, () => done());
+  });
 
-  // test('sample test', () => {
-  //   let testResult = styleData;
-  //   console.log(testResult);
-  //   expect(typeof testResult).toBe('object');
-  // })
+  afterEach(done => {
+    mongoose.connection.db.dropDatabase(() => {
+      mongoose.connection.close(() => done());
+    })
+  });
 
   describe('Products', () => {
-    test('sample test', () => {
-      let testResult = styleData;
-      console.log(testResult);
-      expect(typeof testResult).toBe('object');
-    })
+    // test('GET /products', async () => {
+    //   const products = await
+    // })
   })
 
   describe('Styles', () => {
@@ -42,6 +47,7 @@ describe('Overview API', () => {
   })
 
   describe('Cart', () => {
+    // POST WILL NEED TO DELETE ITEM IT JUST ADDED AFTER TEST
     test('sample test', () => {
       let testResult = styleData;
       console.log(testResult);
