@@ -7,7 +7,7 @@ const {clientRoutes} = require('../server/clientRoutes.js');
 const {Product, Feature, Style, Photo, SKU, Review, ReviewPhoto, Cart} = require('../db/index.js');
 
 // SAMPLES MAY NOT BE NEEDED, REVISIT
-const {testProduct, testFeature, testStyle, testPhoto, testSKU, testReview, testReviewPhoto, testCart} = require('./testObjects.js');
+const {testProduct, testFeature, testStyle, testPhoto, testSKU, testReview, testReviewPhoto, testCart1, testCart2} = require('./testObjects.js');
 
 describe('Overview API', () => {
 
@@ -37,7 +37,7 @@ describe('Overview API', () => {
         .then(response => {
           let res = response.body;
           expect(Array.isArray(res)).toBeTruthy();
-          expect(res.length).toEqual(1);
+          expect(res.length).toBe(1);
           expect(res[0]['id']).toBe(product.id);
           expect(res[0]['name']).toBe(product.name);
           expect(res[0]['slogan']).toBe(product.slogan);
@@ -56,7 +56,7 @@ describe('Overview API', () => {
         .then(response => {
           let res = response.body;
           expect(typeof res === 'object').toBeTruthy();
-          expect(Object.keys(res).length).toEqual(7);
+          expect(Object.keys(res).length).toBe(7);
           expect(res.id).toBe(product.id);
           expect(res.name).toBe(product.name);
           expect(res.slogan).toBe(product.slogan);
@@ -81,27 +81,27 @@ describe('Overview API', () => {
         .expect(200)
         .then(response => {
           let res = response.body;
-          let results = res.results;
-          let photos = results[0]['photos'];
-          let skus = results[0]['skus'];
           expect(typeof res === 'object').toBeTruthy();
-          expect(Object.keys(res).length).toEqual(2);
+          expect(Object.keys(res).length).toBe(2);
 
+          let results = res.results;
           expect(Array.isArray(results)).toBeTruthy();
-          expect(results.length).toEqual(1);
+          expect(results.length).toBe(1);
           expect(results[0]['style_id']).toBe(style.style_id);
           expect(results[0]['name']).toBe(style.name);
           expect(results[0]['sale_price']).toBe(style.sale_price);
           expect(results[0]['original_price']).toBe(style.original_price);
           expect(results[0]['default?']).toBe(style['default?']);
 
+          let photos = results[0]['photos'];
           expect(Array.isArray(photos)).toBeTruthy();
-          expect(photos.length).toEqual(1);
+          expect(photos.length).toBe(1);
           expect(photos[0]['thumbnail_url']).toBe(photo.thumbnail_url);
           expect(photos[0]['url']).toBe(photo.url);
 
+          let skus = results[0]['skus'];
           expect(typeof skus === 'object').toBeTruthy();
-          expect(Object.keys(skus).length).toEqual(1);
+          expect(Object.keys(skus).length).toBe(1);
           expect(Number(Object.keys(skus)[0])).toBe(sku['id'])
           expect(skus['1']['quantity']).toBe(sku['quantity']);
           expect(skus['1']['size']).toBe(sku['size']);
@@ -111,22 +111,71 @@ describe('Overview API', () => {
 
   /* ========== REVIEWS ========== */
 
-  xdescribe('Reviews', () => {
-    test('sample test', () => {
-      let testResult = styleData;
-      console.log(testResult);
-      expect(typeof testResult).toBe('object');
+  describe('Reviews', () => {
+    test('GET /reviews/', async () => {
+      const review = await Review.create(testReview);
+      const reviewPhoto = await ReviewPhoto.create(testReviewPhoto);
+      await supertest(app)
+        .get('/reviews/?product_id=1&page=1&count=1')
+        .expect(200)
+        .then(response => {
+          let res = response.body;
+          expect(typeof res === 'object').toBeTruthy();
+          expect(Object.keys(res).length).toBe(4);
+          expect(Number(res.product)).toBe(review.product_id);
+          expect(res.page).toBe(1);
+          expect(res.count).toBe(1);
+
+          expect(Array.isArray(res.results)).toBeTruthy();
+          expect(res.results.length).toBe(1)
+
+          let result = res.results[0];
+          expect(typeof result === 'object');
+          expect(Object.keys(result).length).toBe(10);
+          expect(result.review_id).toBe(review.review_id);
+          expect(result.rating).toBe(review.rating);
+          expect(result.summary).toBe(review.summary);
+          expect(result.recommend).toBe(review.recommend);
+          expect(result.response).toBe(review.response);
+          expect(result.body).toBe(review.body);
+          expect(result.date).toBe(review.date);
+          expect(result.reviewer_name).toBe(review.reviewer_name);
+          expect(result.helpfulness).toBe(review.helpfulness);
+
+          let photos = result.photos;
+          expect(Array.isArray(photos)).toBeTruthy();
+          expect(photos.length).toBe(1);
+
+          let photo = photos[0];
+          expect(typeof photo === 'object');
+          expect(Object.keys(photo).length).toBe(2);
+          expect(photo.id).toBe(reviewPhoto.id);
+          expect(photo.url).toBe(reviewPhoto.url);
+        })
     })
   })
 
   /* ========== CART ========== */
 
-  xdescribe('Cart', () => {
+  describe('Cart', () => {
     // POST WILL NEED TO DELETE ITEM IT JUST ADDED AFTER TEST
-    test('sample test', () => {
-      let testResult = styleData;
-      console.log(testResult);
-      expect(typeof testResult).toBe('object');
+    xtest('GET /cart', async () => {
+      const cart1 = await Cart.create(testCart1);
+      const cart2 = await Cart.create(testCart2);
+      await supertest(app)
+        .get('/cart')
+        .expect(200)
+        .then(response => {
+          let res = response.body;
+          expect(Array.isArray(res)).toBeTruthy();
+          expect(res.length).toBe(2);
+          expect(res[0]['id']).toBe(product.id);
+          expect(res[0]['name']).toBe(product.name);
+          expect(res[0]['slogan']).toBe(product.slogan);
+          expect(res[0]['description']).toBe(product.description);
+          expect(res[0]['category']).toBe(product.category);
+          expect(res[0]['default_price']).toBe(product.default_price);
+        })
     })
   })
 

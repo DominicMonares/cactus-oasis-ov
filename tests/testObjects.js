@@ -58,10 +58,17 @@ const testReviewPhoto = {
   url: 'Test url'
 };
 
-const testCart = {
+const testCart1 = {
   id: 1,
   user_session: 3232,
   product_id: 1,
+  active: 1
+};
+
+const testCart2 = {
+  id: 2,
+  user_session: 3232,
+  product_id: 2,
   active: 1
 };
 
@@ -73,5 +80,6 @@ module.exports = {
   'testSKU': testSKU,
   'testReview': testReview,
   'testReviewPhoto': testReviewPhoto,
-  'testCart': testCart
+  'testCart1': testCart1,
+  'testCart2': testCart2
 }
