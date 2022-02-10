@@ -133,7 +133,7 @@ clientRouter.get('/reviews/', (req, res) => {
   let fullReview = {
     'product': product_id || null,
     'page': page,
-    'count': count
+    'count': Number(count)
   };
 
   fetchReviews(page, count, product_id, (err, data) => {
