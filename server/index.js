@@ -7,8 +7,10 @@ const additionalRouter = require('./additionalRoutes.js');
 
 app.use('/', clientRouter);
 app.use('/', etlRouter);
-app.use('/', additionalRouter)
+app.use('/', additionalRouter);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 })
+
+module.exports = app;
