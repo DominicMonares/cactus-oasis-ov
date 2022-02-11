@@ -143,6 +143,11 @@ let fetchCart = (session, callback) => {
     .lean();
 }
 
+let countCart = (callback) => {
+  Cart.count(callback)
+    .lean();
+}
+
 let removeFromCart = (session, sku_id, callback) => {
   // NOT USED CLIENT SIDE
   Cart.updateOne({
@@ -173,5 +178,6 @@ module.exports = {
   'fetchReviewPhotos': fetchReviewPhotos,
   'addToCart': addToCart,
   'fetchCart': fetchCart,
+  'countCart': countCart,
   'removeFromCart': removeFromCart
 }

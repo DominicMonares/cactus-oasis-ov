@@ -1,7 +1,7 @@
 const express = require('express');
 const clientRouter = require('express').Router();
 const {
-  fetchAllProducts, fetchProduct, fetchFeatures, fetchStyles, fetchPhotos, fetchSKUs, fetchReviews, fetchReviewPhotos, addToCart, fetchCart
+  fetchAllProducts, fetchProduct, fetchFeatures, fetchStyles, fetchPhotos, fetchSKUs, fetchReviews, fetchReviewPhotos, addToCart, fetchCart, countCart
 } = require('../db/dbMethods.js');
 
 /* ========== PRODUCTS ========== */
@@ -188,7 +188,7 @@ clientRouter.get('/cart', (req, res) => {
         if (fullCart[val.product_id] === undefined) {
           fullCart[val.product_id] = { sku_id: val.product_id, count: 1 };
         } else {
-          fullCart[val.product_id]['count']++;
+          fullCart[val.product_id]['count'] ++;
         }
 
         if (i === data.length - 1) {
@@ -200,16 +200,23 @@ clientRouter.get('/cart', (req, res) => {
 });
 
 clientRouter.post('/cart', (req, res) => {
-  let cartItem = {
-    id: '',
-    user_session: 3232,
-    product_id: req.query.sku_id,
-    active: 1
-  }
+  countCart((err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      let cartItem = {
+        id: data + 1,
+        user_session: 3232,
+        product_id: req.query.sku_id,
+        active: 1
+      }
 
-  addToCart(cartItem, (err, data) => {
-    err ? res.sendStatus(500) : res.send(data);
+      addToCart(cartItem, (cErr, cData) => {
+        cErr ? res.sendStatus(500) : res.send('Item added to cart');
+      });
+    }
   })
+
 });
 
 module.exports = clientRouter;
