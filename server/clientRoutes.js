@@ -175,8 +175,28 @@ let reviewHelper = (review, callback) => {
 clientRouter.get('/cart', (req, res) => {
   // 3232 is the user session for this project
   fetchCart(3232, (err, data) => {
-    err ? res.sendStatus(500) : res.send(data);
-  })
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      if (data.length === 0) {
+        res.send('Cart is empty');
+      }
+
+      let fullCart = {};
+      data.forEach((val, i) => {
+        delete val._id;
+        if (fullCart[val.product_id] === undefined) {
+          fullCart[val.product_id] = { sku_id: val.product_id, count: 1 };
+        } else {
+          fullCart[val.product_id]['count']++;
+        }
+
+        if (i === data.length - 1) {
+          res.send(Object.values(fullCart));
+        }
+      });
+    }
+  });
 });
 
 clientRouter.post('/cart', (req, res) => {

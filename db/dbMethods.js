@@ -138,7 +138,9 @@ let addToCart = (cartItem, callback) => {
 }
 
 let fetchCart = (session, callback) => {
-  Cart.find({user_session: session}, callback);
+  Cart.find({user_session: session}, callback)
+    .select('product_id active')
+    .lean();
 }
 
 let removeFromCart = (session, sku_id, callback) => {
