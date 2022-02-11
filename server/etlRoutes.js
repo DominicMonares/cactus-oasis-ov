@@ -3,11 +3,12 @@ const etlRouter = require('express').Router();
 const {
   extractProduct, extractFeatures, extractStyles, extractPhotos, extractSKUs, extractReviews, extractReviewPhotos, extractCart
 } = require('../etl/extract.js');
-const {clearModel} = require('../db/dbMethods.js');
 
 /*
 
 ETL PROCESS COMPLETE, ROUTES NO LONGER NEED TO BE ACTIVE
+
+const {clearModel} = require('../db/dbMethods.js');
 
 etlRouter.get('etl/delete', (req, res) => {
   // MODEL TO DELETE IS HARDCODED IN CLEAR MODEL
