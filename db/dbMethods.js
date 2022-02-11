@@ -152,17 +152,6 @@ let countCart = (callback) => {
     .lean();
 }
 
-let removeFromCart = (session, sku_id, callback) => {
-  // NOT USED CLIENT SIDE
-  Cart.updateOne({
-    user_session: session,
-    product_id: sku_id,
-    active: 1
-  }, {
-    active: 0
-  }, callback);
-}
-
 module.exports = {
   // 'clearModel': clearModel,
   'fetchAllProducts': fetchAllProducts,
@@ -182,6 +171,5 @@ module.exports = {
   'fetchReviewPhotos': fetchReviewPhotos,
   'addToCart': addToCart,
   'fetchCart': fetchCart,
-  'countCart': countCart,
-  'removeFromCart': removeFromCart
+  'countCart': countCart
 }
