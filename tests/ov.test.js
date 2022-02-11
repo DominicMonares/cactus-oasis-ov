@@ -1,30 +1,32 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
-const _ = require('underscore');
 
 const createServer = require('../server/server.js');
 const {clientRoutes} = require('../server/clientRoutes.js');
 const {Product, Feature, Style, Photo, SKU, Review, ReviewPhoto, Cart} = require('../db/index.js');
 
-// SAMPLES MAY NOT BE NEEDED, REVISIT
 const {testProduct, testFeature, testStyle, testPhoto, testSKU, testReview, testReviewPhoto, testCart1, testCart2} = require('./testObjects.js');
 
-describe('Overview API', () => {
+beforeEach(done => {
+  mongoose.connect('mongodb://localhost:27017/SDCTest', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }, () => done())
+});
 
-  beforeEach(done => {
-    mongoose.connect('mongodb://localhost:27017/SDCTest', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    }, () => done())
-  });
+afterEach(done => {
+  mongoose.connection.db.dropDatabase(() => {
+    mongoose.connection.close(() => done());
+  })
+});
 
-  afterEach(done => {
-    mongoose.connection.db.dropDatabase(() => {
-      mongoose.connection.close(() => done());
-    })
-  });
+const app = createServer();
 
-  const app = createServer();
+//////////////////////////////////
+// PRIMARY ROUTES
+//////////////////////////////////
+
+describe('Primary Routes', () => {
 
   /* ========== PRODUCTS ========== */
 
@@ -186,6 +188,76 @@ describe('Overview API', () => {
           expect(res.user_session).toBe(testCart1.user_session);
           expect(res.product_id).toBe(testCart1.product_id);
           expect(res.active).toBe(testCart1.active);
+
+          const post = await Cart.findOne({user_session: 3232});
+          expect(post).toBeTruthy();
+          expect(post.id).toBe(testCart1.id);
+          expect(post.user_session).toBe(testCart1.user_session);
+          expect(post.product_id).toBe(testCart1.product_id);
+          expect(post.active).toBe(testCart1.active);
+        })
+    })
+  })
+
+})
+
+//////////////////////////////////
+// ADDITIONAL ROUTES
+//////////////////////////////////
+
+describe('Additional Routes', () => {
+
+  /* ========== FEATURES ========== */
+
+  describe('Features', () => {
+    test('GET /features/:product_id', async () => {
+      const feature = await Feature.create(testFeature);
+      await supertest(app)
+        .get('/features/1')
+        .expect(200)
+        .then(response => {
+          let res = response.body;
+          expect(Array.isArray(res)).toBeTruthy();
+          expect(res.length).toBe(1);
+          expect(res[0]['feature']).toBe(feature.feature);
+          expect(res[0]['value']).toBe(feature.value);
+        })
+    })
+  })
+
+  /* ========== PHOTOS ========== */
+
+  describe('Photos', () => {
+    test('GET /photos/:style_id', async () => {
+      const photo = await Photo.create(testPhoto);
+      await supertest(app)
+        .get('/photos/1')
+        .expect(200)
+        .then(response => {
+          let res = response.body;
+          expect(Array.isArray(res)).toBeTruthy();
+          expect(res.length).toBe(1);
+          expect(res[0]['thumbnail_url']).toBe(photo.thumbnail_url);
+          expect(res[0]['url']).toBe(photo.url);
+        })
+    })
+  })
+
+  /* ========== SKUS ========== */
+
+  describe('SKUs', () => {
+    test('GET /skus/:style_id', async () => {
+      const sku = await SKU.create(testSKU);
+      await supertest(app)
+        .get('/skus/1')
+        .expect(200)
+        .then(response => {
+          let res = response.body;
+          expect(Array.isArray(res)).toBeTruthy();
+          expect(res.length).toBe(1);
+          expect(res[0]['id']).toBe(sku.id);
+          expect(res[0]['size']).toBe(sku.size);
+          expect(res[0]['quantity']).toBe(sku.quantity);
         })
     })
   })
