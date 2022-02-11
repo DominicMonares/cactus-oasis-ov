@@ -4,6 +4,7 @@ const {createProduct, fetchFeatures, fetchPhotos, fetchSKUs} = require('../db/db
 
 /* ========== PRODUCTS ========== */
 
+/*
 additionalRouter.post('/admin/products', (req, res) => {
   // COMMENT THIS ROUTE OUT BEFORE DEPLOYMENT
   createProduct(null, (err, data) => {
@@ -14,6 +15,7 @@ additionalRouter.post('/admin/products', (req, res) => {
     }
   });
 });
+*/
 
 /* ========== FEATURES ========== */
 
