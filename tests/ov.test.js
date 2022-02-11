@@ -158,8 +158,7 @@ describe('Overview API', () => {
   /* ========== CART ========== */
 
   describe('Cart', () => {
-    // POST WILL NEED TO DELETE ITEM IT JUST ADDED AFTER TEST
-    xtest('GET /cart', async () => {
+    test('GET /cart', async () => {
       const cart1 = await Cart.create(testCart1);
       const cart2 = await Cart.create(testCart2);
       await supertest(app)
@@ -169,12 +168,10 @@ describe('Overview API', () => {
           let res = response.body;
           expect(Array.isArray(res)).toBeTruthy();
           expect(res.length).toBe(2);
-          expect(res[0]['id']).toBe(product.id);
-          expect(res[0]['name']).toBe(product.name);
-          expect(res[0]['slogan']).toBe(product.slogan);
-          expect(res[0]['description']).toBe(product.description);
-          expect(res[0]['category']).toBe(product.category);
-          expect(res[0]['default_price']).toBe(product.default_price);
+          expect(res[0]['sku_id']).toBe(cart1.product_id);
+          expect(res[0]['count']).toBe(1);
+          expect(res[1]['sku_id']).toBe(cart2.product_id);
+          expect(res[1]['count']).toBe(1);
         })
     })
   })
