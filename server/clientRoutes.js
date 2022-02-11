@@ -212,7 +212,7 @@ clientRouter.post('/cart', (req, res) => {
       }
 
       addToCart(cartItem, (cErr, cData) => {
-        cErr ? res.sendStatus(500) : res.send('Item added to cart');
+        cErr ? res.sendStatus(500) : res.send(cData);
       });
     }
   })

@@ -174,6 +174,20 @@ describe('Overview API', () => {
           expect(res[1]['count']).toBe(1);
         })
     })
+
+    test('POST /cart', async () => {
+      await supertest(app)
+        .post('/cart?sku_id=1')
+        .send(testCart1)
+        .expect(200)
+        .then(async response => {
+          let res = response.body;
+          expect(res.id).toBe(testCart1.id);
+          expect(res.user_session).toBe(testCart1.user_session);
+          expect(res.product_id).toBe(testCart1.product_id);
+          expect(res.active).toBe(testCart1.active);
+        })
+    })
   })
 
 })
