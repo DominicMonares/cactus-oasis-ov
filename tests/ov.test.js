@@ -7,6 +7,8 @@ const {Product, Feature, Style, Photo, SKU, Review, ReviewPhoto, Cart} = require
 
 const {createProduct, createFeature, createStyle, createPhoto, createSKU, createReview, createReviewPhoto} = require('../db/dbMethods.js');
 
+const {extractProduct, extractFeatures, extractStyles, extractPhotos, extractSKUs, extractReviews, extractReviewPhotos, extractCart} = require('../etl/extract.js');
+
 const {testProduct, testFeature, testStyle, testPhoto, testSKU, testReview, testReviewPhoto, testCart1, testCart2} = require('./testObjects.js');
 
 setupDB('overview-test');
@@ -377,6 +379,105 @@ describe('Overview', () => {
           done();
         }
       })
+    })
+
+  })
+
+  //////////////////////////////////
+  // ETL
+  //////////////////////////////////
+
+  describe('ETL', () => {
+
+    test('should ETL product data', async () => {
+      await extractProduct();
+      const etlProduct = await Product.findOne({id: 1});
+      expect(etlProduct).toBeTruthy();
+      expect(etlProduct.id).toBe(testProduct.id);
+      expect(etlProduct.name).toBe(testProduct.name);
+      expect(etlProduct.slogan).toBe(testProduct.slogan);
+      expect(etlProduct.description).toBe(testProduct.description);
+      expect(etlProduct.category).toBe(testProduct.category);
+      expect(etlProduct.default_price).toBe(testProduct.default_price);
+    })
+
+    test('should ETL feature data', async () => {
+      await extractFeatures();
+      const etlFeature = await Feature.findOne({id: 1});
+      expect(etlFeature).toBeTruthy();
+      expect(etlFeature.id).toBe(testFeature.id);
+      expect(etlFeature.product_id).toBe(testFeature.product_id);
+      expect(etlFeature.feature).toBe(testFeature.feature);
+      expect(etlFeature.value).toBe(testFeature.value);
+    })
+
+    test('should ETL style data', async () => {
+      await extractStyles();
+      const etlStyle = await Style.findOne({style_id: 1});
+      expect(etlStyle).toBeTruthy();
+      expect(etlStyle.style_id).toBe(testStyle.style_id);
+      expect(etlStyle.product_id).toBe(testStyle.product_id);
+      expect(etlStyle.name).toBe(testStyle.name);
+      expect(etlStyle.sale_price).toBe(testStyle.sale_price);
+      expect(etlStyle.original_price).toBe(testStyle.original_price);
+      expect(etlStyle['default?']).toBe(testStyle['default?']);
+    })
+
+    test('should ETL photo data', async () => {
+      await extractPhotos();
+      const etlPhoto = await Photo.findOne({id: 1});
+      expect(etlPhoto).toBeTruthy();
+      expect(etlPhoto.id).toBe(testPhoto.id);
+      expect(etlPhoto.style_id).toBe(testPhoto.style_id);
+      expect(etlPhoto.thumbnail_url).toBe(testPhoto.thumbnail_url);
+      expect(etlPhoto.url).toBe(testPhoto.url);
+    })
+
+    test('should ETL sku data', async () => {
+      await extractSKUs();
+      const etlSKU = await SKU.findOne({id: 1});
+      expect(etlSKU).toBeTruthy();
+      expect(etlSKU.id).toBe(testSKU.id);
+      expect(etlSKU.style_id).toBe(testSKU.style_id);
+      expect(etlSKU.size).toBe(testSKU.size);
+      expect(etlSKU.quantity).toBe(testSKU.quantity);
+    })
+
+    test('should ETL review data', async () => {
+      await extractReviews();
+      const etlReview = await Review.findOne({review_id: 1});
+      expect(etlReview).toBeTruthy();
+      expect(etlReview.review_id).toBe(testReview.review_id);
+      expect(etlReview.product_id).toBe(testReview.product_id);
+      expect(etlReview.rating).toBe(testReview.rating);
+      expect(etlReview.summary).toBe(testReview.summary);
+      expect(etlReview.recommend).toBe(testReview.recommend);
+      expect(etlReview.response).toBe(testReview.response);
+      expect(etlReview.body).toBe(testReview.body);
+      expect(etlReview.date).toBe(testReview.date);
+      expect(etlReview.reviewer_name).toBe(testReview.reviewer_name);
+      expect(etlReview.email).toBe(testReview.email);
+      expect(etlReview.helpfulness).toBe(testReview.helpfulness);
+      expect(etlReview.reported).toBe(testReview.reported);
+    })
+
+    test('should ETL review photo data', async () => {
+      await extractReviewPhotos();
+      const etlReviewPhoto = await ReviewPhoto.findOne({id: 1});
+      expect(etlReviewPhoto).toBeTruthy();
+      expect(etlReviewPhoto.id).toBe(testReviewPhoto.id);
+      expect(etlReviewPhoto.review_id).toBe(testReviewPhoto.review_id);
+      expect(etlReviewPhoto.url).toBe(testReviewPhoto.url);
+    })
+
+    test('should ETL cart data', async () => {
+      await extractCart();
+      const etlCart = await Cart.findOne({ user_session: 3232 });
+      expect(etlCart).toBeTruthy();
+      expect(etlCart.id).toBe(testCart1.id);
+      expect(etlCart.user_session).toBe(testCart1.user_session);
+      expect(etlCart.product_id).toBe(testCart1.product_id);
+      expect(etlCart.active).toBe(testCart1.active);
     })
 
   })
