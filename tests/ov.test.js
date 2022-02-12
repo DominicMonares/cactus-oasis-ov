@@ -45,6 +45,15 @@ describe('Overview', () => {
           })
       })
 
+      test('should return 500 when an error occurs', async () => {
+        const product = await Product.create(testProduct);
+
+
+        await supertest(app)
+          .get('/products')
+          .expect(500)
+      })
+
       test('GET /products/:product_id', async () => {
         const product = await Product.create(testProduct);
         const feature = await Feature.create(testFeature);
