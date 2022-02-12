@@ -9,23 +9,22 @@ const {createProduct, createFeature, createStyle, createPhoto, createSKU, create
 const {testProduct, testFeature, testStyle, testPhoto, testSKU, testReview, testReviewPhoto, testCart1, testCart2} = require('./testObjects.js');
 
 
+beforeEach(done => {
+  mongoose.connect('mongodb://localhost:27017/SDCTest', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }, () => done())
+});
+
+afterEach(done => {
+  mongoose.connection.db.dropDatabase(() => {
+    mongoose.connection.close(() => done());
+  })
+});
+
+const app = createServer();
 
 describe('Overview', () => {
-
-  beforeEach(done => {
-    mongoose.connect('mongodb://localhost:27017/SDCTest', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    }, () => done())
-  });
-
-  afterEach(done => {
-    mongoose.connection.db.dropDatabase(() => {
-      mongoose.connection.close(() => done());
-    })
-  });
-
-  const app = createServer();
 
   //////////////////////////////////
   // PRIMARY ROUTES
@@ -36,6 +35,7 @@ describe('Overview', () => {
     /* ========== PRODUCTS ========== */
 
     describe('Products', () => {
+
       test('GET /products', async () => {
         const product = await Product.create(testProduct);
         await supertest(app)
