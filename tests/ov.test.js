@@ -256,33 +256,128 @@ describe('Overview', () => {
 
   describe('Database Methods', () => {
 
-    test('should create product', async () => {
-      await createProduct(testProduct, (err, data) => {
+    test('should create product', done => {
+      createProduct(testProduct, async (err, data) => {
         if (err) {
-          return err;
+          done(err);
         } else {
-          return data;
+          const newProduct = await Product.findOne({id: 1});
+          expect(newProduct).toBeTruthy();
+          expect(newProduct.id).toBe(testProduct.id);
+          expect(newProduct.name).toBe(testProduct.name);
+          expect(newProduct.slogan).toBe(testProduct.slogan);
+          expect(newProduct.description).toBe(testProduct.description);
+          expect(newProduct.category).toBe(testProduct.category);
+          expect(newProduct.default_price).toBe(testProduct.default_price);
+          done();
         }
       });
-
-      const newProduct = await Product.findOne({ id: 1 });
-      // expect(newProduct).toBeTruthy();
-      expect(newProduct.id).toBe(testProduct.id);
-      expect(newProduct.name).toBe(testProduct.name);
-      expect(newProduct.slogan).toBe(testProduct.slogan);
-      expect(newProduct.description).toBe(testProduct.description);
-      expect(newProduct.category).toBe(testProduct.category);
-      expect(newProduct.default_price).toBe(testProduct.default_price);
     })
 
-    // test('should create feature', async () => {
-    //   await createFeature(testFeature, (err, data) => {
-    //     err ? err : data;
-    //   });
+    test('should create feature', done => {
+      createFeature(testFeature, async (err, data) => {
+        if (err) {
+          done(err);
+        } else {
+          const newFeature = await Feature.findOne({id: 1});
+          expect(newFeature).toBeTruthy();
+          expect(newFeature.id).toBe(testFeature.id);
+          expect(newFeature.product_id).toBe(testFeature.product_id);
+          expect(newFeature.feature).toBe(testFeature.feature);
+          expect(newFeature.value).toBe(testFeature.value);
+          done();
+        }
+      });
+    })
 
-    //   const newFeature = await Feature.findOne({ id: 1 });
-    //   expect(newFeature).toBeTruthy();
-    // })
+    test('should create a style', done => {
+      createStyle(testStyle, async (err, data) => {
+        if (err) {
+          done();
+        } else {
+          const newStyle = await Style.findOne({style_id: 1});
+          expect(newStyle).toBeTruthy();
+          expect(newStyle.style_id).toBe(testStyle.style_id);
+          expect(newStyle.product_id).toBe(testStyle.product_id);
+          expect(newStyle.name).toBe(testStyle.name);
+          expect(newStyle.sale_price).toBe(testStyle.sale_price);
+          expect(newStyle.original_price).toBe(testStyle.original_price);
+          expect(newStyle['default?']).toBe(testStyle['default?']);
+          done();
+        }
+      })
+    })
+
+    test('should create a photo', done => {
+      createPhoto(testPhoto, async (err, data) => {
+        if (err) {
+          done(err);
+        } else {
+          const newPhoto = await Photo.findOne({id: 1});
+          expect(newPhoto).toBeTruthy();
+          expect(newPhoto.id).toBe(testPhoto.id);
+          expect(newPhoto.style_id).toBe(testPhoto.style_id);
+          expect(newPhoto.thumbnail_url).toBe(testPhoto.thumbnail_url);
+          expect(newPhoto.url).toBe(testPhoto.url);
+          done();
+        }
+      })
+    })
+
+    test('should create an sku', done => {
+      createSKU(testSKU, async (err, data) => {
+        if (err) {
+          done(err);
+        } else {
+          const newSKU = await SKU.findOne({id: 1});
+          expect(newSKU).toBeTruthy();
+          expect(newSKU.id).toBe(testSKU.id);
+          expect(newSKU.style_id).toBe(testSKU.style_id);
+          expect(newSKU.size).toBe(testSKU.size);
+          expect(newSKU.quantity).toBe(testSKU.quantity);
+          done();
+        }
+      })
+    })
+
+    test('should create a review', done => {
+      createReview(testReview, async (err, data) => {
+        if (err) {
+          done(err);
+        } else {
+          const newReview = await Review.findOne({review_id: 1});
+          expect(newReview).toBeTruthy();
+          expect(newReview.review_id).toBe(testReview.review_id);
+          expect(newReview.product_id).toBe(testReview.product_id);
+          expect(newReview.rating).toBe(testReview.rating);
+          expect(newReview.summary).toBe(testReview.summary);
+          expect(newReview.recommend).toBe(testReview.recommend);
+          expect(newReview.response).toBe(testReview.response);
+          expect(newReview.body).toBe(testReview.body);
+          expect(newReview.date).toBe(testReview.date);
+          expect(newReview.reviewer_name).toBe(testReview.reviewer_name);
+          expect(newReview.email).toBe(testReview.email);
+          expect(newReview.helpfulness).toBe(testReview.helpfulness);
+          expect(newReview.reported).toBe(testReview.reported);
+          done();
+        }
+      })
+    })
+
+    test('should create a review photo', done => {
+      createReviewPhoto(testReviewPhoto, async (err, data) => {
+        if (err) {
+          done(err);
+        } else {
+          const newReviewPhoto = await ReviewPhoto.findOne({id: 1});
+          expect(newReviewPhoto).toBeTruthy();
+          expect(newReviewPhoto.id).toBe(testReviewPhoto.id);
+          expect(newReviewPhoto.review_id).toBe(testReviewPhoto.review_id);
+          expect(newReviewPhoto.url).toBe(testReviewPhoto.url);
+          done();
+        }
+      })
+    })
 
   })
 
