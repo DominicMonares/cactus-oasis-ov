@@ -48,6 +48,10 @@ clientRouter.get('/products/:product_id', async (req, res) => {
 
           data[0]['features'] = fData.map(feature => {
             delete feature._id;
+            if (feature.value === 'null') {
+              feature.value = null;
+            }
+
             return feature;
           });
           fullProduct = data[0];
