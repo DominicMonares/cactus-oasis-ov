@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
+const setupDB = require('./test-setup.js');
 const createServer = require('../server/server.js');
 
 const {Product, Feature, Style, Photo, SKU, Review, ReviewPhoto, Cart} = require('../db/index.js');
@@ -8,19 +9,7 @@ const {createProduct, createFeature, createStyle, createPhoto, createSKU, create
 
 const {testProduct, testFeature, testStyle, testPhoto, testSKU, testReview, testReviewPhoto, testCart1, testCart2} = require('./testObjects.js');
 
-
-beforeEach(done => {
-  mongoose.connect('mongodb://localhost:27017/SDCTest', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }, () => done())
-});
-
-afterEach(done => {
-  mongoose.connection.db.dropDatabase(() => {
-    mongoose.connection.close(() => done());
-  })
-});
+setupDB('overview-test');
 
 const app = createServer();
 
