@@ -5,7 +5,7 @@ mongoose.promise = global.Promise;
 let removeAllCollections = async () => {
   const collections = Object.keys(mongoose.connection.collections);
   for (const collectionName of collections) {
-    const collection = mongoose.connections.collections[collectionName];
+    const collection = mongoose.connection.collections[collectionName];
     await collection.deleteMany();
   }
 }
