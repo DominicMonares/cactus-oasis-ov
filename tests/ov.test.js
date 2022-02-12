@@ -46,7 +46,15 @@ describe('Overview', () => {
       })
 
       test('should return 500 when an error occurs', async () => {
-        const product = await Product.create(testProduct);
+        jest.mock('../server/clientRoutes.js', () => ({
+          fetchAllProducts: jest.fn((1, 1, (err, data) => {
+            if (!err) {
+              err = 500;
+            }
+
+          }))
+        }))
+
 
 
         await supertest(app)
