@@ -18,8 +18,8 @@ const testStyle = {
   style_id: 1,
   product_id: 1,
   name: 'Test name',
-  sale_price: 'Test sale price',
-  original_price: 'Test original price',
+  sale_price: '123',
+  original_price: '321',
   'default?': true
 }
 
@@ -45,7 +45,7 @@ const testReview = {
   recommend: true,
   response: 'Test response',
   body: 'Test body',
-  date: 'Test date',
+  date: '2020-07-29T00:00:00.000Z',
   reviewer_name: 'Test reviewer',
   email: 'Test email',
   helpfulness: 4,
