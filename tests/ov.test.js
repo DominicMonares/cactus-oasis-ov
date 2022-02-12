@@ -45,22 +45,20 @@ describe('Overview', () => {
           })
       })
 
-      test('should return 500 when an error occurs', async () => {
-        jest.mock('../server/clientRoutes.js', () => ({
-          fetchAllProducts: jest.fn((1, 1, (err, data) => {
-            if (!err) {
-              err = 500;
-            }
+      // test('should return 500 when an error occurs', async () => {
+      //   jest.mock('../server/clientRoutes.js', () => ({
+      //     fetchAllProducts: jest.fn((1, 1, (err, data) => {
+      //       if (!err) {
+      //         err = 500;
+      //       }
 
-          }))
-        }))
+      //     }))
+      //   }))
 
-
-
-        await supertest(app)
-          .get('/products')
-          .expect(500)
-      })
+      //   await supertest(app)
+      //     .get('/products')
+      //     .expect(500)
+      // })
 
       test('GET /products/:product_id', async () => {
         const product = await Product.create(testProduct);
