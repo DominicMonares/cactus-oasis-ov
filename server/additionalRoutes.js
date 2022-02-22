@@ -4,8 +4,11 @@ const {createProduct, fetchFeatures, fetchPhotos, fetchSKUs} = require('../db/db
 
 /* ========== PRODUCTS ========== */
 
+/*
+
+FOR TESTING PURPOSES ONLY
+
 additionalRouter.post('/admin/products', (req, res) => {
-  // COMMENT THIS ROUTE OUT BEFORE DEPLOYMENT
   createProduct(null, (err, data) => {
     if (err) {
       res.sendStatus(500);
@@ -14,6 +17,8 @@ additionalRouter.post('/admin/products', (req, res) => {
     }
   });
 });
+
+*/
 
 /* ========== FEATURES ========== */
 

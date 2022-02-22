@@ -1,9 +1,13 @@
 const {Product, Feature, Style, Photo, SKU, Review, ReviewPhoto, Cart} = require('./index.js');
 
+/*
+
 let clearModel = (callback) => {
   // clears all data from hardcoded model, only to be used for testing
   ReviewPhoto.deleteMany(callback);
 }
+
+*/
 
 /* ========== PRODUCTS ========== */
 
@@ -138,22 +142,18 @@ let addToCart = (cartItem, callback) => {
 }
 
 let fetchCart = (session, callback) => {
-  Cart.find({user_session: session}, callback);
+  Cart.find({user_session: session}, callback)
+    .select('product_id active')
+    .lean();
 }
 
-let removeFromCart = (session, sku_id, callback) => {
-  // NOT USED CLIENT SIDE
-  Cart.updateOne({
-    user_session: session,
-    product_id: sku_id,
-    active: 1
-  }, {
-    active: 0
-  }, callback);
+let countCart = (callback) => {
+  Cart.count(callback)
+    .lean();
 }
 
 module.exports = {
-  'clearModel': clearModel,
+  // 'clearModel': clearModel,
   'fetchAllProducts': fetchAllProducts,
   'fetchProduct': fetchProduct,
   'createProduct': createProduct,
@@ -171,5 +171,5 @@ module.exports = {
   'fetchReviewPhotos': fetchReviewPhotos,
   'addToCart': addToCart,
   'fetchCart': fetchCart,
-  'removeFromCart': removeFromCart
+  'countCart': countCart
 }

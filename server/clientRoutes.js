@@ -1,7 +1,7 @@
 const express = require('express');
 const clientRouter = require('express').Router();
 const {
-  fetchAllProducts, fetchProduct, fetchFeatures, fetchStyles, fetchPhotos, fetchSKUs, fetchReviews, fetchReviewPhotos, addToCart, fetchCart
+  fetchAllProducts, fetchProduct, fetchFeatures, fetchStyles, fetchPhotos, fetchSKUs, fetchReviews, fetchReviewPhotos, addToCart, fetchCart, countCart
 } = require('../db/dbMethods.js');
 
 /* ========== PRODUCTS ========== */
@@ -48,6 +48,10 @@ clientRouter.get('/products/:product_id', async (req, res) => {
 
           data[0]['features'] = fData.map(feature => {
             delete feature._id;
+            if (feature.value === 'null') {
+              feature.value = null;
+            }
+
             return feature;
           });
           fullProduct = data[0];
@@ -133,7 +137,7 @@ clientRouter.get('/reviews/', (req, res) => {
   let fullReview = {
     'product': product_id || null,
     'page': page,
-    'count': count
+    'count': Number(count)
   };
 
   fetchReviews(page, count, product_id, (err, data) => {
@@ -175,21 +179,48 @@ let reviewHelper = (review, callback) => {
 clientRouter.get('/cart', (req, res) => {
   // 3232 is the user session for this project
   fetchCart(3232, (err, data) => {
-    err ? res.sendStatus(500) : res.send(data);
-  })
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      if (data.length === 0) {
+        res.send('Cart is empty');
+      }
+
+      let fullCart = {};
+      data.forEach((val, i) => {
+        delete val._id;
+        if (fullCart[val.product_id] === undefined) {
+          fullCart[val.product_id] = { sku_id: val.product_id, count: 1 };
+        } else {
+          fullCart[val.product_id]['count'] ++;
+        }
+
+        if (i === data.length - 1) {
+          res.send(Object.values(fullCart));
+        }
+      });
+    }
+  });
 });
 
 clientRouter.post('/cart', (req, res) => {
-  let cartItem = {
-    id: '',
-    user_session: 3232,
-    product_id: req.query.sku_id,
-    active: 1
-  }
+  countCart((err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      let cartItem = {
+        id: data + 1,
+        user_session: 3232,
+        product_id: req.query.sku_id,
+        active: 1
+      }
 
-  addToCart(cartItem, (err, data) => {
-    err ? res.sendStatus(500) : res.send(data);
+      addToCart(cartItem, (cErr, cData) => {
+        cErr ? res.sendStatus(500) : res.send(cData);
+      });
+    }
   })
+
 });
 
 module.exports = clientRouter;

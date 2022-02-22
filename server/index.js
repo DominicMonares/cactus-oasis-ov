@@ -1,14 +1,15 @@
 const express = require('express');
-const app = express();
-const port = 8080;
-const clientRouter = require('./clientRoutes.js');
-const etlRouter = require('./etlRoutes.js');
-const additionalRouter = require('./additionalRoutes.js');
+const mongoose = require('mongoose');
+const createServer = require('./server.js');
 
-app.use('/', clientRouter);
-app.use('/', etlRouter);
-app.use('/', additionalRouter)
-
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
-})
+mongoose
+  .connect('mongodb://localhost:27017/SDC', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => {
+    const app = createServer();
+    app.listen(8080, () => {
+      console.log('Listening on port 8080');
+    })
+  });
