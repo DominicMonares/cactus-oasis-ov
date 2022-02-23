@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --detectOpenHandles --coverage --testEnvironment=node --runInBand",
-    "stress": "artillery run --output stress-test-report.json config.yml",
-    "stress-report": "artillery report stress-test-report.json",
+    "stress": "artillery run --output tests/stress/stress-test-report.json tests/stress/config.yml",
+    "stress-report": "artillery report tests/stress/stress-test-report.json",
     "start": "npx nodemon server/index.js"
   },
   "repository": {
