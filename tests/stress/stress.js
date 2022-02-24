@@ -12,7 +12,7 @@ export const options = {
         {target: 10, duration: '5s'},
         {target: 100, duration: '5s'},
         {target: 1000, duration: '5s'},
-        {target: 0, duration: '25s'}
+        {target: 0, duration: '20s'}
       ],
       gracefulRampDown: '0s'
     }
