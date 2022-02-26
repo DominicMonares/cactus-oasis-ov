@@ -1,4 +1,14 @@
+const redisClient = require('redis').createClient;
+const redis = redisClient({host: 'localhost', port: 6379});
 const {Product, Feature, Style, Photo, SKU, Review, ReviewPhoto, Cart} = require('./index.js');
+
+redis.on('error', (err) => {
+  console.log('Unable to connect to redis ', err);
+})
+
+redis.on('connect', () => {
+  console.log('Connected to redis');
+})
 
 /*
 
@@ -20,10 +30,22 @@ let fetchAllProducts = (page, count, callback) => {
     .lean();
 }
 
-let fetchProduct = (product, callback) => {
-  Product.find({id: product}, callback)
-    .select('id name slogan description category default_price')
-    .lean();
+let fetchProduct = async (product, callback) => {
+  await redis.connect();
+
+  redis.get(product, (err, res) => {
+    if (err) {
+      callback(err, null);
+    } else if (res) {
+      callback(null, res);
+    } else {
+      Product.find({id: product}, callback)
+        .select('id name slogan description category default_price')
+        .lean();
+    }
+  })
+
+
 }
 
 let createProduct = (product, callback) => {
