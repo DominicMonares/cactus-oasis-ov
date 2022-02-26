@@ -1,14 +1,51 @@
+const mongoose = require('mongoose');
+const util = require('util');
 const redisClient = require('redis').createClient;
-const redis = redisClient({host: 'localhost', port: 6379});
+const client = redisClient({host: 'localhost', port: 6379});
 const {Product, Feature, Style, Photo, SKU, Review, ReviewPhoto, Cart} = require('./index.js');
 
-redis.on('error', (err) => {
+client.on('error', (err) => {
   console.log('Unable to connect to redis ', err);
 })
 
-redis.on('connect', () => {
+client.on('connect', () => {
   console.log('Connected to redis');
 })
+
+client.get = util.promisify(client.get);
+const exec = mongoose.Query.prototype.exec;
+
+mongoose.Query.prototype.exec = async function() {
+  let key = JSON.stringify({...this.getQuery()});
+
+  let cacheValue = await client.get(key, (err, res) => {
+    if (err) {
+      console.log('Cache Error ', err);
+    } else {
+      console.log('RES ', err, res);
+      return res;
+    }
+  });
+
+  console.log('TEST ', cacheValue);
+  if (cacheValue) {
+    let doc = JSON.parse(cacheValue);
+
+    console.log('RESPONSE ', doc);
+    if (Array.isArray(doc)) {
+      return doc.map(d => new this.model(d));
+    } else {
+      new this.model(doc);
+    }
+  }
+
+  let result = await exec.apply(this, arguments);
+  client.set(key, JSON.stringify(result));
+
+  console.log('RESPONSE DB ', result);
+  return result;
+
+}
 
 /*
 
@@ -31,20 +68,11 @@ let fetchAllProducts = (page, count, callback) => {
 }
 
 let fetchProduct = async (product, callback) => {
-  await redis.connect();
+  await client.connect();
 
-  redis.get(product, (err, res) => {
-    if (err) {
-      callback(err, null);
-    } else if (res) {
-      callback(null, res);
-    } else {
-      Product.find({id: product}, callback)
-        .select('id name slogan description category default_price')
-        .lean();
-    }
-  })
-
+  Product.find({ id: product }, callback)
+    .select('id name slogan description category default_price')
+    .lean()
 
 }
 
