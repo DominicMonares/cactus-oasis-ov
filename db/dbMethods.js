@@ -12,6 +12,7 @@ let clearModel = (callback) => {
 /* ========== PRODUCTS ========== */
 
 let fetchAllProducts = (page, count, callback) => {
+  // NOT USED CLIENT SIDE
   let start = (page - 1) * count;
   let end = (page * count) + 1;
   Product.find({id: {'$gt': start, '$lt': end}}, callback)
@@ -95,13 +96,14 @@ let fetchSKUs = (style, callback) => {
 /* ========== REVIEWS ========== */
 
 let createReview = (review, callback) => {
-  // NOT USED CLIENT SIDE IN OVERVIEW WIDGET
+  // NOT NEEDED, USE EXAMPLE DATA
   let newReview = new Review(review);
   console.log(`PRE-LOAD ${review.review_id}`);
   newReview.save(callback);
 }
 
 let fetchReviews = (page, count, product, callback) => {
+  // NOT NEEDED, USE EXAMPLE DATA
   let sortParams = 'review_id rating summary recommend response body date reviewer_name helpfulness';
   let start = (page - 1) * count;
   let end = (page * count) + 1;
@@ -122,13 +124,14 @@ let fetchReviews = (page, count, product, callback) => {
 /* ========== REVIEW PHOTOS ========== */
 
 let createReviewPhoto = (reviewPhoto, callback) => {
-  // NOT USED CLIENT SIDE IN OVERVIEW WIDGET
+  // NOT NEEDED, USE EXAMPLE DATA
   let newReviewPhoto = new ReviewPhoto(reviewPhoto);
   console.log(`PRE-LOAD ${reviewPhoto.id}`);
   newReviewPhoto.save(callback);
 }
 
 let fetchReviewPhotos = (review, callback) => {
+  // NOT NEEDED, USE EXAMPLE DATA
   ReviewPhoto.find({review_id: review}, callback)
     .select('id url')
     .lean();
