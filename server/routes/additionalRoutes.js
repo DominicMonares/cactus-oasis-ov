@@ -1,6 +1,6 @@
 const express = require('express');
 const additionalRouter = require('express').Router();
-const {createProduct, fetchFeatures, fetchPhotos, fetchSKUs} = require('../db/dbMethods.js');
+const {createProduct, fetchFeatures, fetchPhotos, fetchSKUs} = require('../../db/dbMethods.js');
 
 /* ========== PRODUCTS ========== */
 

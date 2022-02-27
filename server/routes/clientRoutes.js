@@ -3,8 +3,8 @@ const express = require('express');
 const clientRouter = require('express').Router();
 const {
   fetchAllProducts, fetchProduct, fetchFeatures, fetchStyles, fetchPhotos, fetchSKUs, fetchReviews, fetchReviewPhotos, addToCart, fetchCart, countCart
-} = require('../db/dbMethods.js');
-const {cache, checkCache, createCache} = require('../cache/cache.js');
+} = require('../../db/dbMethods.js');
+const {cache, checkCache, createCache} = require('../../cache/cache.js');
 
 /* ========== PRODUCTS ========== */
 
