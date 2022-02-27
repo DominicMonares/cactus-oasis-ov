@@ -5,6 +5,7 @@ const {
   fetchAllProducts, fetchProduct, fetchFeatures, fetchStyles, fetchPhotos, fetchSKUs, fetchReviews, fetchReviewPhotos, addToCart, fetchCart, countCart
 } = require('../../db/dbMethods.js');
 const {cache, checkCache, createCache} = require('../../cache/cache.js');
+const {getProduct} = require('../routeMethods.js');
 
 /* ========== PRODUCTS ========== */
 
@@ -27,51 +28,53 @@ clientRouter.get('/products', (req, res) => {
   })
 })
 
-clientRouter.get('/products/:product_id', async (req, res) => {
-  let product_id = req.params.product_id;
-  let fullProduct;
+clientRouter.get('/products/:product_id', getProduct);
 
-  if (cache[`product ${product_id}`]) {
-    res.send(cache[`product ${product_id}`]);
-  } else {
-    fetchProduct(product_id, (err, data) => {
-      if (err) {
-        res.sendStatus(500);
-      } else {
-        if (data.length === 0) {
-          res.send('No Product Data Found');
-        }
+// async (req, res) => {
+//   let product_id = req.params.product_id;
+//   let fullProduct;
 
-        delete data[0]['_id'];
-        getFeatures(product_id, (fErr, fData) => {
-          if (fErr) {
-            res.sendStatus(500);
-          } else {
-            if (fData.length === 0) {
-              res.send('No Feature Data Found');
-            }
+//   if (cache[`product ${product_id}`]) {
+//     res.send(cache[`product ${product_id}`]);
+//   } else {
+//     fetchProduct(product_id, (err, data) => {
+//       if (err) {
+//         res.sendStatus(500);
+//       } else {
+//         if (data.length === 0) {
+//           res.send('No Product Data Found');
+//         }
 
-            data[0]['features'] = fData.map(feature => {
-              delete feature._id;
-              if (feature.value === 'null') {
-                feature.value = null;
-              }
+//         delete data[0]['_id'];
+//         getFeatures(product_id, (fErr, fData) => {
+//           if (fErr) {
+//             res.sendStatus(500);
+//           } else {
+//             if (fData.length === 0) {
+//               res.send('No Feature Data Found');
+//             }
 
-              return feature;
-            });
-            fullProduct = data[0];
-            cache[`product ${product_id}`] = fullProduct;
-            res.send(fullProduct);
-          }
-        });
-      }
-    });
-  }
-});
+//             data[0]['features'] = fData.map(feature => {
+//               delete feature._id;
+//               if (feature.value === 'null') {
+//                 feature.value = null;
+//               }
 
-let getFeatures = (product, callback) => {
-  fetchFeatures(product, callback);
-}
+//               return feature;
+//             });
+//             fullProduct = data[0];
+//             cache[`product ${product_id}`] = fullProduct;
+//             res.send(fullProduct);
+//           }
+//         });
+//       }
+//     });
+//   }
+// }
+
+// let getFeatures = (product, callback) => {
+//   fetchFeatures(product, callback);
+// }
 
 /* ========== STYLES ========== */
 
