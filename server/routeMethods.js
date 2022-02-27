@@ -3,8 +3,13 @@ const {
 } = require('../db/dbMethods.js');
 const {cache, checkCache, createCache} = require('../cache/cache.js');
 
-let getProduct = async (req, res) => {
-  let product_id = req.params.product_id;
+let getProduct = async (req, res, product) => {
+  if (req && res) {
+    var product_id = req.params.product_id;
+  } else {
+    var product_id = product;
+  }
+
   let fullProduct;
 
   if (cache[`product ${product_id}`]) {
@@ -15,6 +20,7 @@ let getProduct = async (req, res) => {
     }
   } else {
     fetchProduct(product_id, (err, data) => {
+      console.log('ID ', product_id);
       if (err) {
         if (res) {
           res.sendStatus(500);
