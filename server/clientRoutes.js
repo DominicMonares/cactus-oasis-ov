@@ -4,6 +4,7 @@ const clientRouter = require('express').Router();
 const {
   fetchAllProducts, fetchProduct, fetchFeatures, fetchStyles, fetchPhotos, fetchSKUs, fetchReviews, fetchReviewPhotos, addToCart, fetchCart, countCart
 } = require('../db/dbMethods.js');
+const {cache, checkCache, createCache} = require('../cache/cache.js');
 
 /* ========== PRODUCTS ========== */
 
@@ -30,37 +31,42 @@ clientRouter.get('/products/:product_id', async (req, res) => {
   let product_id = req.params.product_id;
   let fullProduct;
 
-  fetchProduct(product_id, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      if (data.length === 0) {
-        res.send('No Product Data Found');
-      }
+  if (cache[`product ${product_id}`]) {
+    res.send(cache[`product ${product_id}`]);
+  } else {
+    fetchProduct(product_id, (err, data) => {
+      if (err) {
+        res.sendStatus(500);
+      } else {
+        if (data.length === 0) {
+          res.send('No Product Data Found');
+        }
 
-      delete data[0]['_id'];
-      getFeatures(product_id, (fErr, fData) => {
-        if (fErr) {
-          res.sendStatus(500);
-        } else {
-          if (fData.length === 0) {
-            res.send('No Feature Data Found');
-          }
-
-          data[0]['features'] = fData.map(feature => {
-            delete feature._id;
-            if (feature.value === 'null') {
-              feature.value = null;
+        delete data[0]['_id'];
+        getFeatures(product_id, (fErr, fData) => {
+          if (fErr) {
+            res.sendStatus(500);
+          } else {
+            if (fData.length === 0) {
+              res.send('No Feature Data Found');
             }
 
-            return feature;
-          });
-          fullProduct = data[0];
-          res.send(fullProduct);
-        }
-      });
-    }
-  });
+            data[0]['features'] = fData.map(feature => {
+              delete feature._id;
+              if (feature.value === 'null') {
+                feature.value = null;
+              }
+
+              return feature;
+            });
+            fullProduct = data[0];
+            cache[`product ${product_id}`] = fullProduct;
+            res.send(fullProduct);
+          }
+        });
+      }
+    });
+  }
 });
 
 let getFeatures = (product, callback) => {
@@ -73,50 +79,56 @@ clientRouter.get('/products/:product_id/styles', async (req, res) => {
   let product_id = req.params.product_id;
   let fullStyle = {'product_id': product_id};
 
-  fetchStyles(product_id, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      if (data.length === 0) {
-        res.sendStatus('No Style Data Found');
+  if (cache[`style ${product_id}`]) {
+    res.send(cache[`style ${product_id}`]);
+  } else {
+    fetchStyles(product_id, (err, data) => {
+      if (err) {
+        res.sendStatus(500);
+      } else {
+        if (data.length === 0) {
+          res.sendStatus('No Style Data Found');
+        }
+
+        data.forEach((val, i) => {
+          delete val._id;
+          let style = val.style_id
+          photoHelper(style, (pErr, pData) => {
+            if (pErr) {
+              res.sendStatus(500);
+            } else {
+              pData.forEach(pVal => {delete pVal._id});
+              val.photos = pData;
+            }
+          })
+
+          skuHelper(style, (sErr, sData) => {
+            if (sErr) {
+              res.sendStatus(500);
+            } else {
+              if (sData.length === 0) {
+                res.send('No SKU Data Found');
+              }
+
+              let fullSKUs = {};
+              sData.forEach(sVal => {
+                delete sVal._id;
+                fullSKUs[sVal.id] = {quantity: sVal.quantity, size: sVal.size};
+              });
+
+              val.skus = fullSKUs;
+              if (i === data.length - 1) {
+                fullStyle.results = data;
+                cache[`style ${product_id}`] = fullStyle;
+                res.send(fullStyle);
+              }
+            }
+          })
+        });
       }
+    });
+  }
 
-      data.forEach((val, i) => {
-        delete val._id;
-        let style = val.style_id
-        photoHelper(style, (pErr, pData) => {
-          if (pErr) {
-            res.sendStatus(500);
-          } else {
-            pData.forEach(pVal => {delete pVal._id});
-            val.photos = pData;
-          }
-        })
-
-        skuHelper(style, (sErr, sData) => {
-          if (sErr) {
-            res.sendStatus(500);
-          } else {
-            if (sData.length === 0) {
-              res.send('No SKU Data Found');
-            }
-
-            let fullSKUs = {};
-            sData.forEach(sVal => {
-              delete sVal._id;
-              fullSKUs[sVal.id] = {quantity: sVal.quantity, size: sVal.size};
-            });
-
-            val.skus = fullSKUs;
-            if (i === data.length - 1) {
-              fullStyle.results = data;
-              res.send(fullStyle);
-            }
-          }
-        })
-      });
-    }
-  });
 });
 
 let photoHelper = (style, callback) => {
@@ -177,32 +189,43 @@ let reviewHelper = (review, callback) => {
 
 /* ========== CART ========== */
 
+let update = false;
+
 clientRouter.get('/cart', (req, res) => {
   // 3232 is the user session for this project
-  fetchCart(3232, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      if (data.length === 0) {
-        res.send('Cart is empty');
-      }
-
-      let fullCart = {};
-      data.forEach((val, i) => {
-        delete val._id;
-        if (fullCart[val.product_id] === undefined) {
-          fullCart[val.product_id] = { sku_id: val.product_id, count: 1 };
+  if (cache[`user session 3232`] && !update) {
+    res.send(cache[`user session 3232`]);
+  } else {
+    fetchCart(3232, (err, data) => {
+      if (err) {
+        res.sendStatus(500);
+      } else {
+        if (data.length === 0) {
+          res.send('Cart is empty');
         } else {
-          fullCart[val.product_id]['count'] ++;
+          update = false;
+          res.send(sortCart(data));
         }
-
-        if (i === data.length - 1) {
-          res.send(Object.values(fullCart));
-        }
-      });
-    }
-  });
+      }
+    });
+  }
 });
+
+let sortCart = (cart) => {
+  let fullCart = {};
+  for (var item = 0; item < cart.length - 1; item ++) {
+    let val = cart[item];
+    delete val._id;
+    if (fullCart[val.product_id] === undefined) {
+      fullCart[val.product_id] = { sku_id: val.product_id, count: 1 };
+    } else {
+      fullCart[val.product_id]['count'] ++;
+    }
+  }
+
+  cache[`user session 3232`] = Object.values(fullCart);
+  return Object.values(fullCart);
+}
 
 clientRouter.post('/cart', (req, res) => {
   countCart((err, data) => {
@@ -216,12 +239,12 @@ clientRouter.post('/cart', (req, res) => {
         active: 1
       }
 
+      update = true;
       addToCart(cartItem, (cErr, cData) => {
         cErr ? res.sendStatus(500) : res.send(cData);
       });
     }
   })
-
 });
 
 module.exports = clientRouter;
