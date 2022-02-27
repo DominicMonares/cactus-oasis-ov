@@ -18,7 +18,7 @@ let cacheProduct = (product_id) => {
 let warmupProducts = async () => {
   count = 1;
   while (count < 1000000) {
-    await cacheProduct(1);
+    await cacheProduct(count);
     count += 2;
   }
 }
