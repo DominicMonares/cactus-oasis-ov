@@ -13,6 +13,16 @@ etlRouter.get('/etl/delete', (req, res) => {
   })
 });
 
+etlRouter.get('/etl/product', (req, res) => {
+  extractProduct()
+    .then(data => {
+      res.sendStatus(201);
+    })
+    .catch(err => {
+      res.sendStatus(500);
+    });
+});
+
 /*
 
 ETL PROCESS COMPLETE, ROUTES NO LONGER NEED TO BE ACTIVE
@@ -26,15 +36,6 @@ etlRouter.get('/etl/delete', (req, res) => {
   })
 });
 
-etlRouter.get('/etl/product', (req, res) => {
-  extractProduct()
-    .then(data => {
-      res.sendStatus(201);
-    })
-    .catch(err => {
-      res.sendStatus(500);
-    });
-});
 
 etlRouter.get('/etl/features', (req, res) => {
   extractFeatures()

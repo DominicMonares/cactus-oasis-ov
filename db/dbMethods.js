@@ -30,7 +30,7 @@ let fetchProduct = (product, callback) => {
 let createProduct = (product, callback) => {
   // NOT USED CLIENT SIDE
   let newProduct = new Product(product);
-  console.log(`PRE-LOAD ${product.id}`)
+  // console.log(`PRE-LOAD ${JSON.stringify(product)}`)
   newProduct.save(callback);
 }
 
