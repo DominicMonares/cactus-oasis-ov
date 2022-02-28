@@ -1,5 +1,4 @@
 const {Transform} = require('stream');
-const {convertBool, convertDate} = require('./transformHelpers.js');
 const {createProduct, createFeature, createStyle, createPhoto, createSKU, addToCart} = require('../db/dbMethods.js');
 
 const transformProduct = new Transform({
