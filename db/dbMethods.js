@@ -5,7 +5,7 @@ const {Product, Feature, Style, Photo, SKU, Review, ReviewPhoto, Cart} = require
 
 let clearModel = (callback) => {
   // clears all data from hardcoded model, only to be used for testing
-  Feature.deleteMany(callback);
+  Style.deleteMany(callback);
 }
 
 // */

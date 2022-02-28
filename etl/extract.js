@@ -5,67 +5,64 @@ const csv = require('csvtojson');
 const moment = require('moment');
 
 const {
-  transformProductStream,
+  transformProduct, transformFeature, transformStyle
 } = require('./transform.js');
 
 const csvParser = csv();
 
-const extractProduct = async () => {
-  const productInURL = path.resolve(__dirname, 'origin/product.csv');
-  const productOutURL = path.resolve(__dirname, 'origin/json/product.json');
+const extractProduct = () => {
+  const productInUrl = path.resolve(__dirname, 'origin/product.csv');
+  const productOutUrl = path.resolve(__dirname, 'origin/json/product.json');
 
-  const productInputStream = fs.createReadStream(productInURL);
-  const productOutputStream = fs.createWriteStream(productOutURL);
+  const productInputStream = fs.createReadStream(productInUrl);
+  const productOutputStream = fs.createWriteStream(productOutUrl);
 
-  await pipeline(productInputStream, csvParser, transformProductStream, productOutputStream, err => {
+  pipeline(productInputStream, csvParser, transformProduct, productOutputStream, err => {
     if (err) {
-      console.log('Pipeline error: ', err);
+      console.log('Product pipeline error: ', err);
     } else {
-      console.log('Pipeline completed successfully');
+      console.log('Product pipeline completed successfully');
     }
   })
 }
 
 // extractProduct();
 
+const extractFeatures = () => {
+  const featureInUrl = path.resolve(__dirname, 'origin/features.csv');
+  const featureOutUrl = path.resolve(__dirname, 'origin/json/features.json');
 
-// let extractProduct = () => {
-//   const csvFilePath = `${__dirname}/origin/split/products/product1.csv`;
-//   return csv()
-//     .fromFile(csvFilePath)
-//     .then(data => {
-//       return data;
-//     })
-//     .catch(err => {
-//       throw 'PRODUCT EXTRACTION ERROR ', err;
-//     })
-//     .then(extracted => {
-//       transformProduct(extracted);
-//     })
-//     .catch(err => {
-//       throw 'PRODUCT TRANSFORMATION ERROR ', err;
-//     })
-// }
+  const featureInputStream = fs.createReadStream(featureInUrl);
+  const featureOutputStream = fs.createWriteStream(featureOutUrl);
 
+  pipeline(featureInputStream, csvParser, transformFeature, featureOutputStream, err => {
+    if (err) {
+      console.log('Feature pipeline error ', err);
+    } else {
+      console.log('Feature pipeline completed successfully');
+    }
+  })
+}
 
+// extractFeatures();
 
-// let extractFeatures = () => {
-//   const csvFilePath = `${__dirname}/origin/split/features/features1.csv`;
-//   return csv()
-//     .fromFile(csvFilePath)
-//     .then(data => {
-//       return data;
-//     })
-//     .catch(err => {
-//       throw 'FEATURE EXTRACTION ERROR ', err;
-//     })
-//     .then(extracted => {
-//       transformFeature(extracted);
-//     })
-//     .catch(err => {
-//       throw 'FEATURE TRANSFORMATION ERROR ', err;
-//     })
-// }
+const extractStyles = () => {
+  const styleInUrl = path.resolve(__dirname, 'origin/styles.csv');
+  const styleOutUrl = path.resolve(__dirname, 'origin/json/styles.json');
+
+  const styleInputStream = fs.createReadStream(styleInUrl);
+  const styleOutputStream = fs.createWriteStream(styleOutUrl);
+
+  pipeline(styleInputStream, csvParser, transformStyle, styleOutputStream, err => {
+    if (err) {
+      console.log('Style pipeline error ', err);
+    } else {
+      console.log('Style pipeline completed successfully');
+    }
+  })
+}
+
+// extractStyles();
 
 // let extractStyles = () => {
 //   const csvFilePath = `${__dirname}/origin/split/styles/styles1.csv`;

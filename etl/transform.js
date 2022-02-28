@@ -2,7 +2,7 @@ const {Transform} = require('stream');
 const {convertBool, convertDate} = require('./transformHelpers.js');
 const {createProduct, createFeature, createStyle, createPhoto, createSKU, addToCart} = require('../db/dbMethods.js');
 
-const transformProductStream = new Transform({
+const transformProduct = new Transform({
   transform(chunk, encoding, callback) {
     try {
       let product = Object.assign({}, JSON.parse(chunk));
@@ -20,7 +20,7 @@ const transformProductStream = new Transform({
         if (err) {
           console.log(`FAILED TO CREATE PRODUCT ${product.id} `, err);
         } else {
-          console.log(`PRODUCT ${product.id} SUCCESSFULLY CREATED`);
+          console.log(`Product ${product.id} has been successfully saved!`);
           callback(null, JSON.stringify(product) + '\n');
         }
       })
@@ -30,42 +30,49 @@ const transformProductStream = new Transform({
   }
 })
 
-// let transformFeature = (originalFeature) => {
-//   originalFeature.forEach(feat => {
-//     let newFeature = {
-//       id: Number(feat.id),
-//       product_id: Number(feat.product_id),
-//       feature: feat.feature,
-//       value: feat.value
-//     }
+const transformFeature = new Transform({
+  transform(chunk, encoding, callback) {
+    try {
+      let feature = Object.assign({}, JSON.parse(chunk));
+      feature = {
+        id: Number(feature.id),
+        product_id: Number(feature.product_id),
+        feature: feature.feature,
+        value: feature.value
+      }
 
-//     createFeature(newFeature, err => {
-//       if (err) {
-//         throw err;
-//       } else {
-//         console.log(`Feature ${newFeature.id} has been successfully saved!`);
-//       }
-//     })
-//   })
-// }
+      // load feature
+      createFeature(feature, err => {
+        if (err) {
+          console.log(`FAILED TO CREATE FEATURE ${feature.id} `, err);
+        } else {
+          console.log(`Feature ${feature.id} has been successfully saved!`);
+          callback(null, JSON.stringify(feature) + '\n');
+        }
+      })
+    } catch (err) {
+      callback(err);
+    }
+  }
+})
 
 // let transformStyle = (originalStyle) => {
 //   originalStyle.forEach(style => {
-//     let convertedDefault;
-//     if (style.default_style === '0') {
-//       convertedDefault = false;
-//     } else {
-//       convertedDefault = true;
-//     }
+    // let convertedDefault;
+    // if (style.default_style === '0') {
+    //   convertedDefault = false;
+    // } else {
+    //   convertedDefault = true;
+    // }
 
-//     let newStyle = {
-//       style_id: Number(style.id),
-//       product_id: Number(style.productId),
-//       name: style.name,
-//       sale_price: style.sale_price,
-//       original_price: style.original_price,
-//       'default?': convertedDefault
-//     }
+    // let newStyle = {
+    //   style_id: Number(style.id),
+    //   product_id: Number(style.productId),
+    //   name: style.name,
+    //   sale_price: style.sale_price,
+    //   original_price: style.original_price,
+    //   'default?': convertedDefault
+    // }
 
 //     createStyle(newStyle, err => {
 //       if (err) {
@@ -76,6 +83,40 @@ const transformProductStream = new Transform({
 //     })
 //   })
 // }
+
+const transformStyle = new Transform({
+  transform(chunk, encoding, callback) {
+    try {
+      let style = Object.assign({}, JSON.parse(chunk));
+      if (style.default_style === '0') {
+        style.default_style = false;
+      } else {
+        style.default_style = true;
+      }
+
+      style = {
+        style_id: Number(style.id),
+        product_id: Number(style.productId),
+        name: style.name,
+        sale_price: style.sale_price,
+        original_price: style.original_price,
+        'default?': style.default_style
+      }
+
+      // load style
+      createStyle(style, err => {
+        if (err) {
+          console.log(`FAILED TO CREATE STYLE ${style.id} `, err);
+        } else {
+          console.log(`Style ${style.style_id} has been successfully saved!`);
+          callback(null, JSON.stringify(style) + '\n');
+        }
+      })
+    } catch (err) {
+      callback(err);
+    }
+  }
+})
 
 // let transformPhoto = (originalPhoto) => {
 //   originalPhoto.forEach(photo => {
@@ -181,9 +222,9 @@ const transformProductStream = new Transform({
 // }
 
 module.exports = {
-  'transformProductStream': transformProductStream,
-  // 'transformFeature': transformFeature,
-  // 'transformStyle': transformStyle,
+  'transformProduct': transformProduct,
+  'transformFeature': transformFeature,
+  'transformStyle': transformStyle,
   // 'transformPhoto': transformPhoto,
   // 'transformSKU': transformSKU,
   // 'transformReview': transformReview,
