@@ -106,6 +106,13 @@ const extractCart = () => {
   })
 }
 
+// extractProduct();
+extractFeatures();
+// extractStyles();
+// extractPhotos();
+// extractSKUs();
+// extractCart();
+
 module.exports = {
   'extractProduct': extractProduct,
   'extractFeatures': extractFeatures,
