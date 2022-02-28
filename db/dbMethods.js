@@ -30,7 +30,6 @@ let fetchProduct = (product, callback) => {
 let createProduct = (product, callback) => {
   // NOT USED CLIENT SIDE
   let newProduct = new Product(product);
-  // console.log(`PRE-LOAD ${JSON.stringify(product)}`)
   newProduct.save(callback);
 }
 
@@ -39,7 +38,6 @@ let createProduct = (product, callback) => {
 let createFeature = (feature, callback) => {
   // NOT USED CLIENT SIDE
   let newFeature = new Feature(feature);
-  console.log(`PRE-LOAD ${feature.id}`);
   newFeature.save(callback);
 }
 
@@ -54,7 +52,6 @@ let fetchFeatures = (product, callback) => {
 let createStyle = (style, callback) => {
   // NOT USED CLIENT SIDE
   let newStyle = new Style(style);
-  console.log(`PRE-LOAD ${style.style_id}`)
   newStyle.save(callback);
 }
 
@@ -69,7 +66,6 @@ let fetchStyles = (product, callback) => {
 let createPhoto = (photo, callback) => {
   // NOT USED CLIENT SIDE
   let newPhoto = new Photo(photo);
-  console.log(`PRE-LOAD ${photo.id}`);
   newPhoto.save(callback);
 }
 
@@ -84,7 +80,6 @@ let fetchPhotos = (style, callback) => {
 let createSKU = (sku, callback) => {
   // NOT USED CLIENT SIDE
   let newSKU = new SKU(sku);
-  console.log(`PRE-LOAD ${sku.id}`)
   newSKU.save(callback);
 }
 
