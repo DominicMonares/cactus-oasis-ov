@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
-const {Product, Feature, Style, Photo, SKU, Review, ReviewPhoto, Cart} = require('./index.js');
+const {Product, Feature, Style, Photo, SKU, Cart} = require('./index.js');
 
 // /*
 
 let clearModel = (callback) => {
   // clears all data from hardcoded model, only to be used for testing
-  Style.deleteMany(callback);
+  Cart.deleteMany(callback);
 }
 
 // */
@@ -94,50 +94,6 @@ let fetchSKUs = (style, callback) => {
     .lean();
 }
 
-/* ========== REVIEWS ========== */
-
-let createReview = (review, callback) => {
-  // NOT NEEDED, USE EXAMPLE DATA
-  let newReview = new Review(review);
-  console.log(`PRE-LOAD ${review.review_id}`);
-  newReview.save(callback);
-}
-
-let fetchReviews = (page, count, product, callback) => {
-  // NOT NEEDED, USE EXAMPLE DATA
-  let sortParams = 'review_id rating summary recommend response body date reviewer_name helpfulness';
-  let start = (page - 1) * count;
-  let end = (page * count) + 1;
-
-  if (!product) {
-    Review.find({ review_id: { '$gt': start, '$lt': end } }, callback)
-      .select(sortParams)
-      .lean();
-  } else {
-    Review.find({ product_id: product }, callback)
-      .select(sortParams)
-      .skip(start)
-      .limit(count)
-      .lean();
-  }
-}
-
-/* ========== REVIEW PHOTOS ========== */
-
-let createReviewPhoto = (reviewPhoto, callback) => {
-  // NOT NEEDED, USE EXAMPLE DATA
-  let newReviewPhoto = new ReviewPhoto(reviewPhoto);
-  console.log(`PRE-LOAD ${reviewPhoto.id}`);
-  newReviewPhoto.save(callback);
-}
-
-let fetchReviewPhotos = (review, callback) => {
-  // NOT NEEDED, USE EXAMPLE DATA
-  ReviewPhoto.find({review_id: review}, callback)
-    .select('id url')
-    .lean();
-}
-
 /* ========== CART ========== */
 
 let addToCart = (cartItem, callback) => {
@@ -169,10 +125,6 @@ module.exports = {
   'fetchPhotos': fetchPhotos,
   'createSKU': createSKU,
   'fetchSKUs': fetchSKUs,
-  'createReview': createReview,
-  'fetchReviews': fetchReviews,
-  'createReviewPhoto': createReviewPhoto,
-  'fetchReviewPhotos': fetchReviewPhotos,
   'addToCart': addToCart,
   'fetchCart': fetchCart,
   'countCart': countCart

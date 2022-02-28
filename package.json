@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --detectOpenHandles --coverage --testEnvironment=node --runInBand",
     "stress": "K6_STATSD_ENABLE_TAGS=true k6 run --out statsd tests/stress/stress.js",
-    "start": "node server/index.js"
+    "start": "npx nodemon server/index.js"
   },
   "repository": {
     "type": "git",

@@ -5,7 +5,7 @@ const csv = require('csvtojson');
 const moment = require('moment');
 
 const {
-  transformProduct, transformFeature, transformStyle
+  transformProduct, transformFeature, transformStyle, transformPhoto, transformSKU, transformCart
 } = require('./transform.js');
 
 const csvParser = csv();
@@ -26,8 +26,6 @@ const extractProduct = () => {
   })
 }
 
-// extractProduct();
-
 const extractFeatures = () => {
   const featureInUrl = path.resolve(__dirname, 'origin/features.csv');
   const featureOutUrl = path.resolve(__dirname, 'origin/json/features.json');
@@ -43,8 +41,6 @@ const extractFeatures = () => {
     }
   })
 }
-
-// extractFeatures();
 
 const extractStyles = () => {
   const styleInUrl = path.resolve(__dirname, 'origin/styles.csv');
@@ -62,126 +58,59 @@ const extractStyles = () => {
   })
 }
 
-// extractStyles();
+const extractPhotos = () => {
+  const photoInUrl = path.resolve(__dirname, 'origin/photos.csv');
+  const photoOutUrl = path.resolve(__dirname, 'origin/json/photos.json');
 
-// let extractStyles = () => {
-//   const csvFilePath = `${__dirname}/origin/split/styles/styles1.csv`;
-//   return csv()
-//     .fromFile(csvFilePath)
-//     .then(data => {
-//       console.log('DATA ', data.slice(0, 20));
-//       return data;
-//     })
-//     .catch(err => {
-//       throw 'STYLE EXTRACTION ERROR ', err;
-//     })
-//     .then(extracted => {
-//       transformStyle(extracted);
-//     })
-//     .catch(err => {
-//       throw 'STYLE TRANSFORMATION ERROR ', err;
-//     })
-// }
+  const photoInputStream = fs.createReadStream(photoInUrl);
+  const photoOutputStream = fs.createWriteStream(photoOutUrl);
 
-// let extractPhotos = () => {
-//   const csvFilePath = `${__dirname}/origin/split/photos/photos1.csv`;
-//   return csv()
-//     .fromFile(csvFilePath)
-//     .then(data => {
-//       console.log('DATA ', data.slice(0, 20));
-//       return data;
-//     })
-//     .catch(err => {
-//       throw 'PHOTO EXTRACTION ERROR ', err;
-//     })
-//     .then(extracted => {
-//       transformPhoto(extracted);
-//     })
-//     .catch(err => {
-//       throw 'PHOTO TRANSFORMATION ERROR ', err;
-//     })
-// }
+  pipeline(photoInputStream, csvParser, transformPhoto, photoOutputStream, err => {
+    if (err) {
+      console.log('Photo pipeline error ', err);
+    } else {
+      console.log('Photo pipeline completed successfully');
+    }
+  })
+}
 
-// let extractSKUs = () => {
-//   const csvFilePath = `${__dirname}/origin/split/skus/skus1.csv`;
-//   return csv()
-//     .fromFile(csvFilePath)
-//     .then(data => {
-//       console.log('DATA ', data.slice(0, 20));
-//       return data;
-//     })
-//     .catch(err => {
-//       throw 'SKU EXTRACTION ERROR ', err;
-//     })
-//     .then(extracted => {
-//       transformSKU(extracted);
-//     })
-//     .catch(err => {
-//       throw 'SKU TRANSFORMATION ERROR ', err;
-//     })
-// }
+const extractSKUs = () => {
+  const skuInUrl = path.resolve(__dirname, 'origin/skus.csv');
+  const skuOutUrl = path.resolve(__dirname, 'origin/json/skus.json');
 
-// let extractReviews = () => {
-//   const csvFilePath = `${__dirname}/origin/split/reviews/reviews1.csv`;
-//   return csv()
-//     .fromFile(csvFilePath)
-//     .then(data => {
-//       return data;
-//     })
-//     .catch(err => {
-//       throw 'REVIEW EXTRACTION ERROR ', err;
-//     })
-//     .then(extracted => {
-//       transformReview(extracted);
-//     })
-//     .catch(err => {
-//       throw 'REVIEW TRANSFORMATION ERROR ', err;
-//     })
-// }
+  const skuInputStream = fs.createReadStream(skuInUrl);
+  const skuOutputStream = fs.createWriteStream(skuOutUrl);
 
-// let extractReviewPhotos = () => {
-//   const csvFilePath = `${__dirname}/origin/split/review_photos/reviews_photos1.csv`;
-//   return csv()
-//     .fromFile(csvFilePath)
-//     .then(data => {
-//       return data;
-//     })
-//     .catch(err => {
-//       throw 'REVIEW PHOTO EXTRACTION ERROR ', err;
-//     })
-//     .then(extracted => {
-//       transformReviewPhoto(extracted);
-//     })
-//     .catch(err => {
-//       throw 'REVIEW PHOTO TRANSFORMATION ERROR ', err;
-//     })
-// }
+  pipeline(skuInputStream, csvParser, transformSKU, skuOutputStream, err => {
+    if (err) {
+      console.log('SKU pipeline error ', err);
+    } else {
+      console.log('SKU pipeline completed successfully');
+    }
+  })
+}
 
-// let extractCart = () => {
-//   const csvFilePath = `${__dirname}/origin/cart.csv`;
-//   return csv()
-//     .fromFile(csvFilePath)
-//     .then(data => {
-//       return data;
-//     })
-//     .catch(err => {
-//       throw 'CART EXTRACTION ERROR ', err;
-//     })
-//     .then(extracted => {
-//       transformCart(extracted);
-//     })
-//     .catch(err => {
-//       throw 'CART TRANSFORMATION ERROR ', err;
-//     })
-// }
+const extractCart = () => {
+  const cartInUrl = path.resolve(__dirname, 'origin/cart_original.csv');
+  const cartOutUrl = path.resolve(__dirname, 'origin/json/cart.json');
+
+  const cartInputStream = fs.createReadStream(cartInUrl);
+  const cartOutputStream = fs.createWriteStream(cartOutUrl);
+
+  pipeline(cartInputStream, csvParser, transformCart, cartOutputStream, err => {
+    if (err) {
+      console.log('Cart pipeline error ', err);
+    } else {
+      console.log('Cart pipeline completed successfully');
+    }
+  })
+}
 
 module.exports = {
   'extractProduct': extractProduct,
-  // 'extractFeatures': extractFeatures,
-  // 'extractStyles': extractStyles,
-  // 'extractPhotos': extractPhotos,
-  // 'extractSKUs': extractSKUs,
-  // 'extractReviews': extractReviews,
-  // 'extractReviewPhotos': extractReviewPhotos,
-  // 'extractCart': extractCart
+  'extractFeatures': extractFeatures,
+  'extractStyles': extractStyles,
+  'extractPhotos': extractPhotos,
+  'extractSKUs': extractSKUs,
+  'extractCart': extractCart
 }
