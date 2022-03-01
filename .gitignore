@@ -6,3 +6,5 @@ coverage/
 newrelic.js
 newrelic_agent.log
 dump.rdb
+etl/origin/*.json
+*.pem

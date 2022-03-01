@@ -4,21 +4,30 @@ const {createProduct, fetchFeatures, fetchPhotos, fetchSKUs} = require('../../db
 
 /* ========== PRODUCTS ========== */
 
-/*
 
-FOR TESTING PURPOSES ONLY
 
-additionalRouter.post('/admin/products', (req, res) => {
-  createProduct(null, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.send(data);
-    }
-  });
-});
+// FOR TESTING PURPOSES ONLY
 
-*/
+// additionalRouter.post('/admin/products', (req, res) => {
+//   let product = {
+//     id: 1,
+//     name: "productname",
+//     slogan: "productslogan",
+//     description: "producdescription",
+//     category: "productcategory",
+//     default_price: "120"
+//   };
+
+//   createProduct(product, (err, data) => {
+//     if (err) {
+//       res.sendStatus(500);
+//     } else {
+//       res.send(data);
+//     }
+//   });
+// });
+
+
 
 /* ========== FEATURES ========== */
 

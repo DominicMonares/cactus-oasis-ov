@@ -1,178 +1,171 @@
-const {
-  createProduct, createFeature, createStyle, createPhoto, createSKU, createReview, createReviewPhoto, addToCart
-} = require('../db/dbMethods.js');
-const {convertBool, convertDate} = require('./transformHelpers.js')
+const {Transform} = require('stream');
+const {createProduct, createFeature, createStyle, createPhoto, createSKU, addToCart} = require('../db/dbMethods.js');
 
-let transformProduct = (originalProduct) => {
-  originalProduct.forEach(product => {
-    let newProduct = {
-      id: Number(product.id),
-      name: product.name,
-      slogan: product.slogan,
-      description: product.description,
-      category: product.category,
-      default_price: product.default_price
+const transformProduct = new Transform({
+  transform(chunk, encoding, callback) {
+    try {
+      let product = Object.assign({}, JSON.parse(chunk));
+      product = {
+        id: Number(product.id),
+        name: product.name,
+        slogan: product.slogan,
+        description: product.description,
+        category: product.category,
+        default_price: product.default_price
+      };
+
+      // load product
+      createProduct(product, (err, res) => {
+        if (err) {
+          console.log(`FAILED TO CREATE PRODUCT ${product.id} `, err);
+        } else {
+          console.log(`Product ${product.id} has been successfully saved!`);
+          callback(null, JSON.stringify(product) + '\n');
+        }
+      })
+    } catch (err) {
+      callback(err);
     }
+  }
+})
 
-    createProduct(newProduct, err => {
-      if (err) {
-        throw err;
-      } else {
-        console.log(`Product ${newProduct.id} has been successfully saved!`);
+const transformFeature = new Transform({
+  transform(chunk, encoding, callback) {
+    try {
+      let feature = Object.assign({}, JSON.parse(chunk));
+      feature = {
+        id: Number(feature.id),
+        product_id: Number(feature.product_id),
+        feature: feature.feature,
+        value: feature.value
       }
-    });
-  })
-}
 
-let transformFeature = (originalFeature) => {
-  originalFeature.forEach(feat => {
-    let newFeature = {
-      id: Number(feat.id),
-      product_id: Number(feat.product_id),
-      feature: feat.feature,
-      value: feat.value
+      // load feature
+      createFeature(feature, err => {
+        if (err) {
+          console.log(`FAILED TO CREATE FEATURE ${feature.id} `, err);
+        } else {
+          console.log(`Feature ${feature.id} has been successfully saved!`);
+          callback(null, JSON.stringify(feature) + '\n');
+        }
+      })
+    } catch (err) {
+      callback(err);
     }
+  }
+})
 
-    createFeature(newFeature, err => {
-      if (err) {
-        throw err;
+const transformStyle = new Transform({
+  transform(chunk, encoding, callback) {
+    try {
+      let style = Object.assign({}, JSON.parse(chunk));
+      if (style.default_style === '0') {
+        style.default_style = false;
       } else {
-        console.log(`Feature ${newFeature.id} has been successfully saved!`);
+        style.default_style = true;
       }
-    })
-  })
-}
 
-let transformStyle = (originalStyle) => {
-  originalStyle.forEach(style => {
-    let convertedDefault;
-    if (style.default_style === '0') {
-      convertedDefault = false;
-    } else {
-      convertedDefault = true;
-    }
-
-    let newStyle = {
-      style_id: Number(style.id),
-      product_id: Number(style.productId),
-      name: style.name,
-      sale_price: style.sale_price,
-      original_price: style.original_price,
-      'default?': convertedDefault
-    }
-
-    createStyle(newStyle, err => {
-      if (err) {
-        throw err;
-      } else {
-        console.log(`Style ${newStyle.style_id} has been successfully saved!`);
+      style = {
+        style_id: Number(style.id),
+        product_id: Number(style.productId),
+        name: style.name,
+        sale_price: style.sale_price,
+        original_price: style.original_price,
+        'default?': style.default_style
       }
-    })
-  })
-}
 
-let transformPhoto = (originalPhoto) => {
-  originalPhoto.forEach(photo => {
-    let newPhoto = {
-      id: Number(photo.id),
-      style_id: Number(photo.styleId),
-      thumbnail_url: photo.thumbnail_url,
-      url: photo.url
+      // load style
+      createStyle(style, err => {
+        if (err) {
+          console.log(`FAILED TO CREATE STYLE ${style.id} `, err);
+        } else {
+          console.log(`Style ${style.style_id} has been successfully saved!`);
+          callback(null, JSON.stringify(style) + '\n');
+        }
+      })
+    } catch (err) {
+      callback(err);
     }
+  }
+})
 
-    createPhoto(newPhoto, err => {
-      if (err) {
-        throw err;
-      } else {
-        console.log(`Photo ${newPhoto.id} has been successfully saved!`);
+const transformPhoto = new Transform({
+  transform(chunk, encoding, callback) {
+    try {
+      let photo = Object.assign({}, JSON.parse(chunk));
+      photo = {
+        id: Number(photo.id),
+        style_id: Number(photo.styleId),
+        thumbnail_url: photo.thumbnail_url,
+        url: photo.url
       }
-    })
-  })
-}
 
-let transformSKU = (originalSKU) => {
-  originalSKU.forEach(sku => {
-    let newSKU = {
-      id: Number(sku.id),
-      style_id: Number(sku.styleId),
-      size: sku.size,
-      quantity: Number(sku.quantity)
+      // load photo
+      createPhoto(photo, err => {
+        if (err) {
+          console.log(`FAILED TO CREATE PHOTO ${photo.id} `, err);
+        } else {
+          console.log(`Photo ${photo.id} has been successfully saved!`);
+          callback(null, JSON.stringify(photo) + '\n');
+        }
+      })
+    } catch (err) {
+      callback(err);
     }
+  }
+})
 
-    createSKU(newSKU, err => {
-      if (err) {
-        throw err;
-      } else {
-        console.log(`SKU ${newSKU.id} has been successfully saved!`);
+const transformSKU = new Transform({
+  transform(chunk, encoding, callback) {
+    try {
+      let sku = Object.assign({}, JSON.parse(chunk));
+      sku = {
+        id: Number(sku.id),
+        style_id: Number(sku.styleId),
+        size: sku.size,
+        quantity: Number(sku.quantity)
       }
-    })
-  })
-}
 
-let transformReview = (originalReview) => {
-  originalReview.forEach(review => {
-    let newReview = {
-      review_id: Number(review.id),
-      product_id: Number(review.product_id),
-      rating: Number(review.rating),
-      summary: review.summary,
-      recommend: convertBool(review.recommend),
-      response: review.response,
-      body: review.body,
-      date: convertDate(Number(review.date)),
-      reviewer_name: review.reviewer_name,
-      email: review.reviewer_email,
-      helpfulness: Number(review.helpfulness),
-      reported: convertBool(review.reported)
+      // load sku
+      createSKU(sku, err => {
+        if (err) {
+          console.log(`FAILED TO CREATE SKU ${sku.id} `, err);
+        } else {
+          console.log(`SKU ${sku.id} has been successfully saved!`);
+          callback(null, JSON.stringify(sku) + '\n');
+        }
+      })
+    } catch (err) {
+      callback(err);
     }
+  }
+})
 
-    createReview(newReview, err => {
-      if (err) {
-        throw err;
-      } else {
-        console.log(`Review ${newReview.review_id} has been successfully saved!`);
+const transformCart = new Transform({
+  transform(chunk, encoding, callback) {
+    try {
+      let cart = Object.assign({}, JSON.parse(chunk));
+      cart = {
+        id: Number(cart.id),
+        user_session: Number(cart.user_session),
+        product_id: Number(cart.product_id),
+        active: Number(cart.active)
       }
-    })
-  })
-}
 
-let transformReviewPhoto = (originalPhoto) => {
-  originalPhoto.forEach(photo => {
-    let newPhoto = {
-      id: Number(photo.id),
-      review_id: Number(photo.review_id),
-      url: photo.url
+      // load cart
+      addToCart(cart, err => {
+        if (err) {
+          console.log(`FAILED TO CREATE CART ENTRY ${sku.id} `, err);
+        } else {
+          console.log(`Cart entry ${cart.id} has been successfully saved!`);
+          callback(null, JSON.stringify(cart) + '\n');
+        }
+      })
+    } catch (err) {
+      callback(err);
     }
-
-    createReviewPhoto(newPhoto, err => {
-      if (err) {
-        throw err;
-      } else {
-        console.log(`Review Photo ${newPhoto.id} has been successfully saved!`);
-      }
-    })
-  })
-}
-
-let transformCart = (cart) => {
-  console.log('CART DATA ', cart.slice(0, 20));
-  cart.forEach(cartItem => {
-    let newCartItem = {
-      id: Number(cartItem.id),
-      user_session: Number(cartItem.user_session),
-      product_id: Number(cartItem.product_id),
-      active: Number(cartItem.active)
-    }
-
-    addToCart(newCartItem, err => {
-      if (err) {
-        throw err;
-      } else {
-        console.log(`Item ${newCartItem.id} has been successfully saved!`);
-      }
-    });
-  })
-}
+  }
+})
 
 module.exports = {
   'transformProduct': transformProduct,
@@ -180,7 +173,5 @@ module.exports = {
   'transformStyle': transformStyle,
   'transformPhoto': transformPhoto,
   'transformSKU': transformSKU,
-  'transformReview': transformReview,
-  'transformReviewPhoto': transformReviewPhoto,
   'transformCart': transformCart
 }
