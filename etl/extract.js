@@ -3,13 +3,12 @@ const {pipeline} = require('stream');
 const path = require('path');
 const csv = require('csvtojson');
 const moment = require('moment');
+const csvParser = csv();
+const bucket = 'https://arid-sdc-products.s3.us-east-1.amazonaws.com/';
 
 const {
   transformProduct, transformFeature, transformStyle, transformPhoto, transformSKU, transformCart
 } = require('./transform.js');
-
-const csvParser = csv();
-const bucket = 'https://arid-sdc-products.s3.us-east-1.amazonaws.com/';
 
 const extractProduct = () => {
   // const productInUrl = path.resolve(__dirname, 'origin/product.csv');
