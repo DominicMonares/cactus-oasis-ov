@@ -106,8 +106,8 @@ const extractCart = () => {
   })
 }
 
-// extractProduct();
-extractFeatures();
+extractProduct();
+// extractFeatures();
 // extractStyles();
 // extractPhotos();
 // extractSKUs();
