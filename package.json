@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --detectOpenHandles --coverage --testEnvironment=node --runInBand",
+    "stress": "K6_STATSD_ENABLE_TAGS=true k6 run --out statsd tests/stress/stress.js",
     "start": "npx nodemon server/index.js"
   },
   "repository": {
@@ -21,12 +22,12 @@
     "express": "^4.17.2",
     "moment": "^2.29.1",
     "mongoose": "^6.1.8",
-    "mquery": "^4.0.2",
     "underscore": "^1.13.2"
   },
   "devDependencies": {
     "csvtojson": "^2.0.10",
     "jest": "^27.4.7",
+    "newrelic": "^8.8.0",
     "supertest": "^6.2.2"
   }
 }
