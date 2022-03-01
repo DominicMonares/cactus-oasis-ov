@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 const {Product, Feature, Style, Photo, SKU, Cart} = require('./index.js');
 
-// /*
+/*
 
 let clearModel = (callback) => {
   // clears all data from hardcoded model, only to be used for testing
   Cart.deleteMany(callback);
 }
 
-// */
+*/
 
 /* ========== PRODUCTS ========== */
 
