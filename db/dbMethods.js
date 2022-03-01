@@ -108,7 +108,7 @@ let countCart = (callback) => {
 }
 
 module.exports = {
-  'clearModel': clearModel,
+  // 'clearModel': clearModel,
   'fetchAllProducts': fetchAllProducts,
   'fetchProduct': fetchProduct,
   'createProduct': createProduct,
