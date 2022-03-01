@@ -9,9 +9,11 @@ const {
 } = require('./transform.js');
 
 const csvParser = csv();
+const bucket = 'https://arid-sdc-products.s3.us-east-1.amazonaws.com/';
 
 const extractProduct = () => {
-  const productInUrl = path.resolve(__dirname, 'origin/product.csv');
+  // const productInUrl = path.resolve(__dirname, 'origin/product.csv');
+  const productInUrl = path.resolve(bucket, 'product.csv');
   const productOutUrl = path.resolve(__dirname, 'origin/json/product.json');
 
   const productInputStream = fs.createReadStream(productInUrl);
@@ -27,7 +29,8 @@ const extractProduct = () => {
 }
 
 const extractFeatures = () => {
-  const featureInUrl = path.resolve(__dirname, 'origin/features.csv');
+  // const featureInUrl = path.resolve(__dirname, 'origin/features.csv');
+  const featureInUrl = path.resolve(bucket, 'features.csv');
   const featureOutUrl = path.resolve(__dirname, 'origin/json/features.json');
 
   const featureInputStream = fs.createReadStream(featureInUrl);
@@ -43,7 +46,8 @@ const extractFeatures = () => {
 }
 
 const extractStyles = () => {
-  const styleInUrl = path.resolve(__dirname, 'origin/styles.csv');
+  // const styleInUrl = path.resolve(__dirname, 'origin/styles.csv');
+  const styleInUrl = path.resolve(bucket, 'styles.csv');
   const styleOutUrl = path.resolve(__dirname, 'origin/json/styles.json');
 
   const styleInputStream = fs.createReadStream(styleInUrl);
@@ -59,7 +63,8 @@ const extractStyles = () => {
 }
 
 const extractPhotos = () => {
-  const photoInUrl = path.resolve(__dirname, 'origin/photos.csv');
+  // const photoInUrl = path.resolve(__dirname, 'origin/photos.csv');
+  const photoInUrl = path.resolve(bucket, 'photos.csv');
   const photoOutUrl = path.resolve(__dirname, 'origin/json/photos.json');
 
   const photoInputStream = fs.createReadStream(photoInUrl);
@@ -75,7 +80,8 @@ const extractPhotos = () => {
 }
 
 const extractSKUs = () => {
-  const skuInUrl = path.resolve(__dirname, 'origin/skus.csv');
+  // const skuInUrl = path.resolve(__dirname, 'origin/skus.csv');
+  const skuInUrl = path.resolve(bucket, 'skus.csv');
   const skuOutUrl = path.resolve(__dirname, 'origin/json/skus.json');
 
   const skuInputStream = fs.createReadStream(skuInUrl);
@@ -91,7 +97,8 @@ const extractSKUs = () => {
 }
 
 const extractCart = () => {
-  const cartInUrl = path.resolve(__dirname, 'origin/cart_original.csv');
+  // const cartInUrl = path.resolve(__dirname, 'origin/cart_original.csv');
+  const cartInUrl = path.resolve(bucket, 'cart_original.csv');
   const cartOutUrl = path.resolve(__dirname, 'origin/json/cart.json');
 
   const cartInputStream = fs.createReadStream(cartInUrl);
