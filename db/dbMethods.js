@@ -107,6 +107,32 @@ let countCart = (callback) => {
     .lean();
 }
 
+/* ========== ETL ========== */
+
+let saveProductBatch = (products, callback) => {
+  Product.insertMany(products, callback);
+}
+
+let saveFeatureBatch = (features, callback) => {
+  Feature.insertMany(feature, callback);
+}
+
+let saveStyleBatch = (styles, callback) => {
+  Style.insertMany(style, callback);
+}
+
+let savePhotoBatch = (photos, callback) => {
+  Photo.insertMany(photos, callback);
+}
+
+let saveSKUBatch = (skus, callback) => {
+  SKU.insertMany(skus, callback);
+}
+
+let saveCartBatch = (cart, callback) => {
+  Cart.insertMany(cart, callback);
+}
+
 module.exports = {
   // 'clearModel': clearModel,
   'fetchAllProducts': fetchAllProducts,
@@ -122,5 +148,11 @@ module.exports = {
   'fetchSKUs': fetchSKUs,
   'addToCart': addToCart,
   'fetchCart': fetchCart,
-  'countCart': countCart
+  'countCart': countCart,
+  'saveProductBatch': saveProductBatch,
+  'saveFeatureBatch': saveFeatureBatch,
+  'saveStyleBatch': saveStyleBatch,
+  'savePhotoBatch': savePhotoBatch,
+  'saveSKUBatch': saveSKUBatch,
+  'saveCartBatch': saveCartBatch
 }
