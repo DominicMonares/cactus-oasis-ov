@@ -5,7 +5,7 @@ const csv = require('csvtojson');
 const moment = require('moment');
 const csvParser = csv();
 const {Transform} = require('stream');
-const {saveProductBatch, saveFeatureBatch, saveStyleBatch, savePhotoBatch, saveSKUBatch, saveCartBatch} = require('../db/dbMethods.js');
+const {saveProductBatch, saveFeatureBatch, saveStyleBatch, savePhotoBatch, saveSKUBatch, createSKU, saveCartBatch} = require('../db/dbMethods.js');
 
 const extractProduct = () => {
   const productInUrl = path.resolve(__dirname, 'origin/product.csv');
@@ -183,7 +183,7 @@ const extractPhotos = () => {
 }
 
 const extractSKUs = () => {
-  const skuInUrl = path.resolve(__dirname, `origin/split/skus/skus2.csv`);
+  const skuInUrl = path.resolve(__dirname, `origin/split/skus/skus1.csv`);
   const skuOutUrl = path.resolve(__dirname, 'origin/json/skus.json');
   const skuInputStream = fs.createReadStream(skuInUrl);
   const skuOutputStream = fs.createWriteStream(skuOutUrl);
@@ -208,7 +208,7 @@ const extractSKUs = () => {
     }
   })
 
-  pipeline(skuInputStream, csvParser, transformSKU, skuOutputStream, err => {
+  pipeline(skuInputStream, csvParser, transformSKU, err => {
     if (err) {
       console.log('SKU pipeline error ', err);
     } else {
@@ -222,6 +222,7 @@ const extractSKUs = () => {
     }
   })
 }
+
 
 const extractCart = () => {
   const cartInUrl = path.resolve(__dirname, 'origin/cart_original.csv');
