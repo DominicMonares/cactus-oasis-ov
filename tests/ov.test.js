@@ -3,13 +3,13 @@ const supertest = require('supertest');
 const setupDB = require('./test-setup.js');
 const createServer = require('../server/server.js');
 
-const {Product, Feature, Style, Photo, SKU, Review, ReviewPhoto, Cart} = require('../db/index.js');
+const {Product, Feature, Style, Photo, SKU, Cart} = require('../db/index.js');
 
-const {createProduct, createFeature, createStyle, createPhoto, createSKU, createReview, createReviewPhoto} = require('../db/dbMethods.js');
+const {createProduct, createFeature, createStyle, createPhoto, createSKU} = require('../db/dbMethods.js');
 
-const {extractProduct, extractFeatures, extractStyles, extractPhotos, extractSKUs, extractReviews, extractReviewPhotos, extractCart} = require('../etl/extract.js');
+const {extractProduct, extractFeatures, extractStyles, extractPhotos, extractSKUs, extractCart} = require('../etl/extract.js');
 
-const {testProduct, testFeature, testStyle, testPhoto, testSKU, testReview, testReviewPhoto, testCart1, testCart2} = require('./testObjects.js');
+const {testProduct, testFeature, testStyle, testPhoto, testSKU, testCart1, testCart2} = require('./testObjects.js');
 
 setupDB('overview-test');
 
@@ -118,52 +118,6 @@ describe('Overview', () => {
             expect(Number(Object.keys(skus)[0])).toBe(sku['id'])
             expect(skus['1']['quantity']).toBe(sku['quantity']);
             expect(skus['1']['size']).toBe(sku['size']);
-          })
-      })
-    })
-
-    /* ========== REVIEWS ========== */
-
-    describe('Reviews', () => {
-      test('GET /reviews/', async () => {
-        const review = await Review.create(testReview);
-        const reviewPhoto = await ReviewPhoto.create(testReviewPhoto);
-        await supertest(app)
-          .get('/reviews/?product_id=1&page=1&count=1')
-          .expect(200)
-          .then(response => {
-            let res = response.body;
-            expect(typeof res === 'object').toBeTruthy();
-            expect(Object.keys(res).length).toBe(4);
-            expect(Number(res.product)).toBe(review.product_id);
-            expect(res.page).toBe(1);
-            expect(res.count).toBe(1);
-
-            expect(Array.isArray(res.results)).toBeTruthy();
-            expect(res.results.length).toBe(1)
-
-            let result = res.results[0];
-            expect(typeof result === 'object');
-            expect(Object.keys(result).length).toBe(10);
-            expect(result.review_id).toBe(review.review_id);
-            expect(result.rating).toBe(review.rating);
-            expect(result.summary).toBe(review.summary);
-            expect(result.recommend).toBe(review.recommend);
-            expect(result.response).toBe(review.response);
-            expect(result.body).toBe(review.body);
-            expect(result.date).toBe(review.date);
-            expect(result.reviewer_name).toBe(review.reviewer_name);
-            expect(result.helpfulness).toBe(review.helpfulness);
-
-            let photos = result.photos;
-            expect(Array.isArray(photos)).toBeTruthy();
-            expect(photos.length).toBe(1);
-
-            let photo = photos[0];
-            expect(typeof photo === 'object');
-            expect(Object.keys(photo).length).toBe(2);
-            expect(photo.id).toBe(reviewPhoto.id);
-            expect(photo.url).toBe(reviewPhoto.url);
           })
       })
     })
@@ -357,51 +311,13 @@ describe('Overview', () => {
       })
     })
 
-    test('should create a review', done => {
-      createReview(testReview, async (err, data) => {
-        if (err) {
-          done(err);
-        } else {
-          const newReview = await Review.findOne({review_id: 1});
-          expect(newReview).toBeTruthy();
-          expect(newReview.review_id).toBe(testReview.review_id);
-          expect(newReview.product_id).toBe(testReview.product_id);
-          expect(newReview.rating).toBe(testReview.rating);
-          expect(newReview.summary).toBe(testReview.summary);
-          expect(newReview.recommend).toBe(testReview.recommend);
-          expect(newReview.response).toBe(testReview.response);
-          expect(newReview.body).toBe(testReview.body);
-          expect(newReview.date).toBe(testReview.date);
-          expect(newReview.reviewer_name).toBe(testReview.reviewer_name);
-          expect(newReview.email).toBe(testReview.email);
-          expect(newReview.helpfulness).toBe(testReview.helpfulness);
-          expect(newReview.reported).toBe(testReview.reported);
-          done();
-        }
-      })
-    })
-
-    test('should create a review photo', done => {
-      createReviewPhoto(testReviewPhoto, async (err, data) => {
-        if (err) {
-          done(err);
-        } else {
-          const newReviewPhoto = await ReviewPhoto.findOne({id: 1});
-          expect(newReviewPhoto).toBeTruthy();
-          expect(newReviewPhoto.id).toBe(testReviewPhoto.id);
-          expect(newReviewPhoto.review_id).toBe(testReviewPhoto.review_id);
-          expect(newReviewPhoto.url).toBe(testReviewPhoto.url);
-          done();
-        }
-      })
-    })
-
   })
 
   //////////////////////////////////
   // ETL
   //////////////////////////////////
 
+  /*
   describe('ETL', () => {
 
     test('should ETL product data', async () => {
@@ -458,33 +374,6 @@ describe('Overview', () => {
       expect(etlSKU.quantity).toBe(testSKU.quantity);
     })
 
-    test('should ETL review data', async () => {
-      await extractReviews();
-      const etlReview = await Review.findOne({review_id: 1});
-      expect(etlReview).toBeTruthy();
-      expect(etlReview.review_id).toBe(testReview.review_id);
-      expect(etlReview.product_id).toBe(testReview.product_id);
-      expect(etlReview.rating).toBe(testReview.rating);
-      expect(etlReview.summary).toBe(testReview.summary);
-      expect(etlReview.recommend).toBe(testReview.recommend);
-      expect(etlReview.response).toBe(testReview.response);
-      expect(etlReview.body).toBe(testReview.body);
-      expect(etlReview.date).toBe(testReview.date);
-      expect(etlReview.reviewer_name).toBe(testReview.reviewer_name);
-      expect(etlReview.email).toBe(testReview.email);
-      expect(etlReview.helpfulness).toBe(testReview.helpfulness);
-      expect(etlReview.reported).toBe(testReview.reported);
-    })
-
-    test('should ETL review photo data', async () => {
-      await extractReviewPhotos();
-      const etlReviewPhoto = await ReviewPhoto.findOne({id: 1});
-      expect(etlReviewPhoto).toBeTruthy();
-      expect(etlReviewPhoto.id).toBe(testReviewPhoto.id);
-      expect(etlReviewPhoto.review_id).toBe(testReviewPhoto.review_id);
-      expect(etlReviewPhoto.url).toBe(testReviewPhoto.url);
-    })
-
     test('should ETL cart data', async () => {
       await extractCart();
       const etlCart = await Cart.findOne({ user_session: 3232 });
@@ -496,7 +385,6 @@ describe('Overview', () => {
     })
 
   })
+  */
 
 })
-
-
