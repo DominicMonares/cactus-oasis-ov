@@ -20,13 +20,13 @@
   },
   "homepage": "https://github.com/rpp32-sdc-arid/cactus-oasis-ov#readme",
   "dependencies": {
+    "csv-parse": "^5.0.4",
     "express": "^4.17.2",
     "moment": "^2.29.1",
     "mongoose": "^6.1.8",
     "underscore": "^1.13.2"
   },
   "devDependencies": {
-    "csvtojson": "^2.0.10",
     "jest": "^27.4.7",
     "newrelic": "^8.8.0",
     "supertest": "^6.2.2"

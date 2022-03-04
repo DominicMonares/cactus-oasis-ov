@@ -125,10 +125,8 @@ let savePhotoBatch = (photos, callback) => {
   Photo.insertMany(photos, callback);
 }
 
-let saveSKUBatch = (skus) => {
-  SKU.insertMany(skus)
-    .then(res => 'Successfully saved SKU batch!')
-    .catch(err => console.log('ERROR SAVING BATCH', err));
+let saveSKUBatch = (skus, callback) => {
+  SKU.insertMany(skus, callback);
 }
 
 let saveCartBatch = (cart, callback) => {

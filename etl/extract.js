@@ -224,6 +224,44 @@ const extractSKUs = () => {
 }
 
 
+const {parse} = require('csv-parse');
+let {SKU} = require('../db/index.js');
+
+const skuUrl = path.resolve(__dirname, `origin/split/skus/skus1.csv`);
+const page_size = 1000;
+let skus = [];
+
+const skuStream = fs.createReadStream(skuUrl)
+  .setEncoding('utf-8')
+  .pipe(parse())
+  .on('data', row => {
+    if (row[0] !== 'id') {
+      console.log('ROW ', row);
+      let sku = {
+        id: Number(row[0]),
+        style_id: Number(row[1]),
+        size: row[2],
+        quantity: Number(row[3])
+      }
+
+      skus.push(sku);
+      if (skus.length === page_size) {
+        SKU.insertMany(skus)
+          .then(result => {
+            console.log('Successfully loaded batch');
+          })
+          .catch(err => { console.log('SKU ERROR ', err) });
+        skus = [];
+      }
+    }
+  })
+  .on('end', () => {
+    SKU.insertMany(skus)
+    .then(result => {})
+    .catch(err => {console.log('SKU ERROR ', err)});
+  })
+
+
 const extractCart = () => {
   const cartInUrl = path.resolve(__dirname, 'origin/cart_original.csv');
   const cartOutUrl = path.resolve(__dirname, 'origin/json/cart.json');
@@ -269,7 +307,7 @@ const extractCart = () => {
 // extractFeatures();
 // extractStyles();
 // extractPhotos();
-extractSKUs();
+// extractSKUs();
 // extractCart();
 
 module.exports = {
