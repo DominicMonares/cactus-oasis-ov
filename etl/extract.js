@@ -183,7 +183,7 @@ const extractPhotos = () => {
 }
 
 const extractSKUs = () => {
-  const skuInUrl = path.resolve(__dirname, 'origin/skus.csv');
+  const skuInUrl = path.resolve(__dirname, `origin/split/skus/skus2.csv`);
   const skuOutUrl = path.resolve(__dirname, 'origin/json/skus.json');
   const skuInputStream = fs.createReadStream(skuInUrl);
   const skuOutputStream = fs.createWriteStream(skuOutUrl);
