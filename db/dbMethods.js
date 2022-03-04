@@ -109,28 +109,52 @@ let countCart = (callback) => {
 
 /* ========== ETL ========== */
 
-let saveProductBatch = (products, callback) => {
-  Product.insertMany(products, callback);
+let saveProductBatch = (products) => {
+  Product.insertMany(products)
+    .then(() => {
+      console.log('Successfully loaded product batch!');
+    })
+    .catch(err => { console.log('PRODUCT ERROR ', err) });
 }
 
-let saveFeatureBatch = (features, callback) => {
-  Feature.insertMany(feature, callback);
+let saveFeatureBatch = (features) => {
+  Feature.insertMany(feature)
+    .then(() => {
+      console.log('Successfully loaded feature batch!');
+    })
+    .catch(err => { console.log('FEATURE ERROR ', err) });
 }
 
-let saveStyleBatch = (styles, callback) => {
-  Style.insertMany(style, callback);
+let saveStyleBatch = (styles) => {
+  Style.insertMany(style)
+    .then(() => {
+      console.log('Successfully loaded style batch!');
+    })
+    .catch(err => { console.log('STYLE ERROR ', err) });
 }
 
-let savePhotoBatch = (photos, callback) => {
-  Photo.insertMany(photos, callback);
+let savePhotoBatch = (photos) => {
+  Photo.insertMany(photos)
+    .then(() => {
+      console.log('Successfully loaded photo batch!');
+    })
+    .catch(err => { console.log('PHOTO ERROR ', err) });
 }
 
-let saveSKUBatch = (skus, callback) => {
-  SKU.insertMany(skus, callback);
+let saveSKUBatch = (skus) => {
+  SKU.insertMany(skus)
+    .then(() => {
+      console.log('Successfully loaded SKU batch!');
+    })
+    .catch(err => { console.log('SKU ERROR ', err) });
 }
 
 let saveCartBatch = (cart, callback) => {
-  Cart.insertMany(cart, callback);
+  Cart.insertMany(cart, callback)
+    .then(() => {
+      console.log('Successfully loaded cart batch!');
+    })
+    .catch(err => { console.log('CART ERROR ', err) });
 }
 
 module.exports = {

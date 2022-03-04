@@ -1,11 +1,10 @@
 const fs = require('fs');
-const {pipeline} = require('stream');
 const path = require('path');
-const csv = require('csvtojson');
-const moment = require('moment');
-const csvParser = csv();
-const {Transform} = require('stream');
+const {pipeline} = require('stream');
+const {parse} = require('csv-parse');
 const {saveProductBatch, saveFeatureBatch, saveStyleBatch, savePhotoBatch, saveSKUBatch, createSKU, saveCartBatch} = require('../db/dbMethods.js');
+
+const batchSize = 1000;
 
 const extractProduct = () => {
   const productInUrl = path.resolve(__dirname, 'origin/product.csv');
@@ -183,86 +182,47 @@ const extractPhotos = () => {
 }
 
 const extractSKUs = () => {
-  const skuInUrl = path.resolve(__dirname, `origin/split/skus/skus1.csv`);
-  const skuOutUrl = path.resolve(__dirname, 'origin/json/skus.json');
-  const skuInputStream = fs.createReadStream(skuInUrl);
-  const skuOutputStream = fs.createWriteStream(skuOutUrl);
-  var skus = [];
-  const transformSKU = new Transform({
-    transform(chunk, encoding, callback) {
-      try {
-        let sku = Object.assign({}, JSON.parse(chunk));
-        sku = {
-          id: Number(sku.id),
-          style_id: Number(sku.styleId),
-          size: sku.size,
-          quantity: Number(sku.quantity)
+  const skuUrl = path.resolve(__dirname, `origin/split/skus/skus1.csv`);
+  let skus = [];
+  const skuStream = fs.createReadStream(skuUrl)
+    .setEncoding('utf-8')
+    .pipe(parse())
+    .on('data', row => {
+      if (row[0] !== 'id') {
+        let sku = {
+          id: Number(row[0]),
+          style_id: Number(row[1]),
+          size: row[2],
+          quantity: Number(row[3])
         }
 
-        console.log(`${sku.id} added to Batch!`);
         skus.push(sku);
-        callback(null, JSON.stringify(sku) + '\n');
-      } catch (err) {
-        callback(err);
-      }
-    }
-  })
-
-  pipeline(skuInputStream, csvParser, transformSKU, err => {
-    if (err) {
-      console.log('SKU pipeline error ', err);
-    } else {
-      saveSKUBatch(skus, (sErr, res) => {
-        if (sErr) {
-          console.log('FAILED SAVE PRODUCT BATCH ', sErr);
-        } else {
-          console.log('SKU pipeline completed successfully');
+        console.log(`SKU ${sku.id} pre-loaded!`);
+        if (skus.length === batchSize) {
+          saveSKUBatch(skus);
+          skus = [];
         }
-      })
-    }
-  })
+      }
+    })
+    .on('end', () => {
+      saveSKUBatch(skus);
+    })
 }
 
-
-const {parse} = require('csv-parse');
-let {SKU} = require('../db/index.js');
-
-const skuUrl = path.resolve(__dirname, `origin/split/skus/skus1.csv`);
-const page_size = 1000;
-let skus = [];
-
-const skuStream = fs.createReadStream(skuUrl)
-  .setEncoding('utf-8')
-  .pipe(parse())
-  .on('data', row => {
-    if (row[0] !== 'id') {
-      console.log('ROW ', row);
-      let sku = {
-        id: Number(row[0]),
-        style_id: Number(row[1]),
-        size: row[2],
-        quantity: Number(row[3])
-      }
-
-      skus.push(sku);
-      if (skus.length === page_size) {
-        SKU.insertMany(skus)
-          .then(result => {
-            console.log('Successfully loaded batch');
-          })
-          .catch(err => { console.log('SKU ERROR ', err) });
-        skus = [];
-      }
-    }
-  })
-  .on('end', () => {
-    SKU.insertMany(skus)
-    .then(result => {})
-    .catch(err => {console.log('SKU ERROR ', err)});
-  })
-
-
 const extractCart = () => {
+  const cartUrl = path.resolve(__dirname, 'origin/cart_original.csv');
+  var cartItems = [];
+  const cartStream = fs.createReadStream(cartUrl)
+    .setEncoding('utf-8')
+    .pipe(parse())
+    .on('data', row => {
+      if (row[0] !== 'id') {
+        let cart =
+
+
+      }
+    })
+
   const cartInUrl = path.resolve(__dirname, 'origin/cart_original.csv');
   const cartOutUrl = path.resolve(__dirname, 'origin/json/cart.json');
   const cartInputStream = fs.createReadStream(cartInUrl);
@@ -288,19 +248,7 @@ const extractCart = () => {
     }
   })
 
-  pipeline(cartInputStream, csvParser, transformCart, cartOutputStream, err => {
-    if (err) {
-      console.log('Cart pipeline error ', err);
-    } else {
-      saveCartBatch(cartItems, (cErr, res) => {
-        if (cErr) {
-          console.log('FAILED SAVE CART BATCH ', cErr);
-        } else {
-          console.log('Cart pipeline completed successfully');
-        }
-      })
-    }
-  })
+
 }
 
 // extractProduct();
