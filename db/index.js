@@ -3,7 +3,10 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/SDC', {
   useNewUrlParser: true,
   useUnifiedTopology: true
-});
+})
+  .then(() => {
+    console.log('Database listening on port 27017');
+  })
 
 const productSchema = new mongoose.Schema({
   id: {type: Number, required: true, unique: true},
