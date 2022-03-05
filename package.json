@@ -22,6 +22,7 @@
   "dependencies": {
     "csv-parse": "^5.0.4",
     "express": "^4.17.2",
+    "memcached": "^2.2.2",
     "moment": "^2.29.1",
     "mongoose": "^6.1.8",
     "underscore": "^1.13.2"
