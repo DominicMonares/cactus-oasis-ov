@@ -120,11 +120,10 @@ const extractPhotos = () => {
     .on('end', () => {
       savePhotoBatch(photos);
     })
-
 }
 
 const extractSKUs = () => {
-  const skuUrl = path.resolve(__dirname, `origin/split/skus/skus3.csv`);
+  const skuUrl = path.resolve(__dirname, `origin/split/skus/skus1.csv`);
   let skus = [];
   const skuStream = fs.createReadStream(skuUrl)
     .setEncoding('utf-8')
