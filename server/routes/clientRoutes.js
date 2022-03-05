@@ -21,10 +21,6 @@ clientRouter.get('/products', (req, res) => {
     if (err) {
       res.sendStatus(500);
     } else {
-      if (data.length === 0) {
-        res.send('No Product Data Found');
-      }
-
       data.forEach(val => {delete val._id});
       res.send(data);
     }
@@ -48,19 +44,11 @@ clientRouter.get('/products/:product_id', (req, res) => {
           if (pErr) {
             res.sendStatus(500);
           } else {
-            if (data.length === 0) {
-              res.send('No Product Data Found');
-            }
-
             delete data[0]['_id'];
             getFeatures(product_id, (fErr, fData) => {
               if (fErr) {
                 res.sendStatus(500);
               } else {
-                if (fData.length === 0) {
-                  res.send('No Feature Data Found');
-                }
-
                 data[0]['features'] = fData.map(feature => {
                   delete feature._id;
                   if (feature.value === 'null') {
@@ -104,10 +92,6 @@ clientRouter.get('/products/:product_id/styles', (req, res) => {
           if (stErr) {
             res.sendStatus(500);
           } else {
-            if (data.length === 0) {
-              res.sendStatus('No Style Data Found');
-            }
-
             data.forEach((val, i) => {
               delete val._id;
               let style = val.style_id
@@ -124,10 +108,6 @@ clientRouter.get('/products/:product_id/styles', (req, res) => {
                 if (sErr) {
                   res.sendStatus(500);
                 } else {
-                  if (sData.length === 0) {
-                    res.send('No SKU Data Found');
-                  }
-
                   let fullSKUs = {};
                   sData.forEach(sVal => {
                     delete sVal._id;
