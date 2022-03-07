@@ -94,6 +94,10 @@ let fetchSKUs = (style, callback) => {
 let addToCart = (cartItem, callback) => {
   let newCart = new Cart(cartItem);
   newCart.save(callback);
+
+  // PUT operation to be used for POST testing
+  // without overpopulating the db
+  // Cart.findByIdAndUpdate(cartItem.)
 }
 
 let fetchCart = (session, callback) => {
