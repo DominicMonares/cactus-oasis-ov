@@ -40,7 +40,6 @@ const skuSchema = new mongoose.Schema({
 });
 
 const cartSchema = new mongoose.Schema({
-  id: {type: Number, required: true},
   user_session: {type: Number, required: true},
   product_id: {type: Number, required: true},
   active: {type: Number, default: 1}

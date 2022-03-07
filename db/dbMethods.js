@@ -102,11 +102,6 @@ let fetchCart = (session, callback) => {
     .lean();
 }
 
-let countCart = (callback) => {
-  Cart.count(callback)
-    .lean();
-}
-
 /* ========== ETL ========== */
 
 let saveProductBatch = (products) => {
@@ -172,7 +167,6 @@ module.exports = {
   'fetchSKUs': fetchSKUs,
   'addToCart': addToCart,
   'fetchCart': fetchCart,
-  'countCart': countCart,
   'saveProductBatch': saveProductBatch,
   'saveFeatureBatch': saveFeatureBatch,
   'saveStyleBatch': saveStyleBatch,

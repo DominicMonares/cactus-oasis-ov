@@ -3,7 +3,7 @@ const express = require('express');
 const clientRouter = require('express').Router();
 
 const {
-  fetchAllProducts, fetchProduct, fetchFeatures, fetchStyles, fetchPhotos, fetchSKUs, addToCart, fetchCart, countCart
+  fetchAllProducts, fetchProduct, fetchFeatures, fetchStyles, fetchPhotos, fetchSKUs, addToCart, fetchCart
 } = require('../../db/dbMethods.js');
 const {checkCache, addToCache, updateCache} = require('../../cache/cache.js');
 
@@ -150,14 +150,14 @@ clientRouter.get('/cart', (req, res) => {
       if (data) {
         res.send(data);
       } else {
-        fetchCart(3232, (err, data) => {
-          if (err) {
+        fetchCart(3232, (cErr, cData) => {
+          if (cErr) {
             res.sendStatus(500);
           } else {
             if (data.length === 0) {
               res.send([]);
             } else {
-              res.send(sortCart(data));
+              res.send(sortCart(cData));
             }
           }
         });
@@ -187,32 +187,25 @@ clientRouter.post('/cart', (req, res) => {
     if (err) {
       throw err;
     } else {
-      countCart((countErr, countData) => {
-        if (countErr) {
+      let cartItem = {
+        user_session: 3232,
+        product_id: req.query.sku_id,
+        active: 1
+      }
+
+      if (data) {
+        var cart = data;
+        cart.push(cartItem);
+        updateCache(3232, cart);
+      }
+
+      addToCart(cartItem, (cErr, cData) => {
+        if (cErr) {
           res.sendStatus(500);
         } else {
-          let cartItem = {
-            id: countData + 1,
-            user_session: 3232,
-            product_id: req.query.sku_id,
-            active: 1
-          }
-
-          if (data) {
-            var cart = data;
-            cart.push(cartItem);
-            updateCache(3232, cart);
-          }
-
-          addToCart(cartItem, (cErr, cData) => {
-            if (cErr) {
-              res.sendStatus(500);
-            } else {
-              res.send(cData);
-            }
-          });
+          res.send(cData);
         }
-      })
+      });
     }
   })
 });
