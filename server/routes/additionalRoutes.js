@@ -5,8 +5,6 @@ const {createProduct, fetchFeatures, fetchPhotos, fetchSKUs} = require('../../db
 
 /* ========== PRODUCTS ========== */
 
-
-
 // FOR TESTING PURPOSES ONLY
 
 // additionalRouter.post('/admin/products', (req, res) => {
@@ -27,8 +25,6 @@ const {createProduct, fetchFeatures, fetchPhotos, fetchSKUs} = require('../../db
 //     }
 //   });
 // });
-
-
 
 /* ========== FEATURES ========== */
 
