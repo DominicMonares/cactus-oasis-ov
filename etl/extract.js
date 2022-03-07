@@ -159,14 +159,13 @@ const extractCart = () => {
     .on('data', row => {
       if (row[0] !== 'id') {
         let cart = {
-          id: Number(row.id),
-          user_session: Number(row.user_session),
-          product_id: Number(row.product_id),
-          active: Number(row.active)
+          user_session: Number(row[1]),
+          product_id: Number(row[2]),
+          active: Number(row[3])
         }
 
         cartItems.push(cart);
-        console.log(`Cart item ${cart.id} pre-loaded!`);
+        console.log(`Cart item ${row[0]} pre-loaded!`);
         if (cartItems.length === batchSize) {
           saveCartBatch(cartItems);
           cartItems = [];
@@ -183,7 +182,7 @@ const extractCart = () => {
 // extractStyles();
 // extractPhotos();
 // extractSKUs();
-// extractCart();
+extractCart();
 
 module.exports = {
   'extractProduct': extractProduct,
