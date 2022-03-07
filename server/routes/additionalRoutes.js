@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const additionalRouter = require('express').Router();
 const {createProduct, fetchFeatures, fetchPhotos, fetchSKUs} = require('../../db/dbMethods.js');
@@ -67,5 +68,9 @@ additionalRouter.get('/skus/:style_id', (req, res) => {
     }
   })
 });
+
+additionalRouter.get(`/${process.env.LOADER_IO}/`, (req, res) => {
+  res.send(process.env.LOADER_IO);
+})
 
 module.exports = additionalRouter;

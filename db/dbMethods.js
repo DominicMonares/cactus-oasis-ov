@@ -92,12 +92,12 @@ let fetchSKUs = (style, callback) => {
 /* ========== CART ========== */
 
 let addToCart = (cartItem, callback) => {
-  let newCart = new Cart(cartItem);
-  newCart.save(callback);
+  // let newCart = new Cart(cartItem);
+  // newCart.save(callback);
 
   // PUT operation to be used for POST testing
   // without overpopulating the db
-  // Cart.findByIdAndUpdate(cartItem.)
+  Cart.findByIdAndUpdate('6225860dea6f25cd07c6bc4f', cartItem, callback);
 }
 
 let fetchCart = (session, callback) => {
