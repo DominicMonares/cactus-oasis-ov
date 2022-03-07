@@ -182,7 +182,7 @@ const extractCart = () => {
 // extractStyles();
 // extractPhotos();
 // extractSKUs();
-extractCart();
+// extractCart();
 
 module.exports = {
   'extractProduct': extractProduct,
