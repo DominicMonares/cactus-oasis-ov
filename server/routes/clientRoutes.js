@@ -140,6 +140,8 @@ let skuHelper = (style, callback) => {
 
 /* ========== CART ========== */
 
+let update = false;
+
 // will refactor to get myself out of callback hell, time permitting
 clientRouter.get('/cart', (req, res) => {
   // 3232 is the user session for this project
@@ -147,14 +149,15 @@ clientRouter.get('/cart', (req, res) => {
     if (err) {
       throw err;
     } else {
-      if (data) {
+      if (data && !update) {
         res.send(data);
       } else {
         fetchCart(3232, (cErr, cData) => {
           if (cErr) {
             res.sendStatus(500);
           } else {
-            if (data.length === 0) {
+            update = false;
+            if (cData.length === 0) {
               res.send([]);
             } else {
               res.send(sortCart(cData));
@@ -197,6 +200,7 @@ clientRouter.post('/cart', (req, res) => {
         var cart = data;
         cart.push(cartItem);
         updateCache(3232, cart);
+        update = true;
       }
 
       addToCart(cartItem, (cErr, cData) => {
