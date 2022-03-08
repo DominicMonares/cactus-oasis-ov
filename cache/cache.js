@@ -1,19 +1,32 @@
-var cache = {};
+const Memcached = require('memcached');
+const memcached = new Memcached('127.0.0.1:11211');
 
-var checkCache = (key) => {
-  if (cache[key]) {
-    return cache[key];
-  }
-
-  return false;
+const checkCache = (key, callback) => {
+  memcached.get(key, callback);
 }
 
-var createCache = (key, value) => {
-  cache[key] = value;
+const addToCache = function(key, data) {
+  memcached.set(key, data, 10, (err) => {
+    if (err) {
+      throw err;
+    } else {
+      console.log('Data successfully cached!');
+    }
+  })
+}
+
+const updateCache = function(key, data) {
+  memcached.replace(key, data, 10, (err) => {
+    if (err) {
+      throw err;
+    } else {
+      console.log('Data successfully cached!');
+    }
+  })
 }
 
 module.exports = {
-  'cache': cache,
-  'checkCache:': checkCache,
-  'createCache': createCache
+  'checkCache': checkCache,
+  'addToCache': addToCache,
+  'updateCache': updateCache
 };

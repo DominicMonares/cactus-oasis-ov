@@ -1,274 +1,187 @@
 const fs = require('fs');
-const {pipeline} = require('stream');
 const path = require('path');
-const csv = require('csvtojson');
-const moment = require('moment');
-const csvParser = csv();
-const {Transform} = require('stream');
-const {saveProductBatch, saveFeatureBatch, saveStyleBatch, savePhotoBatch, saveSKUBatch, saveCartBatch} = require('../db/dbMethods.js');
+const {pipeline} = require('stream');
+const {parse} = require('csv-parse');
+const {saveProductBatch, saveFeatureBatch, saveStyleBatch, savePhotoBatch, saveSKUBatch, createSKU, saveCartBatch} = require('../db/dbMethods.js');
+
+const batchSize = 1000;
 
 const extractProduct = () => {
-  const productInUrl = path.resolve(__dirname, 'origin/product.csv');
-  const productOutUrl = path.resolve(__dirname, 'origin/json/product.json');
-  const productInputStream = fs.createReadStream(productInUrl);
-  const productOutputStream = fs.createWriteStream(productOutUrl);
-  var products = [];
-  const transformProduct = new Transform({
-    transform(chunk, encoding, callback) {
-      try {
-        let product = Object.assign({}, JSON.parse(chunk));
-        product = {
-          id: Number(product.id),
-          name: product.name,
-          slogan: product.slogan,
-          description: product.description,
-          category: product.category,
-          default_price: product.default_price
+  const productUrl = path.resolve(__dirname, `origin/split/products/products1.csv`);
+  let products = [];
+  const productStream = fs.createReadStream(productUrl)
+    .setEncoding('utf-8')
+    .pipe(parse())
+    .on('data', async row => {
+      if (row[0] !== 'id') {
+        let product = {
+          id: Number(row.id),
+          name: row.name,
+          slogan: row.slogan,
+          description: row.description,
+          category: row.category,
+          default_price: row.default_price
         };
 
-        console.log(`${product.id} added to Batch!`);
         products.push(product);
-        callback(null, JSON.stringify(product) + '\n');
-      } catch (err) {
-        callback(err);
-      }
-    }
-  })
-
-  pipeline(productInputStream, csvParser, transformProduct, productOutputStream, err => {
-    if (err) {
-      console.log('Product pipeline error: ', err);
-    } else {
-      saveProductBatch(products, (pErr, res) => {
-        if (pErr) {
-          console.log('FAILED SAVE PRODUCT BATCH ', pErr);
-        } else {
-          console.log('Product pipeline completed successfully');
+        console.log(`Product ${product.id} pre-loaded!`);
+        if (products.length === batchSize) {
+          await saveProductBatch(products);
+          products = [];
         }
-      });
-    }
-  })
+      }
+    })
+    .on('end', () => {
+      saveProductBatch(products);
+    })
 }
 
 const extractFeatures = () => {
-  const featureInUrl = path.resolve(__dirname, 'origin/features.csv');
-  const featureOutUrl = path.resolve(__dirname, 'origin/json/features.json');
-  const featureInputStream = fs.createReadStream(featureInUrl);
-  const featureOutputStream = fs.createWriteStream(featureOutUrl);
-  var features = [];
-  const transformFeature = new Transform({
-    transform(chunk, encoding, callback) {
-      try {
-        let feature = Object.assign({}, JSON.parse(chunk));
-        feature = {
-          id: Number(feature.id),
-          product_id: Number(feature.product_id),
-          feature: feature.feature,
-          value: feature.value
+  const featureUrl = path.resolve(__dirname, `origin/split/features/features1.csv`);
+  let features = [];
+  const featureStream = fs.createReadStream(featureUrl)
+    .setEncoding('utf-8')
+    .pipe(parse())
+    .on('data', row => {
+      if (row[0] !== 'id') {
+        let feature = {
+          id: Number(row.id),
+          product_id: Number(row.product_id),
+          feature: row.feature,
+          value: row.value
         }
 
-        console.log(`${feature.id} added to Batch!`);
         features.push(feature);
-        callback(null, JSON.stringify(feature) + '\n');
-      } catch (err) {
-        callback(err);
-      }
-    }
-  })
-
-  pipeline(featureInputStream, csvParser, transformFeature, featureOutputStream, err => {
-    if (err) {
-      console.log('Feature pipeline error ', err);
-    } else {
-      saveFeatureBatch(features, (fErr, res) => {
-        if (fErr) {
-          console.log('FAILED SAVE FEATURE BATCH ', fErr);
-        } else {
-          console.log('Feature pipeline completed successfully');
+        console.log(`Feature ${feature.id} pre-loaded!`);
+        if (features.length === batchSize) {
+          saveFeatureBatch(features);
+          features = [];
         }
-      })
-    }
-  })
+      }
+    })
+    .on('end', () => {
+      saveFeatureBatch(features);
+    })
 }
 
 const extractStyles = () => {
-  const styleInUrl = path.resolve(__dirname, 'origin/styles.csv');
-  const styleOutUrl = path.resolve(__dirname, 'origin/json/styles.json');
-  const styleInputStream = fs.createReadStream(styleInUrl);
-  const styleOutputStream = fs.createWriteStream(styleOutUrl);
-  var styles = [];
-  const transformStyle = new Transform({
-    transform(chunk, encoding, callback) {
-      try {
-        let style = Object.assign({}, JSON.parse(chunk));
-        if (style.default_style === '0') {
-          style.default_style = false;
-        } else {
-          style.default_style = true;
+  const styleUrl = path.resolve(__dirname, `origin/split/styles/styles1.csv`);
+  let styles = [];
+  const styleStream = fs.createReadStream(styleUrl)
+    .setEncoding('utf-8')
+    .pipe(parse())
+    .on('data', row => {
+      if (row[0] !== 'id') {
+        let style = {
+          style_id: Number(row.id),
+          product_id: Number(row.productId),
+          name: row.name,
+          sale_price: row.sale_price,
+          original_price: row.original_price,
+          'default?': row.default_style
         }
 
-        style = {
-          style_id: Number(style.id),
-          product_id: Number(style.productId),
-          name: style.name,
-          sale_price: style.sale_price,
-          original_price: style.original_price,
-          'default?': style.default_style
-        }
-
-        console.log(`${style.id} added to Batch!`);
         styles.push(style);
-        callback(null, JSON.stringify(style) + '\n');
-      } catch (err) {
-        callback(err);
-      }
-    }
-  })
-
-  pipeline(styleInputStream, csvParser, transformStyle, styleOutputStream, err => {
-    if (err) {
-      console.log('Style pipeline error ', err);
-    } else {
-      saveStyleBatch(styles, (sErr, res) => {
-        if (sErr) {
-          console.log('FAILED SAVE STYLE BATCH ', sErr);
-        } else {
-          console.log('Style pipeline completed successfully');
+        console.log(`Style ${style.id} pre-loaded!`);
+        if (styles.length === batchSize) {
+          saveStyleBatch(styles);
+          styles = [];
         }
-      })
-
-    }
-  })
+      }
+    })
+    .on('end', () => {
+      saveStyleBatch(styles);
+    })
 }
 
 const extractPhotos = () => {
-  const photoInUrl = path.resolve(__dirname, 'origin/photos.csv');
-  const photoOutUrl = path.resolve(__dirname, 'origin/json/photos.json');
-  const photoInputStream = fs.createReadStream(photoInUrl);
-  const photoOutputStream = fs.createWriteStream(photoOutUrl);
-  var photos = [];
-  const transformPhoto = new Transform({
-    transform(chunk, encoding, callback) {
-      try {
-        let photo = Object.assign({}, JSON.parse(chunk));
-        photo = {
-          id: Number(photo.id),
-          style_id: Number(photo.styleId),
-          thumbnail_url: photo.thumbnail_url,
-          url: photo.url
+  const photoUrl = path.resolve(__dirname, `origin/split/photos/photos1.csv`);
+  let photos = [];
+  const photoStream = fs.createReadStream(photoUrl)
+    .setEncoding('utf-8')
+    .pipe(parse())
+    .on('data', row => {
+      if (row[0] !== 'id') {
+        let photo = {
+          id: Number(row.id),
+          style_id: Number(row.styleId),
+          thumbnail_url: row.thumbnail_url,
+          url: row.url
         }
 
-        console.log(`${photo.id} added to Batch!`);
         photos.push(photo);
-        callback(null, JSON.stringify(photo) + '\n');
-      } catch (err) {
-        callback(err);
-      }
-    }
-  })
-
-  pipeline(photoInputStream, csvParser, transformPhoto, photoOutputStream, err => {
-    if (err) {
-      console.log('Photo pipeline error ', err);
-    } else {
-      savePhotoBatch(photos, (pErr, res) => {
-        if (pErr) {
-          console.log('FAILED SAVE PHOTO BATCH ', pErr);
-        } else {
-          console.log('Photo pipeline completed successfully');
+        console.log(`Photo ${photo.id} pre-loaded!`);
+        if (photos.length === batchSize) {
+          savePhotoBatch(photos);
+          photos = [];
         }
-      })
-    }
-  })
+      }
+    })
+    .on('end', () => {
+      savePhotoBatch(photos);
+    })
 }
 
 const extractSKUs = () => {
-  const skuInUrl = path.resolve(__dirname, 'origin/skus.csv');
-  const skuOutUrl = path.resolve(__dirname, 'origin/json/skus.json');
-  const skuInputStream = fs.createReadStream(skuInUrl);
-  const skuOutputStream = fs.createWriteStream(skuOutUrl);
-  var skus = [];
-  const transformSKU = new Transform({
-    transform(chunk, encoding, callback) {
-      try {
-        let sku = Object.assign({}, JSON.parse(chunk));
-        sku = {
-          id: Number(sku.id),
-          style_id: Number(sku.styleId),
-          size: sku.size,
-          quantity: Number(sku.quantity)
+  const skuUrl = path.resolve(__dirname, `origin/split/skus/skus1.csv`);
+  let skus = [];
+  const skuStream = fs.createReadStream(skuUrl)
+    .setEncoding('utf-8')
+    .pipe(parse())
+    .on('data', row => {
+      if (row[0] !== 'id') {
+        let sku = {
+          id: Number(row[0]),
+          style_id: Number(row[1]),
+          size: row[2],
+          quantity: Number(row[3])
         }
 
-        console.log(`${sku.id} added to Batch!`);
         skus.push(sku);
-        callback(null, JSON.stringify(sku) + '\n');
-      } catch (err) {
-        callback(err);
-      }
-    }
-  })
-
-  pipeline(skuInputStream, csvParser, transformSKU, skuOutputStream, err => {
-    if (err) {
-      console.log('SKU pipeline error ', err);
-    } else {
-      saveSKUBatch(skus, (sErr, res) => {
-        if (sErr) {
-          console.log('FAILED SAVE PRODUCT BATCH ', sErr);
-        } else {
-          console.log('SKU pipeline completed successfully');
+        console.log(`SKU ${sku.id} pre-loaded!`);
+        if (skus.length === batchSize) {
+          saveSKUBatch(skus);
+          skus = [];
         }
-      })
-    }
-  })
+      }
+    })
+    .on('end', () => {
+      saveSKUBatch(skus);
+    })
 }
 
 const extractCart = () => {
-  const cartInUrl = path.resolve(__dirname, 'origin/cart_original.csv');
-  const cartOutUrl = path.resolve(__dirname, 'origin/json/cart.json');
-  const cartInputStream = fs.createReadStream(cartInUrl);
-  const cartOutputStream = fs.createWriteStream(cartOutUrl);
+  const cartUrl = path.resolve(__dirname, 'origin/cart_original.csv');
   var cartItems = [];
-  const transformCart = new Transform({
-    transform(chunk, encoding, callback) {
-      try {
-        let cart = Object.assign({}, JSON.parse(chunk));
-        cart = {
-          id: Number(cart.id),
-          user_session: Number(cart.user_session),
-          product_id: Number(cart.product_id),
-          active: Number(cart.active)
+  const cartStream = fs.createReadStream(cartUrl)
+    .setEncoding('utf-8')
+    .pipe(parse())
+    .on('data', row => {
+      if (row[0] !== 'id') {
+        let cart = {
+          user_session: Number(row[1]),
+          product_id: Number(row[2]),
+          active: Number(row[3])
         }
 
-        console.log(`${cart.id} added to Batch!`);
         cartItems.push(cart);
-        callback(null, JSON.stringify(cart) + '\n');
-      } catch (err) {
-        callback(err);
-      }
-    }
-  })
-
-  pipeline(cartInputStream, csvParser, transformCart, cartOutputStream, err => {
-    if (err) {
-      console.log('Cart pipeline error ', err);
-    } else {
-      saveCartBatch(cartItems, (cErr, res) => {
-        if (cErr) {
-          console.log('FAILED SAVE CART BATCH ', cErr);
-        } else {
-          console.log('Cart pipeline completed successfully');
+        console.log(`Cart item ${row[0]} pre-loaded!`);
+        if (cartItems.length === batchSize) {
+          saveCartBatch(cartItems);
+          cartItems = [];
         }
-      })
-    }
-  })
+      }
+    })
+    .on('end', () => {
+      saveCartBatch(cartItems)
+    })
 }
 
 // extractProduct();
 // extractFeatures();
 // extractStyles();
 // extractPhotos();
-extractSKUs();
+// extractSKUs();
 // extractCart();
 
 module.exports = {
