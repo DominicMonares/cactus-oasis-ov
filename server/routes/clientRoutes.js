@@ -17,7 +17,7 @@ clientRouter.get('/products', (req, res) => {
   fetchAllProducts(page, count)
     .then(data => {res.send(data);})
     .catch(err => {res.sendStatus(500)});
-})
+});
 
 clientRouter.get('/products/:product_id', async (req, res) => {
   let product_id = req.params.product_id;
@@ -47,7 +47,7 @@ clientRouter.get('/products/:product_id', async (req, res) => {
       return feature;
     })
   }
-})
+});
 
 /* ========== STYLES ========== */
 
@@ -66,7 +66,7 @@ clientRouter.get('/products/:product_id/styles', (req, res) => {
         .then(styles => {return checkStyles(styles)})
         .catch(err => { res.sendStatus(500) });
     }
-  })
+  });
 
   let checkStyles = (styles) => {
     styles.forEach((style, i) => {
@@ -113,7 +113,7 @@ clientRouter.get('/cart', (req, res) => {
         })
         .catch(err => { res.sendStatus(500) });
     }
-  })
+  });
 });
 
 let sortCart = (cart) => {
