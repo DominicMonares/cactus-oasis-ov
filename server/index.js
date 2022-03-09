@@ -3,13 +3,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const createServer = require('./server.js');
 
-// .connect(`mongodb://dominic:${process.env.DB_PW}@3.87.83.146/SDC`, {
-  //   useNewUrlParser: true,
-  //   useUnifiedTopology: true
-  // })
+// .connect('mongodb://localhost:27017/SDC', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// })
 
-  mongoose
-  .connect('mongodb://localhost:27017/SDC', {
+mongoose
+  .connect(`mongodb://dominic:${process.env.DB_PW}@3.84.227.139/SDC`, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
@@ -18,4 +18,4 @@ const createServer = require('./server.js');
     app.listen(8080, () => {
       console.log('Listening on port 8080');
     })
-});
+  });
