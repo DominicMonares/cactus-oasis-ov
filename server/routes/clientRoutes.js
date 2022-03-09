@@ -7,9 +7,6 @@ const {
 } = require('../../db/dbMethods.js');
 const {checkCache, addToCache, updateCache} = require('../../cache/cache.js');
 
-const Memcached = require('memcached');
-const memcached = new Memcached('127.0.0.1:11211');
-
 /* ========== PRODUCTS ========== */
 
 clientRouter.get('/products', (req, res) => {
@@ -22,144 +19,99 @@ clientRouter.get('/products', (req, res) => {
     .catch(err => {res.sendStatus(500)});
 })
 
-// will refactor to get myself out of callback hell, time permitting
-clientRouter.get('/products/:product_id', (req, res) => {
+clientRouter.get('/products/:product_id', async (req, res) => {
   let product_id = req.params.product_id;
   let key = `product_${product_id}`;
   let fullProduct;
 
-  checkCache(key, (err, data) => {
+  checkCache(key, (err, cache) => {
     if (err) {
-      throw err;
+      res.sendStatus(500);
+    } else if (cache) {
+      res.send(cache);
     } else {
-      if (data) {
-        res.send(data);
-      } else {
-        fetchProduct(product_id, (pErr, data) => {
-          if (pErr) {
-            res.sendStatus(500);
-          } else {
-            delete data[0]['_id'];
-            getFeatures(product_id, (fErr, fData) => {
-              if (fErr) {
-                res.sendStatus(500);
-              } else {
-                data[0]['features'] = fData.map(feature => {
-                  delete feature._id;
-                  if (feature.value === 'null') {
-                    feature.value = null;
-                  }
-
-                  return feature;
-                });
-                fullProduct = data[0];
-                addToCache(key, fullProduct);
-                res.send(fullProduct);
-              }
-            });
-          }
-        });
-      }
+      fetchProduct(product_id)
+        .then(product => { fullProduct = product[0] })
+        .catch(err => res.sendStatus(500))
+        .then(() => { return fetchFeatures(product_id) })
+        .then(features => {return checkFeatures(features)})
+        .catch(err => { res.sendStatus(500) })
+        .then(() => { addToCache(key, fullProduct) })
+        .then(() => { res.send(fullProduct) });
     }
-  });
-});
+  })
 
-let getFeatures = (product, callback) => {
-  fetchFeatures(product, callback);
-}
+  let checkFeatures = (features) => {
+    fullProduct.features = features.map(feature => {
+      if (feature.value === null) { feature.value = null }
+      return feature;
+    })
+  }
+})
 
 /* ========== STYLES ========== */
 
-// will refactor to get myself out of callback hell, time permitting
 clientRouter.get('/products/:product_id/styles', (req, res) => {
   let product_id = req.params.product_id;
   let key = `style_${product_id}`;
   let fullStyle = { 'product_id': product_id };
 
-  checkCache(key, (err, data) => {
+  checkCache(key, (err, cache) => {
     if (err) {
-      throw err;
+      res.sendStatus(500);
+    } else if (cache) {
+      res.send(cache);
     } else {
-      if (data) {
-        res.send(data);
-      } else {
-        fetchStyles(product_id, (stErr, data) => {
-          if (stErr) {
-            res.sendStatus(500);
-          } else {
-            data.forEach((val, i) => {
-              delete val._id;
-              let style = val.style_id
-              photoHelper(style, (pErr, pData) => {
-                if (pErr) {
-                  res.sendStatus(500);
-                } else {
-                  pData.forEach(pVal => { delete pVal._id });
-                  val.photos = pData;
-                }
-              })
-
-              skuHelper(style, (sErr, sData) => {
-                if (sErr) {
-                  res.sendStatus(500);
-                } else {
-                  let fullSKUs = {};
-                  sData.forEach(sVal => {
-                    delete sVal._id;
-                    fullSKUs[sVal.id] = { quantity: sVal.quantity, size: sVal.size };
-                  });
-
-                  val.skus = fullSKUs;
-                  if (i === data.length - 1) {
-                    fullStyle.results = data;
-                    addToCache(key, fullStyle);
-                    res.send(fullStyle);
-                  }
-                }
-              })
-            });
-          }
-        });
-      }
+      fetchStyles(product_id)
+        .then(styles => {return checkStyles(styles)})
+        .catch(err => { res.sendStatus(500) });
     }
   })
+
+  let checkStyles = (styles) => {
+    styles.forEach((style, i) => {
+      let style_id = style.style_id;
+      fetchPhotos(style_id)
+        .then(photos => { style.photos = photos })
+        .catch(err => { res.sendStatus(500) })
+        .then(() => { return fetchSKUs(style_id) })
+        .then(skus => {
+          let fullSKUs = {};
+          skus.forEach(sku => {
+            fullSKUs[sku.id] = { quantity: sku.quantity, size: sku.size };
+          })
+
+          style.skus = fullSKUs;
+          if (i === styles.length - 1) {
+            fullStyle.results = styles;
+            addToCache(key, fullStyle);
+            res.send(fullStyle);
+          }
+        })
+        .catch(err => { res.sendStatus(500) });
+    })
+  }
 });
-
-let photoHelper = (style, callback) => {
-  fetchPhotos(style, callback);
-}
-
-let skuHelper = (style, callback) => {
-  fetchSKUs(style, callback);
-}
 
 /* ========== CART ========== */
 
 let update = false;
 
-// will refactor to get myself out of callback hell, time permitting
 clientRouter.get('/cart', (req, res) => {
   // 3232 is the user session for this project
-  checkCache(`user_session_3232`, (err, data) => {
+  checkCache(`user_session_3232`, (err, cache) => {
     if (err) {
       throw err;
+    } else if (cache && !update) {
+      res.send(cache);
     } else {
-      if (data && !update) {
-        res.send(data);
-      } else {
-        fetchCart(3232, (cErr, cData) => {
-          if (cErr) {
-            res.sendStatus(500);
-          } else {
-            update = false;
-            if (cData.length === 0) {
-              res.send([]);
-            } else {
-              res.send(sortCart(cData));
-            }
-          }
-        });
-      }
+      fetchCart(3232)
+        .then(data => {
+          update = false;
+          addToCache(`user_session_3232`, sortCart(data));
+          data.length === 0 ? res.send([]) : res.send(sortCart(data));
+        })
+        .catch(err => { res.sendStatus(500) });
     }
   })
 });
@@ -168,7 +120,6 @@ let sortCart = (cart) => {
   let fullCart = {};
   for (var item = 0; item < cart.length; item ++) {
     let val = cart[item];
-    delete val._id;
     if (fullCart[val.product_id] === undefined) {
       fullCart[val.product_id] = { sku_id: val.product_id, count: 1 };
     } else {
@@ -179,34 +130,17 @@ let sortCart = (cart) => {
   return Object.values(fullCart);
 }
 
-// will refactor to get myself out of callback hell, time permitting
 clientRouter.post('/cart', (req, res) => {
-  checkCache(`user_session_3232`, (err, data) => {
-    if (err) {
-      throw err;
-    } else {
-      let cartItem = {
-        user_session: 3232,
-        product_id: req.query.sku_id,
-        active: 1
-      }
+  let cartItem = {
+    user_session: 3232,
+    product_id: req.query.sku_id,
+    active: 1
+  };
 
-      if (data) {
-        var cart = data;
-        cart.push(cartItem);
-        updateCache(3232, cart);
-        update = true;
-      }
-
-      addToCart(cartItem, (cErr, cData) => {
-        if (cErr) {
-          res.sendStatus(500);
-        } else {
-          res.send(cData);
-        }
-      });
-    }
-  })
+  update = true;
+  addToCart(cartItem)
+    .then(() => {res.sendStatus(201)})
+    .catch(err => {res.sendStatus(500)});
 });
 
 module.exports = clientRouter;

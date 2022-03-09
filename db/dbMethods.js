@@ -117,13 +117,13 @@ let fetchSKUs = (style) => {
 
 let addToCart = (cartItem) => {
   // let newCart = new Cart(cartItem);
-  // newCart.save()
+  // return newCart.save()
     // .then(() => {console.log(`Item ${cartItem.product_id} successfully added to cart!`)})
     // .catch(err => {throw err});
 
   // PUT operation to be used for POST testing
   // without overpopulating the db
-  Cart.findByIdAndUpdate('6225860dea6f25cd07c6bc4f', cartItem)
+  return Cart.findByIdAndUpdate('6225860dea6f25cd07c6bc4f', cartItem)
     .then(() => {console.log(`Cart item ${cartItem.product_id} successfully updated!`)})
     .catch(err => {throw err});
 }
