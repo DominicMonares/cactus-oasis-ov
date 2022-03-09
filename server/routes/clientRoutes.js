@@ -6,6 +6,7 @@ const {
   fetchAllProducts, fetchProduct, fetchFeatures, fetchStyles, fetchPhotos, fetchSKUs, addToCart, fetchCart
 } = require('../../db/dbMethods.js');
 const {checkCache, addToCache, updateCache} = require('../../cache/cache.js');
+const {randomProduct, randomCart} = require('../../tests/stress/stressMethods.js');
 
 /* ========== PRODUCTS ========== */
 
@@ -20,7 +21,9 @@ clientRouter.get('/products', (req, res) => {
 });
 
 clientRouter.get('/products/:product_id', async (req, res) => {
-  let product_id = req.params.product_id;
+  let product_id = randomProduct(); // only used for stress testing
+
+  // let product_id = req.params.product_id;
   let key = `product_${product_id}`;
   let fullProduct;
 
@@ -52,7 +55,9 @@ clientRouter.get('/products/:product_id', async (req, res) => {
 /* ========== STYLES ========== */
 
 clientRouter.get('/products/:product_id/styles', (req, res) => {
-  let product_id = req.params.product_id;
+  let product_id = randomProduct(); // only used for stress testing
+
+  // let product_id = req.params.product_id;
   let key = `style_${product_id}`;
   let fullStyle = { 'product_id': product_id };
 
@@ -99,16 +104,20 @@ let update = false;
 
 clientRouter.get('/cart', (req, res) => {
   // 3232 is the user session for this project
-  checkCache(`user_session_3232`, (err, cache) => {
+  let session = randomCart(); // only used for stress testing
+
+  // let session = 3232;
+  let key = `user_session_${session}`
+  checkCache(key, (err, cache) => {
     if (err) {
       throw err;
     } else if (cache && !update) {
       res.send(cache);
     } else {
-      fetchCart(3232)
+      fetchCart(session)
         .then(data => {
           update = false;
-          addToCache(`user_session_3232`, sortCart(data));
+          addToCache(key, sortCart(data));
           data.length === 0 ? res.send([]) : res.send(sortCart(data));
         })
         .catch(err => { res.sendStatus(500) });
@@ -133,7 +142,8 @@ let sortCart = (cart) => {
 clientRouter.post('/cart', (req, res) => {
   let cartItem = {
     user_session: 3232,
-    product_id: req.query.sku_id,
+    product_id: randomProduct(), // only used for stress testing
+    // product_id: req.query.sku_id,
     active: 1
   };
 
