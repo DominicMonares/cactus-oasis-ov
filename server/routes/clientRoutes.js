@@ -17,14 +17,9 @@ clientRouter.get('/products', (req, res) => {
   !req.query.page ? page = 1 : page = req.query.page;
   !req.query.count ? count = 5 : count = req.query.count;
 
-  fetchAllProducts(page, count, (err, data) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      data.forEach(val => {delete val._id});
-      res.send(data);
-    }
-  })
+  fetchAllProducts(page, count)
+    .then(data => {res.send(data);})
+    .catch(err => {res.sendStatus(500)});
 })
 
 // will refactor to get myself out of callback hell, time permitting

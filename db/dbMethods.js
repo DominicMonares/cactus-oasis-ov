@@ -16,9 +16,12 @@ let fetchAllProducts = (page, count, callback) => {
   // NOT USED CLIENT SIDE
   let start = (page - 1) * count;
   let end = (page * count) + 1;
-  Product.find({id: {'$gt': start, '$lt': end}}, callback)
-    .select('id name slogan description category default_price')
-    .lean();
+
+  return Product.find({id: {'$gt': start, '$lt': end}})
+    .select('-_id id name slogan description category default_price')
+    .lean()
+    .then(data => data)
+    .catch(err => {throw err});
 }
 
 let fetchProduct = (product, callback) => {
