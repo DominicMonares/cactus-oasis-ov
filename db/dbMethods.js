@@ -16,94 +16,124 @@ let fetchAllProducts = (page, count, callback) => {
   // NOT USED CLIENT SIDE
   let start = (page - 1) * count;
   let end = (page * count) + 1;
-  Product.find({id: {'$gt': start, '$lt': end}}, callback)
-    .select('id name slogan description category default_price')
-    .lean();
-}
 
-let fetchProduct = (product, callback) => {
-  Product.find({ id: product }, callback)
-    .select('id name slogan description category default_price')
+  return Product.find({id: {'$gt': start, '$lt': end}})
+    .select('-_id id name slogan description category default_price')
     .lean()
+    .then(data => data)
+    .catch(err => {throw err});
 }
 
-let createProduct = (product, callback) => {
+let fetchProduct = (product) => {
+  return Product.find({ id: product })
+    .select('-_id id name slogan description category default_price')
+    .lean()
+    .then(data => data)
+    .catch(err => {throw err});
+}
+
+
+let createProduct = (product) => {
   // NOT USED CLIENT SIDE
   let newProduct = new Product(product);
-  newProduct.save(callback);
+  newProduct.save()
+    .then(() => {console.log(`Product ${product.id} successfully created!`)})
+    .catch(err => {throw err});
 }
 
 /* ========== FEATURES ========== */
 
-let createFeature = (feature, callback) => {
+let createFeature = (feature) => {
   // NOT USED CLIENT SIDE
   let newFeature = new Feature(feature);
-  newFeature.save(callback);
+  newFeature.save()
+    .then(() => {console.log(`Feature ${feature.id} successfully created!`)})
+    .catch(err => {throw err});
 }
 
-let fetchFeatures = (product, callback) => {
-  Feature.find({product_id: product}, callback)
-    .select('feature value')
-    .lean();
+let fetchFeatures = (product) => {
+  return Feature.find({product_id: product})
+    .select('-_id feature value')
+    .lean()
+    .then(data => data)
+    .catch(err => {throw err});
 }
 
 /* ========== STYLES ========== */
 
-let createStyle = (style, callback) => {
+let createStyle = (style) => {
   // NOT USED CLIENT SIDE
   let newStyle = new Style(style);
-  newStyle.save(callback);
+  newStyle.save()
+    .then(() => {console.log(`Style ${style.style_id} successfully created!`)})
+    .catch(err => {throw err});
 }
 
-let fetchStyles = (product, callback) => {
-  Style.find({product_id: product}, callback)
-    .select('style_id name original_price sale_price default?')
-    .lean();
+let fetchStyles = (product) => {
+  return Style.find({product_id: product})
+    .select('-_id style_id name original_price sale_price default?')
+    .lean()
+    .then(data => data)
+    .catch(err => {throw err});
 }
 
 /* ========== PHOTOS ========== */
 
-let createPhoto = (photo, callback) => {
+let createPhoto = (photo) => {
   // NOT USED CLIENT SIDE
   let newPhoto = new Photo(photo);
-  newPhoto.save(callback);
+  newPhoto.save()
+    .then(() => {console.log(`Photo ${photo.id} successfully created!`)})
+    .catch(err => {throw err});
 }
 
-let fetchPhotos = (style, callback) => {
-  Photo.find({style_id: style}, callback)
-    .select('thumbnail_url url')
-    .lean();
+let fetchPhotos = (style) => {
+  return Photo.find({style_id: style})
+    .select('-_id thumbnail_url url')
+    .lean()
+    .then(data => data)
+    .catch(err => {throw err});
 }
 
 /* ========== SKUS ========== */
 
-let createSKU = (sku, callback) => {
+let createSKU = (sku) => {
   // NOT USED CLIENT SIDE
   let newSKU = new SKU(sku);
-  newSKU.save(callback);
+  newSKU.save()
+    .then(() => {console.log(`SKU ${sku.id} successfully created!`)})
+    .catch(err => {throw err});
 }
 
-let fetchSKUs = (style, callback) => {
-  SKU.find({style_id: style}, callback)
-    .select('id quantity size')
-    .lean();
+let fetchSKUs = (style) => {
+  return SKU.find({style_id: style})
+    .select('-_id id quantity size')
+    .lean()
+    .then(data => data)
+    .catch(err => {throw err});
 }
 
 /* ========== CART ========== */
 
-let addToCart = (cartItem, callback) => {
+let addToCart = (cartItem) => {
   // let newCart = new Cart(cartItem);
-  // newCart.save(callback);
+  // return newCart.save()
+    // .then(() => {console.log(`Item ${cartItem.product_id} successfully added to cart!`)})
+    // .catch(err => {throw err});
 
   // PUT operation to be used for POST testing
   // without overpopulating the db
-  Cart.findByIdAndUpdate('6225860dea6f25cd07c6bc4f', cartItem, callback);
+  return Cart.findByIdAndUpdate('6225860dea6f25cd07c6bc4f', cartItem)
+    .then(() => {console.log(`Cart item ${cartItem.product_id} successfully updated!`)})
+    .catch(err => {throw err});
 }
 
-let fetchCart = (session, callback) => {
-  Cart.find({user_session: session}, callback)
-    .select('product_id active')
-    .lean();
+let fetchCart = (session) => {
+  return Cart.find({user_session: session})
+    .select('-_id product_id active')
+    .lean()
+    .then(data => data)
+    .catch(err => {throw err});
 }
 
 /* ========== ETL ========== */

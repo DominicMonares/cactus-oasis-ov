@@ -7,7 +7,7 @@
     "test": "jest --detectOpenHandles --coverage --testEnvironment=node --runInBand",
     "stress": "K6_STATSD_ENABLE_TAGS=true k6 run --out statsd tests/stress/stress.js",
     "start": "npx nodemon server/index.js",
-    "vm": "ssh -i 'SDC_DBMS.pem'  ubuntu@ec2-18-234-188-85.compute-1.amazonaws.com"
+    "vm": "ssh -i 'SDC_DBMS.pem' ubuntu@ec2-54-165-190-57.compute-1.amazonaws.com"
   },
   "repository": {
     "type": "git",

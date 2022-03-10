@@ -9,7 +9,7 @@ const createServer = require('./server.js');
 // })
 
 mongoose
-  .connect(`mongodb://dominic:${process.env.DB_PW}@3.87.83.146/SDC`, {
+  .connect(`mongodb://dominic:${process.env.DB_PW}@3.84.227.139/SDC`, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
@@ -18,8 +18,4 @@ mongoose
     app.listen(8080, () => {
       console.log('Listening on port 8080');
     })
-});
-
-// additionalRouter.get('/loaderio-167d73d03ab32c3fcf35f58f2aba4fe5/', (req, res) => {
-//   res.send('loaderio-167d73d03ab32c3fcf35f58f2aba4fe5');
-// })
+  });
