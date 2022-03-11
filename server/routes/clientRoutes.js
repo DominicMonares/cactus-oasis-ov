@@ -6,7 +6,6 @@ const {
   fetchAllProducts, fetchProduct, fetchFeatures, fetchStyles, fetchPhotos, fetchSKUs, addToCart, fetchCart
 } = require('../../db/dbMethods.js');
 const {checkCache, addToCache, updateCache} = require('../../cache/cache.js');
-const {randomProduct, randomCart} = require('../../tests/stress/stressMethods.js');
 
 /* ========== PRODUCTS ========== */
 
@@ -21,9 +20,7 @@ clientRouter.get('/products', (req, res) => {
 });
 
 clientRouter.get('/products/:product_id', async (req, res) => {
-  let product_id = randomProduct(); // only used for stress testing
-
-  // let product_id = req.params.product_id;
+  let product_id = req.params.product_id;
   let key = `product_${product_id}`;
   let fullProduct;
 
@@ -55,9 +52,7 @@ clientRouter.get('/products/:product_id', async (req, res) => {
 /* ========== STYLES ========== */
 
 clientRouter.get('/products/:product_id/styles', (req, res) => {
-  let product_id = randomProduct(); // only used for stress testing
-
-  // let product_id = req.params.product_id;
+  let product_id = req.params.product_id;
   let key = `style_${product_id}`;
   let fullStyle = { 'product_id': product_id };
 
@@ -125,7 +120,7 @@ clientRouter.get('/cart', (req, res) => {
   });
 });
 
-let sortCart = (cart) => {
+const sortCart = (cart) => {
   let fullCart = {};
   for (var item = 0; item < cart.length; item ++) {
     let val = cart[item];
@@ -139,11 +134,16 @@ let sortCart = (cart) => {
   return Object.values(fullCart);
 }
 
+const randomCart = () => {
+  let carts = [1111, 1234, 4321, 3232];
+  let user = Math.floor(Math.random() * (3 - 0) + 0);
+  return carts[user];
+}
+
 clientRouter.post('/cart', (req, res) => {
   let cartItem = {
     user_session: 3232,
-    product_id: randomProduct(), // only used for stress testing
-    // product_id: req.query.sku_id,
+    product_id: req.query.sku_id,
     active: 1
   };
 
