@@ -6,7 +6,7 @@ const checkCache = (key, callback) => {
 }
 
 const addToCache = function(key, data) {
-  memcached.set(key, data, 6000, (err) => {
+  memcached.set(key, data, 86400, (err) => {
     if (err) {
       throw err;
     } else {
