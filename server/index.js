@@ -9,7 +9,7 @@ const createServer = require('./server.js');
 // })
 
 mongoose
-  .connect(`mongodb://dominic:${process.env.DB_PW}@3.84.227.139/SDC`, {
+  .connect(`mongodb://dominic:${process.env.DB_PW}@54.204.120.254/SDC`, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })

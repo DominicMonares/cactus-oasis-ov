@@ -87,9 +87,17 @@ let createPhoto = (photo) => {
     .catch(err => {throw err});
 }
 
-let fetchPhotos = (style) => {
-  return Photo.find({style_id: style})
-    .select('-_id thumbnail_url url')
+// let fetchPhotos = (style) => {
+//   return Photo.find({style_id: style})
+//     .select('-_id thumbnail_url url')
+//     .lean()
+//     .then(data => data)
+//     .catch(err => {throw err});
+// }
+
+let fetchPhotos = (styles) => {
+  return Photo.find({style_id: {$in: styles}})
+    .select('-_id style_id thumbnail_url url')
     .lean()
     .then(data => data)
     .catch(err => {throw err});
@@ -105,9 +113,17 @@ let createSKU = (sku) => {
     .catch(err => {throw err});
 }
 
-let fetchSKUs = (style) => {
-  return SKU.find({style_id: style})
-    .select('-_id id quantity size')
+// let fetchSKUs = (style) => {
+//   return SKU.find({style_id: style})
+//     .select('-_id id quantity size')
+//     .lean()
+//     .then(data => data)
+//     .catch(err => {throw err});
+// }
+
+let fetchSKUs = (styles) => {
+  return SKU.find({style_id: {$in: styles}})
+    .select('-_id id style_id quantity size')
     .lean()
     .then(data => data)
     .catch(err => {throw err});

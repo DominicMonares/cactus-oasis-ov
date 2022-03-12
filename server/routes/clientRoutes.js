@@ -6,7 +6,6 @@ const {
   fetchAllProducts, fetchProduct, fetchFeatures, fetchStyles, fetchPhotos, fetchSKUs, addToCart, fetchCart
 } = require('../../db/dbMethods.js');
 const {checkCache, addToCache, updateCache} = require('../../cache/cache.js');
-const {randomProduct, randomCart} = require('../../tests/stress/stressMethods.js');
 
 /* ========== PRODUCTS ========== */
 
@@ -21,9 +20,7 @@ clientRouter.get('/products', (req, res) => {
 });
 
 clientRouter.get('/products/:product_id', async (req, res) => {
-  let product_id = randomProduct(); // only used for stress testing
-
-  // let product_id = req.params.product_id;
+  let product_id = req.params.product_id;
   let key = `product_${product_id}`;
   let fullProduct;
 
@@ -55,9 +52,7 @@ clientRouter.get('/products/:product_id', async (req, res) => {
 /* ========== STYLES ========== */
 
 clientRouter.get('/products/:product_id/styles', (req, res) => {
-  let product_id = randomProduct(); // only used for stress testing
-
-  // let product_id = req.params.product_id;
+  let product_id = req.params.product_id;
   let key = `style_${product_id}`;
   let fullStyle = { 'product_id': product_id };
 
@@ -74,27 +69,45 @@ clientRouter.get('/products/:product_id/styles', (req, res) => {
   });
 
   let checkStyles = (styles) => {
-    styles.forEach((style, i) => {
-      let style_id = style.style_id;
-      fetchPhotos(style_id)
-        .then(photos => { style.photos = photos })
-        .catch(err => { res.sendStatus(500) })
-        .then(() => { return fetchSKUs(style_id) })
-        .then(skus => {
-          let fullSKUs = {};
-          skus.forEach(sku => {
-            fullSKUs[sku.id] = { quantity: sku.quantity, size: sku.size };
-          })
+    let style_ids = styles.map(style => style.style_id);
+    fetchPhotos(style_ids)
+      .then(photos => {
+        styles.forEach((style, i) => {
+          style.photos = [];
+          photos.forEach(photo => {
+            if (photo.style_id === style.style_id) {
+              delete photo.style_id;
+              style.photos.push(photo);
+            }
 
-          style.skus = fullSKUs;
-          if (i === styles.length - 1) {
-            fullStyle.results = styles;
-            addToCache(key, fullStyle);
-            res.send(fullStyle);
-          }
+            if (i === styles.length - 1) {
+              fullStyle.results = styles;
+            }
+          })
+        });
+      })
+      .catch(err => { res.sendStatus(500) })
+      .then(() => {
+        return fetchSKUs(style_ids)
+      })
+      .then(skus => {
+        styles.forEach((style, i) => {
+          let fullSKUs = {};
+          skus.forEach((sku, j) => {
+            if (sku.style_id === style.style_id) {
+              fullSKUs[sku.id] = { quantity: sku.quantity, size: sku.size };
+            }
+
+            if (j === skus.length - 1) {
+              fullStyle['results'][i]['skus'] = fullSKUs;
+            }
+          })
         })
-        .catch(err => { res.sendStatus(500) });
-    })
+      })
+      .then(() => {
+        addToCache(key, fullStyle);
+        res.send(fullStyle);
+      })
   }
 });
 
@@ -125,7 +138,7 @@ clientRouter.get('/cart', (req, res) => {
   });
 });
 
-let sortCart = (cart) => {
+const sortCart = (cart) => {
   let fullCart = {};
   for (var item = 0; item < cart.length; item ++) {
     let val = cart[item];
@@ -139,11 +152,16 @@ let sortCart = (cart) => {
   return Object.values(fullCart);
 }
 
+const randomCart = () => {
+  let carts = [1111, 1234, 4321, 3232];
+  let user = Math.floor(Math.random() * (3 - 0) + 0);
+  return carts[user];
+}
+
 clientRouter.post('/cart', (req, res) => {
   let cartItem = {
     user_session: 3232,
-    product_id: randomProduct(), // only used for stress testing
-    // product_id: req.query.sku_id,
+    product_id: req.query.sku_id,
     active: 1
   };
 
