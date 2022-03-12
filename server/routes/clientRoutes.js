@@ -69,28 +69,71 @@ clientRouter.get('/products/:product_id/styles', (req, res) => {
   });
 
   let checkStyles = (styles) => {
-    styles.forEach((style, i) => {
-      let style_id = style.style_id;
-      fetchPhotos(style_id)
-        .then(photos => { style.photos = photos })
-        .catch(err => { res.sendStatus(500) })
-        .then(() => { return fetchSKUs(style_id) })
-        .then(skus => {
-          let fullSKUs = {};
-          skus.forEach(sku => {
-            fullSKUs[sku.id] = { quantity: sku.quantity, size: sku.size };
-          })
+    let style_ids = styles.map(style => style.style_id);
+    fetchPhotos(style_ids)
+    .then(photos => {
+        styles.forEach((style, i) => {
+          style.photos = [];
+          photos.forEach(photo => {
+            if (photo.style_id === style.style_id) {
+              delete photo.style_id;
+              style.photos.push(photo);
+            }
 
-          style.skus = fullSKUs;
-          if (i === styles.length - 1) {
-            fullStyle.results = styles;
-            addToCache(key, fullStyle);
-            res.send(fullStyle);
-          }
+            if (i === styles.length - 1) {
+              fullStyle.results = styles;
+            }
+          })
+        });
+      })
+      .catch(err => { res.sendStatus(500) })
+      .then(() => {
+        return fetchSKUs(style_ids)
+      })
+      .then(skus => {
+        fullStyle.results.forEach((style, i) => {
+          let fullSKUs = {};
+          skus.forEach((sku, j) => {
+            if (sku.style_id === style.style_id) {
+              fullSKUs[sku.id] = { quantity: sku.quantity, size: sku.size };
+            }
+
+            if (j === skus.length - 1) {
+              fullStyle['results'][i]['skus'] = fullSKUs;
+            }
+          })
         })
-        .catch(err => { res.sendStatus(500) });
-    })
+      })
+      .then(() => {
+        addToCache(key, fullStyle);
+        res.send(fullStyle);
+      })
   }
+
+  // let checkStyles = (styles) => {
+  //   console.log('STYLES ', styles);
+  //   styles.forEach((style, i) => {
+  //     let style_id = style.style_id;
+  //     fetchPhotos(style_id)
+  //       .then(photos => { style.photos = photos })
+  //       .catch(err => { res.sendStatus(500) })
+  //       .then(() => { return fetchSKUs(style_id) })
+  //       .then(skus => {
+  //         let fullSKUs = {};
+  //         skus.forEach(sku => {
+  //           fullSKUs[sku.id] = { quantity: sku.quantity, size: sku.size };
+  //         })
+
+  //         style.skus = fullSKUs;
+  //         if (i === styles.length - 1) {
+  //           fullStyle.results = styles;
+  //           addToCache(key, fullStyle);
+  //           res.send(fullStyle);
+  //         }
+  //       })
+  //       .catch(err => { res.sendStatus(500) });
+  //   })
+  // }
 });
 
 /* ========== CART ========== */
