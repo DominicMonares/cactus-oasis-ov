@@ -16,7 +16,7 @@ const addToCache = function(key, data) {
 }
 
 const updateCache = function(key, data) {
-  memcached.replace(key, data, 6000, (err) => {
+  memcached.replace(key, data, 86400, (err) => {
     if (err) {
       throw err;
     } else {
